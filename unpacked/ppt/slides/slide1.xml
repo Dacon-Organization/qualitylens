@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="utf-8"?>
+<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+  <p:cSld>
+    <p:spTree>
+      <p:nvGrpSpPr>
+        <p:cNvPr id="1" name="Shape 87"/>
+        <p:cNvGrpSpPr/>
+        <p:nvPr/>
+      </p:nvGrpSpPr>
+      <p:grpSpPr>
+        <a:xfrm>
+          <a:off x="0" y="0"/>
+          <a:ext cx="0" cy="0"/>
+          <a:chOff x="0" y="0"/>
+          <a:chExt cx="0" cy="0"/>
+        </a:xfrm>
+      </p:grpSpPr>
+      <p:cxnSp>
+        <p:nvCxnSpPr>
+          <p:cNvPr id="90" name="Google Shape;90;p1"/>
+          <p:cNvCxnSpPr/>
+          <p:nvPr/>
+        </p:nvCxnSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="388374" y="6415548"/>
+            <a:ext cx="11415252" cy="0"/>
+          </a:xfrm>
+          <a:prstGeom prst="straightConnector1">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln w="19050" cap="flat" cmpd="sng">
+            <a:solidFill>
+              <a:srgbClr val="AEAEAE"/>
+            </a:solidFill>
+            <a:prstDash val="solid"/>
+            <a:miter lim="800000"/>
+            <a:headEnd type="none" w="sm" len="sm"/>
+            <a:tailEnd type="none" w="sm" len="sm"/>
+          </a:ln>
+        </p:spPr>
+      </p:cxnSp>
+      <p:pic>
+        <p:nvPicPr>
+          <p:cNvPr id="92" name="Google Shape;92;p1"/>
+          <p:cNvPicPr preferRelativeResize="0"/>
+          <p:nvPr/>
+        </p:nvPicPr>
+        <p:blipFill>
+          <a:blip r:embed="rId3">
+            <a:alphaModFix/>
+          </a:blip>
+          <a:stretch>
+            <a:fillRect/>
+          </a:stretch>
+        </p:blipFill>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="10795670" y="6415547"/>
+            <a:ext cx="1007955" cy="353407"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln>
+            <a:noFill/>
+          </a:ln>
+        </p:spPr>
+      </p:pic>
+      <p:cxnSp>
+        <p:nvCxnSpPr>
+          <p:cNvPr id="4" name="Google Shape;90;p1">
+            <a:extLst>
+              <a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}">
+                <a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{053CAB3C-01D3-307A-B765-DB89E56FD267}"/>
+              </a:ext>
+            </a:extLst>
+          </p:cNvPr>
+          <p:cNvCxnSpPr/>
+          <p:nvPr/>
+        </p:nvCxnSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="388374" y="364575"/>
+            <a:ext cx="11415252" cy="0"/>
+          </a:xfrm>
+          <a:prstGeom prst="straightConnector1">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln w="19050" cap="flat" cmpd="sng">
+            <a:solidFill>
+              <a:srgbClr val="AEAEAE"/>
+            </a:solidFill>
+            <a:prstDash val="solid"/>
+            <a:miter lim="800000"/>
+            <a:headEnd type="none" w="sm" len="sm"/>
+            <a:tailEnd type="none" w="sm" len="sm"/>
+          </a:ln>
+        </p:spPr>
+      </p:cxnSp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="88" name="Google Shape;88;p1"/>
+          <p:cNvSpPr txBox="1"/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="2631231" y="1570963"/>
+            <a:ext cx="6929531" cy="1366488"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln>
+            <a:noFill/>
+          </a:ln>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr spcFirstLastPara="1" wrap="square" lIns="91425" tIns="45700" rIns="91425" bIns="45700" anchor="t" anchorCtr="0">
+            <a:spAutoFit/>
+          </a:bodyPr>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr marL="0" marR="0" lvl="0" indent="0" algn="ctr" rtl="0">
+              <a:lnSpc>
+                <a:spcPct val="115000"/>
+              </a:lnSpc>
+              <a:spcBef>
+                <a:spcPts val="0"/>
+              </a:spcBef>
+              <a:spcAft>
+                <a:spcPts val="0"/>
+              </a:spcAft>
+              <a:buNone/>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="en-US" altLang="ko-KR" sz="3600" b="1" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="202124"/>
+                </a:solidFill>
+                <a:latin typeface="Pretendard_KR"/>
+                <a:ea typeface="Malgun Gothic" panose="020B0503020000020004" pitchFamily="50" charset="-127"/>
+              </a:rPr>
+              <a:t>2026</a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="ko-KR" altLang="en-US" sz="3600" b="1" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="202124"/>
+                </a:solidFill>
+                <a:latin typeface="Pretendard_KR"/>
+                <a:ea typeface="Malgun Gothic" panose="020B0503020000020004" pitchFamily="50" charset="-127"/>
+              </a:rPr>
+              <a:t> 스마트 공장 운영 시스템 </a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="en-US" altLang="ko-KR" sz="3600" b="1" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="202124"/>
+                </a:solidFill>
+                <a:latin typeface="Pretendard_KR"/>
+                <a:ea typeface="Malgun Gothic" panose="020B0503020000020004" pitchFamily="50" charset="-127"/>
+              </a:rPr>
+              <a:t>MVP </a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="ko-KR" altLang="en-US" sz="3600" b="1" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="202124"/>
+                </a:solidFill>
+                <a:latin typeface="Pretendard_KR"/>
+                <a:ea typeface="Malgun Gothic" panose="020B0503020000020004" pitchFamily="50" charset="-127"/>
+              </a:rPr>
+              <a:t>개발 </a:t>
+            </a:r>
+            <a:r>
+              <a:rPr lang="ko-KR" altLang="en-US" sz="3600" b="1" dirty="0" err="1">
+                <a:solidFill>
+                  <a:srgbClr val="202124"/>
+                </a:solidFill>
+                <a:latin typeface="Pretendard_KR"/>
+                <a:ea typeface="Malgun Gothic" panose="020B0503020000020004" pitchFamily="50" charset="-127"/>
+              </a:rPr>
+              <a:t>해커톤</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" altLang="ko-KR" sz="3600" b="1" i="0" dirty="0">
+              <a:solidFill>
+                <a:srgbClr val="202124"/>
+              </a:solidFill>
+              <a:effectLst/>
+              <a:latin typeface="Malgun Gothic" panose="020B0503020000020004" pitchFamily="50" charset="-127"/>
+              <a:ea typeface="Malgun Gothic" panose="020B0503020000020004" pitchFamily="50" charset="-127"/>
+            </a:endParaRPr>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+      <p:graphicFrame>
+        <p:nvGraphicFramePr>
+          <p:cNvPr id="89" name="Google Shape;89;p1"/>
+          <p:cNvGraphicFramePr/>
+          <p:nvPr>
+            <p:extLst>
+              <p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}">
+                <p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="259346336"/>
+              </p:ext>
+            </p:extLst>
+          </p:nvPr>
+        </p:nvGraphicFramePr>
+        <p:xfrm>
+          <a:off x="3386675" y="4388003"/>
+          <a:ext cx="5418650" cy="899000"/>
+        </p:xfrm>
+        <a:graphic>
+          <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table">
+            <a:tbl>
+              <a:tblPr firstRow="1" bandRow="1">
+                <a:tableStyleId>{97A43732-219E-4773-AEE6-7331DB972763}</a:tableStyleId>
+              </a:tblPr>
+              <a:tblGrid>
+                <a:gridCol w="2709325">
+                  <a:extLst>
+                    <a:ext uri="{9D8B030D-6E8A-4147-A177-3AD203B41FA5}">
+                      <a16:colId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" val="20000"/>
+                    </a:ext>
+                  </a:extLst>
+                </a:gridCol>
+                <a:gridCol w="2709325">
+                  <a:extLst>
+                    <a:ext uri="{9D8B030D-6E8A-4147-A177-3AD203B41FA5}">
+                      <a16:colId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" val="20001"/>
+                    </a:ext>
+                  </a:extLst>
+                </a:gridCol>
+              </a:tblGrid>
+              <a:tr h="449500">
+                <a:tc>
+                  <a:txBody>
+                    <a:bodyPr/>
+                    <a:lstStyle/>
+                    <a:p>
+                      <a:pPr marL="0" marR="0" lvl="0" indent="0" algn="ctr" rtl="0">
+                        <a:spcBef>
+                          <a:spcPts val="0"/>
+                        </a:spcBef>
+                        <a:spcAft>
+                          <a:spcPts val="0"/>
+                        </a:spcAft>
+                        <a:buNone/>
+                      </a:pPr>
+                      <a:r>
+                        <a:rPr lang="ko-KR" sz="1800" u="none" strike="noStrike" cap="none" dirty="0" err="1"/>
+                        <a:t>팀명</a:t>
+                      </a:r>
+                      <a:endParaRPr sz="1800" u="none" strike="noStrike" cap="none" dirty="0"/>
+                    </a:p>
+                  </a:txBody>
+                  <a:tcPr marL="91450" marR="91450" marT="45725" marB="45725" anchor="ctr"/>
+                </a:tc>
+                <a:tc>
+                  <a:txBody>
+                    <a:bodyPr/>
+                    <a:lstStyle/>
+                    <a:p>
+                      <a:pPr marL="0" marR="0" lvl="0" indent="0" algn="l" rtl="0">
+                        <a:spcBef>
+                          <a:spcPts val="0"/>
+                        </a:spcBef>
+                        <a:spcAft>
+                          <a:spcPts val="0"/>
+                        </a:spcAft>
+                        <a:buNone/>
+                      </a:pPr>
+                      <a:r>
+                        <a:rPr lang="en-US" altLang="ko-KR" sz="1800" u="none" strike="noStrike" cap="none" dirty="0"/>
+                        <a:t>QualityLens</a:t>
+                      </a:r>
+                      <a:endParaRPr sz="1800" u="none" strike="noStrike" cap="none" dirty="0"/>
+                    </a:p>
+                  </a:txBody>
+                  <a:tcPr marL="91450" marR="91450" marT="45725" marB="45725" anchor="ctr"/>
+                </a:tc>
+                <a:extLst>
+                  <a:ext uri="{0D108BD9-81ED-4DB2-BD59-A6C34878D82A}">
+                    <a16:rowId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" val="10000"/>
+                  </a:ext>
+                </a:extLst>
+              </a:tr>
+              <a:tr h="449500">
+                <a:tc>
+                  <a:txBody>
+                    <a:bodyPr/>
+                    <a:lstStyle/>
+                    <a:p>
+                      <a:pPr marL="0" marR="0" lvl="0" indent="0" algn="ctr" rtl="0">
+                        <a:spcBef>
+                          <a:spcPts val="0"/>
+                        </a:spcBef>
+                        <a:spcAft>
+                          <a:spcPts val="0"/>
+                        </a:spcAft>
+                        <a:buNone/>
+                      </a:pPr>
+                      <a:r>
+                        <a:rPr lang="ko-KR" altLang="en-US" sz="1800" u="none" strike="noStrike" cap="none" dirty="0"/>
+                        <a:t>프로젝트명</a:t>
+                      </a:r>
+                      <a:endParaRPr sz="1800" u="none" strike="noStrike" cap="none" dirty="0"/>
+                    </a:p>
+                  </a:txBody>
+                  <a:tcPr marL="91450" marR="91450" marT="45725" marB="45725" anchor="ctr"/>
+                </a:tc>
+                <a:tc>
+                  <a:txBody>
+                    <a:bodyPr/>
+                    <a:lstStyle/>
+                    <a:p>
+                      <a:pPr marL="0" marR="0" lvl="0" indent="0" algn="l" rtl="0">
+                        <a:spcBef>
+                          <a:spcPts val="0"/>
+                        </a:spcBef>
+                        <a:spcAft>
+                          <a:spcPts val="0"/>
+                        </a:spcAft>
+                        <a:buNone/>
+                      </a:pPr>
+                      <a:r>
+                        <a:rPr lang="en-US" altLang="ko-KR" sz="1600" u="none" strike="noStrike" cap="none" dirty="0"/>
+                        <a:t>QualityLens &#x2013; AI </a:t>
+                      </a:r>
+                      <a:r>
+                        <a:rPr lang="ko-KR" altLang="en-US" sz="1600" u="none" strike="noStrike" cap="none" dirty="0"/>
+                        <a:t>&#xAE30;&#xBC18; &#xC2A4;&#xB9C8;&#xD2B8; &#xD488;&#xC9C8; &#xC608;&#xCE21;&#xB7DFCD &#xC6D0;&#xC778; &#xBD84;&#xC11D; &#xD1B5;&#xD569; &#xD50C;&#xB7AB;&#xD3FC;</a:t>
+                      </a:r>
+                      <a:endParaRPr sz="1600" u="none" strike="noStrike" cap="none" dirty="0"/>
+                    </a:p>
+                  </a:txBody>
+                  <a:tcPr marL="91450" marR="91450" marT="45725" marB="45725" anchor="ctr"/>
+                </a:tc>
+                <a:extLst>
+                  <a:ext uri="{0D108BD9-81ED-4DB2-BD59-A6C34878D82A}">
+                    <a16:rowId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" val="1613855372"/>
+                  </a:ext>
+                </a:extLst>
+              </a:tr>
+            </a:tbl>
+          </a:graphicData>
+        </a:graphic>
+      </p:graphicFrame>
+      <p:cxnSp>
+        <p:nvCxnSpPr>
+          <p:cNvPr id="94" name="Google Shape;94;p1"/>
+          <p:cNvCxnSpPr/>
+          <p:nvPr/>
+        </p:nvCxnSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="2310447" y="2956202"/>
+            <a:ext cx="7571100" cy="0"/>
+          </a:xfrm>
+          <a:prstGeom prst="straightConnector1">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:ln>
+            <a:headEnd type="none" w="med" len="med"/>
+            <a:tailEnd type="none" w="med" len="med"/>
+          </a:ln>
+        </p:spPr>
+        <p:style>
+          <a:lnRef idx="2">
+            <a:schemeClr val="dk1"/>
+          </a:lnRef>
+          <a:fillRef idx="0">
+            <a:schemeClr val="dk1"/>
+          </a:fillRef>
+          <a:effectRef idx="1">
+            <a:schemeClr val="dk1"/>
+          </a:effectRef>
+          <a:fontRef idx="minor">
+            <a:schemeClr val="tx1"/>
+          </a:fontRef>
+        </p:style>
+      </p:cxnSp>
+      <p:pic>
+        <p:nvPicPr>
+          <p:cNvPr id="1026" name="Picture 2" descr="차세대융합기술연구원, 반도체 부품 국산화 위한 기술 실증 지원사업 참여 기업 모집 &gt; 뉴스 | CIOCISO">
+            <a:extLst>
+              <a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}">
+                <a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{88F6F64B-B445-0E07-4C6D-0A33DC648379}"/>
+              </a:ext>
+            </a:extLst>
+          </p:cNvPr>
+          <p:cNvPicPr>
+            <a:picLocks noChangeAspect="1" noChangeArrowheads="1"/>
+          </p:cNvPicPr>
+          <p:nvPr/>
+        </p:nvPicPr>
+        <p:blipFill rotWithShape="1">
+          <a:blip r:embed="rId4">
+            <a:extLst>
+              <a:ext uri="{28A0092B-C50C-407E-A947-70E740481C1C}">
+                <a14:useLocalDpi xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main" val="0"/>
+              </a:ext>
+            </a:extLst>
+          </a:blip>
+          <a:srcRect t="32334" b="35256"/>
+          <a:stretch>
+            <a:fillRect/>
+          </a:stretch>
+        </p:blipFill>
+        <p:spPr bwMode="auto">
+          <a:xfrm>
+            <a:off x="9298782" y="6434300"/>
+            <a:ext cx="1555879" cy="335564"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:extLst>
+            <a:ext uri="{909E8E84-426E-40DD-AFC4-6F175D3DCCD1}">
+              <a14:hiddenFill xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main">
+                <a:solidFill>
+                  <a:srgbClr val="FFFFFF"/>
+                </a:solidFill>
+              </a14:hiddenFill>
+            </a:ext>
+          </a:extLst>
+        </p:spPr>
+      </p:pic>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="2" name="Google Shape;88;p1">
+            <a:extLst>
+              <a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}">
+                <a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{6EC716A2-5020-43D4-0492-05DB61857621}"/>
+              </a:ext>
+            </a:extLst>
+          </p:cNvPr>
+          <p:cNvSpPr txBox="1"/>
+          <p:nvPr/>
+        </p:nvSpPr>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="4645453" y="3065537"/>
+            <a:ext cx="2901085" cy="587813"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+          <a:noFill/>
+          <a:ln>
+            <a:noFill/>
+          </a:ln>
+        </p:spPr>
+        <p:txBody>
+          <a:bodyPr spcFirstLastPara="1" wrap="square" lIns="91425" tIns="45700" rIns="91425" bIns="45700" anchor="t" anchorCtr="0">
+            <a:spAutoFit/>
+          </a:bodyPr>
+          <a:lstStyle/>
+          <a:p>
+            <a:pPr marL="0" marR="0" lvl="0" indent="0" algn="ctr" rtl="0">
+              <a:lnSpc>
+                <a:spcPct val="115000"/>
+              </a:lnSpc>
+              <a:spcBef>
+                <a:spcPts val="0"/>
+              </a:spcBef>
+              <a:spcAft>
+                <a:spcPts val="0"/>
+              </a:spcAft>
+              <a:buNone/>
+            </a:pPr>
+            <a:r>
+              <a:rPr lang="ko-KR" altLang="en-US" sz="2800" b="0" i="0" dirty="0">
+                <a:solidFill>
+                  <a:srgbClr val="202124"/>
+                </a:solidFill>
+                <a:effectLst/>
+                <a:latin typeface="Malgun Gothic" panose="020B0503020000020004" pitchFamily="50" charset="-127"/>
+                <a:ea typeface="Malgun Gothic" panose="020B0503020000020004" pitchFamily="50" charset="-127"/>
+              </a:rPr>
+              <a:t>예선 기획서</a:t>
+            </a:r>
+            <a:endParaRPr lang="en-US" altLang="ko-KR" sz="2800" b="0" i="0" dirty="0">
+              <a:solidFill>
+                <a:srgbClr val="202124"/>
+              </a:solidFill>
+              <a:effectLst/>
+              <a:latin typeface="Malgun Gothic" panose="020B0503020000020004" pitchFamily="50" charset="-127"/>
+              <a:ea typeface="Malgun Gothic" panose="020B0503020000020004" pitchFamily="50" charset="-127"/>
+            </a:endParaRPr>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+    </p:spTree>
+  </p:cSld>
+  <p:clrMapOvr>
+    <a:masterClrMapping/>
+  </p:clrMapOvr>
+</p:sld>
