@@ -66,6 +66,11 @@
 - P3 원인 분석 (SHAP)
 - P4 조치 가이드 (위반 센서)
 
+**Real Data Verified** — UCI SECOM 실데이터 1567×590으로 학습·검증 완료
+(상세: docs/validation/real_vs_dummy_report.md)
+
+사이드바 데이터 소스 배지(🟢 real / 🟡 dummy)로 시연 중 데이터 모드를 실시간 가시화
+
 **백업 시나리오**: Streamlit 실행 실패 시 이 슬라이드만으로 시연 대체
 
 ---

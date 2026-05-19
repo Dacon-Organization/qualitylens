@@ -99,9 +99,31 @@ python scripts/03_shap.py
 streamlit run app/app.py
 ```
 
-### UCI SECOM 데이터 받기
+### UCI SECOM 실데이터
 
-`data/raw/secom.data`, `data/raw/secom_labels.data` 를 [UCI 저장소](https://archive.ics.uci.edu/dataset/179/secom)에서 받아 배치. 없어도 더미 데이터로 파이프라인 전체가 동작합니다.
+본 프로젝트는 **UCI SECOM 실데이터 1567행 590피처** 로 학습·검증을 완료했습니다.
+원본 데이터는 `data/raw/secom.data`, `secom_labels.data` 로 git에 직접 포함되어
+본선장 오프라인 환경에서도 즉시 사용 가능합니다. 라이선스·인용은
+[data/raw/LICENSE.md](data/raw/LICENSE.md) 참조.
+
+더미 모드는 폴백 전용입니다. 명시적으로 `--source dummy` 또는 `DEMO_MODE=dummy`
+환경변수로만 활성화됩니다.
+
+### 검증 산출물
+
+- [real vs dummy 비교 보고서](docs/validation/real_vs_dummy_report.md) — 모델 성능 6개 지표 비교
+- [단계별 HTML 보고서 인덱스](docs/reports/index.html) — T1·T2·T3·비교·Playwright 5종
+- [Playwright E2E 시나리오](tests/e2e/playwright_scenarios.md) — 5페이지×2모드 + 골든 패스
+
+### 실행 (실데이터)
+
+```powershell
+python scripts/01_preprocess.py --source real
+python scripts/02_train.py --source real
+python scripts/03_shap.py --source real
+python scripts/04_compare_real_vs_dummy.py
+$env:DEMO_MODE = "real"; streamlit run app/app.py
+```
 
 ## 권장 진행 순서 (예선용 PPT)
 
