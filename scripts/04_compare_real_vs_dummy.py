@@ -266,4 +266,37 @@ md_path = DOCS_DIR / "real_vs_dummy_report.md"
 md_path.write_text(md, encoding="utf-8")
 print(f"마크다운 보고서 → {md_path}")
 print(f"차트 → {dist_png}, {curves_png}")
+
+# %% [markdown]
+# ## 10. HTML 보고서 출력 (P-A G3)
+
+from app.lib.report_render import write as write_report
+
+dist_rel = dist_png.relative_to(ROOT).as_posix()
+curves_rel = curves_png.relative_to(ROOT).as_posix()
+
+_sections = [
+    {"title": "1. 데이터 비교", "body_html": data_table.to_html(index=False, float_format="%.4f")},
+    {"title": "2. 분포 비교 (상위 5개 SHAP 피처)", "body_html": f'<img src="../../{dist_rel}" alt="distribution">'},
+    {"title": "3. 모델 성능", "body_html": perf_table.to_html(index=False, float_format="%.4f")},
+    {"title": "4. ROC · PR 곡선", "body_html": f'<img src="../../{curves_rel}" alt="roc_pr">'},
+    {
+        "title": "5. SHAP Top 10 겹침",
+        "body_html": (
+            f"<p>겹침 {len(overlap)}/10</p>"
+            f"<p>공통: {sorted(overlap) if overlap else '(없음)'}</p>"
+            f"<p>real만: {sorted(only_real) if only_real else '(없음)'}</p>"
+            f"<p>dummy만: {sorted(only_dummy) if only_dummy else '(없음)'}</p>"
+        ),
+    },
+    {
+        "title": "6. 결론 요약",
+        "body_html": (
+            f"<p>실데이터 ROC-AUC = {real_roc:.3f}, 더미 = {dummy_roc:.3f} (Δ {diff:+.3f})</p>"
+            f"<p>SHAP Top 10 겹침: {overlap_pct:.0f}%</p>"
+        ),
+    },
+]
+write_report("compare", source="real", sections=_sections)
+
 print("\n=== T4 비교 보고서 완료 ===")

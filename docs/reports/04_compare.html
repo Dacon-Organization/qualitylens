@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>QualityLens · 04. real vs dummy 비교 (real)</title>
+  <script src="../../assets/vendor/plotly.min.js"></script>
+  <style>
+    
+    body, html {
+        font-family: "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    }
+    
+    body { max-width: 1080px; margin: 32px auto; padding: 0 24px; color: #1f2328; }
+    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #d0d7de; padding-bottom: 12px; }
+    h1 { margin: 0; font-size: 22px; }
+    .badge { background: #1e7c3a; color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; }
+    .meta { color: #656d76; font-size: 13px; }
+    .section { margin: 28px 0; }
+    .section h2 { font-size: 18px; border-bottom: 1px solid #eaeef2; padding-bottom: 6px; }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    th, td { border: 1px solid #d0d7de; padding: 6px 10px; text-align: left; }
+    th { background: #f6f8fa; }
+    img { max-width: 100%; border: 1px solid #eaeef2; border-radius: 4px; }
+    footer { margin-top: 48px; padding-top: 12px; border-top: 1px solid #d0d7de; font-size: 12px; color: #656d76; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>04. real vs dummy 비교 (real)</h1>
+      <div class="meta">생성: 2026-05-19 17:46 KST</div>
+    </div>
+    <span class="badge">🟢 real (UCI SECOM)</span>
+  </header>
+  <div class="section"><h2>1. 데이터 비교</h2><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>source</th>
+      <th>rows</th>
+      <th>features</th>
+      <th>missing_rate</th>
+      <th>fail_rate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>real</td>
+      <td>314</td>
+      <td>248</td>
+      <td>0.0000</td>
+      <td>0.0669</td>
+    </tr>
+    <tr>
+      <td>dummy</td>
+      <td>314</td>
+      <td>591</td>
+      <td>0.0000</td>
+      <td>0.0669</td>
+    </tr>
+  </tbody>
+</table></div>
+<div class="section"><h2>2. 분포 비교 (상위 5개 SHAP 피처)</h2><img src="../../assets/charts/validation/distribution_top5.png" alt="distribution"></div>
+<div class="section"><h2>3. 모델 성능</h2><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>source</th>
+      <th>roc_auc</th>
+      <th>pr_auc</th>
+      <th>mcc_default</th>
+      <th>mcc_opt</th>
+      <th>f1_opt</th>
+      <th>best_threshold</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>real</td>
+      <td>0.7396</td>
+      <td>0.1813</td>
+      <td>0.1388</td>
+      <td>0.2629</td>
+      <td>0.3000</td>
+      <td>0.0311</td>
+    </tr>
+    <tr>
+      <td>dummy</td>
+      <td>0.9818</td>
+      <td>0.8229</td>
+      <td>0.6834</td>
+      <td>0.6302</td>
+      <td>0.6087</td>
+      <td>0.0308</td>
+    </tr>
+  </tbody>
+</table></div>
+<div class="section"><h2>4. ROC · PR 곡선</h2><img src="../../assets/charts/validation/roc_pr_curves.png" alt="roc_pr"></div>
+<div class="section"><h2>5. SHAP Top 10 겹침</h2><p>겹침 0/10</p><p>공통: (없음)</p><p>real만: ['sensor_033', 'sensor_059', 'sensor_129', 'sensor_197', 'sensor_205', 'sensor_213', 'sensor_419', 'sensor_486', 'sensor_500', 'sensor_511']</p><p>dummy만: ['sensor_003', 'sensor_017', 'sensor_042', 'sensor_056', 'sensor_140', 'sensor_146', 'sensor_184', 'sensor_308', 'sensor_488', 'sensor_533']</p></div>
+<div class="section"><h2>6. 결론 요약</h2><p>실데이터 ROC-AUC = 0.740, 더미 = 0.982 (Δ -0.242)</p><p>SHAP Top 10 겹침: 0%</p></div>
+  <footer>
+    QualityLens · 2026 스마트 공장 운영 시스템 MVP 해커톤 · 본선 발표 부록
+    · <a href="index.html">← 인덱스</a>
+  </footer>
+</body>
+</html>

@@ -237,4 +237,49 @@ print(f"Model Card → {MODEL_DIR / f'model_card{SUFFIX}.md'}")
 
 print("\n=== T2 완료 ===")
 print(f"운영 threshold = {best_threshold:.4f}")
+
+# %% [markdown]
+# ## 10. HTML 보고서 출력 (P-A G3)
+
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from app.lib.report_render import write as write_report, embed_plotly
+from app.lib.fonts import plotly_template_with_korean
+import plotly.graph_objects as go
+from sklearn.metrics import precision_recall_curve as _prc
+
+fig_roc = go.Figure()
+fig_roc.add_trace(go.Scatter(x=fpr, y=tpr, mode="lines", name="ROC"))
+fig_roc.add_trace(go.Scatter(x=[0, 1], y=[0, 1], mode="lines", line={"dash": "dash"}, name="기준선"))
+fig_roc.update_layout(title_text="ROC 곡선", xaxis_title="FPR", yaxis_title="TPR", **plotly_template_with_korean())
+
+prec, rec, _ = _prc(y_test, test_proba)
+fig_pr = go.Figure()
+fig_pr.add_trace(go.Scatter(x=rec, y=prec, mode="lines", name="PR"))
+fig_pr.update_layout(title_text="Precision-Recall 곡선", xaxis_title="Recall", yaxis_title="Precision", **plotly_template_with_korean())
+
+_sections = [
+    {
+        "title": "1. 학습 환경",
+        "body_html": (
+            f"<table>"
+            f"<tr><th>항목</th><th>값</th></tr>"
+            f"<tr><td>소스</td><td>{SOURCE}</td></tr>"
+            f"<tr><td>K-Fold</td><td>{N_SPLITS}</td></tr>"
+            f"<tr><td>scale_pos_weight</td><td>{pos_weight:.2f}</td></tr>"
+            f"<tr><td>CV MCC mean ± std</td><td>{np.mean(fold_mccs):.4f} ± {np.std(fold_mccs):.4f}</td></tr>"
+            f"<tr><td>Test PR-AUC</td><td>{test_pr_auc:.4f}</td></tr>"
+            f"<tr><td>최적 threshold (Youden's J)</td><td>{best_threshold:.4f}</td></tr>"
+            f"<tr><td>Test MCC @ 최적</td><td>{test_mcc_opt:.4f}</td></tr>"
+            f"</table>"
+        ),
+    },
+    {"title": "2. ROC 곡선", "body_html": embed_plotly(fig_roc, "roc_chart")},
+    {"title": "3. Precision-Recall 곡선", "body_html": embed_plotly(fig_pr, "pr_chart")},
+    {
+        "title": "4. Threshold Table (PASS mean ± 2σ, 상위 10)",
+        "body_html": threshold_table.head(10).to_html(index=False, float_format="%.4f"),
+    },
+]
+write_report("training", source=SOURCE, sections=_sections)
 print("다음: scripts/03_shap.py")
