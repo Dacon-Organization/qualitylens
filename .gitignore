@@ -2,20 +2,31 @@
 data/raw/*
 !data/raw/.gitkeep
 !data/raw/README.md
+!data/raw/LICENSE.md
+!data/raw/secom.data
+!data/raw/secom_labels.data
 data/processed/*
 !data/processed/.gitkeep
-!data/processed/demo_sample.pkl
-!data/processed/demo_result.csv
-!data/processed/shap_demo.png
+!data/processed/demo_sample_real.pkl
+!data/processed/demo_sample_dummy.pkl
+!data/processed/demo_result_real.csv
+!data/processed/demo_result_dummy.csv
+!data/processed/shap_demo_real.png
+!data/processed/shap_demo_dummy.png
 
 # Models — 직렬화 모델은 별도 관리
 models/*.joblib
 models/*.pkl
 !models/.gitkeep
 !models/README.md
-!models/threshold_table.csv
-!models/shap_top20.csv
-!models/model_card.md
+!models/threshold_table_real.csv
+!models/threshold_table_dummy.csv
+!models/shap_top20_real.csv
+!models/shap_top20_dummy.csv
+!models/shap_group_real.csv
+!models/shap_group_dummy.csv
+!models/model_card_real.md
+!models/model_card_dummy.md
 
 # Python
 __pycache__/
