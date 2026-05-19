@@ -28,6 +28,10 @@ import numpy as np
 import pandas as pd
 import shap
 
+from _i18n import setup_korean_font
+
+setup_korean_font()  # 한글 라벨 깨짐 방지 (Windows/macOS/Linux 자동 감지)
+
 ROOT = Path(__file__).resolve().parent.parent
 PROC_DIR = ROOT / "data" / "processed"
 MODEL_DIR = ROOT / "models"
