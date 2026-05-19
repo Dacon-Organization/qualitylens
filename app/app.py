@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import streamlit as st
 
+from lib.data_loader import sidebar_badge
 from lib.demo import demo_sidebar
 from lib.load import (
     load_demo_result,
@@ -27,6 +28,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+sidebar_badge()
 demo_mode = demo_sidebar()
 
 st.title("🏭 QualityLens")

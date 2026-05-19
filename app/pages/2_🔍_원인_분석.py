@@ -16,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import pandas as pd  # noqa: E402
 import streamlit as st  # noqa: E402
 
+from lib.data_loader import sidebar_badge  # noqa: E402
 from lib.demo import demo_sidebar  # noqa: E402
 from lib.load import (  # noqa: E402
     load_demo_sample,
@@ -32,6 +33,7 @@ from lib.viz import (  # noqa: E402
 )
 
 st.set_page_config(page_title="P3 — 원인 분석", page_icon="🔍", layout="wide")
+sidebar_badge()
 demo_mode = demo_sidebar()
 
 st.title("🔍 P3 — 원인 분석")

@@ -17,6 +17,7 @@ CLI::
 
 from __future__ import annotations
 
+import argparse
 from pathlib import Path
 
 import joblib
@@ -32,6 +33,22 @@ from _i18n import setup_korean_font
 
 setup_korean_font()  # 한글 라벨 깨짐 방지 (Windows/macOS/Linux 자동 감지)
 
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="T3 SHAP 사전 계산")
+    parser.add_argument(
+        "--source",
+        choices=["real", "dummy"],
+        default="real",
+        help="real: data/raw 의 UCI 원본 사용 / dummy: 합성 더미 생성",
+    )
+    return parser.parse_args()
+
+
+ARGS = parse_args() if __name__ == "__main__" else argparse.Namespace(source="real")
+SOURCE = ARGS.source  # "real" or "dummy"
+SUFFIX = f"_{SOURCE}"  # "_real" or "_dummy"
+
 ROOT = Path(__file__).resolve().parent.parent
 PROC_DIR = ROOT / "data" / "processed"
 MODEL_DIR = ROOT / "models"
@@ -40,18 +57,18 @@ MODEL_DIR = ROOT / "models"
 # ## 1. 모델·데이터 로드
 
 
-model = joblib.load(MODEL_DIR / "xgb_secom.joblib")
-X_test = pd.read_pickle(PROC_DIR / "secom_X_test.pkl")
-demo_sample = pd.read_pickle(PROC_DIR / "demo_sample.pkl")
-print(f"모델 로드 / test {X_test.shape} / demo {demo_sample.shape}")
+model = joblib.load(MODEL_DIR / f"xgb_secom{SUFFIX}.joblib")
+X_test = pd.read_pickle(PROC_DIR / f"secom_X_test{SUFFIX}.pkl")
+demo_sample = pd.read_pickle(PROC_DIR / f"demo_sample{SUFFIX}.pkl")
+print(f"[{SOURCE}] 모델 로드 / test {X_test.shape} / demo {demo_sample.shape}")
 
 # %% [markdown]
 # ## 2. TreeExplainer 생성
 
 
 explainer = shap.TreeExplainer(model)
-joblib.dump(explainer, MODEL_DIR / "shap_explainer.pkl")
-print(f"Explainer 저장 → {MODEL_DIR / 'shap_explainer.pkl'}")
+joblib.dump(explainer, MODEL_DIR / f"shap_explainer{SUFFIX}.pkl")
+print(f"Explainer 저장 → {MODEL_DIR / f'shap_explainer{SUFFIX}.pkl'}")
 
 # %% [markdown]
 # ## 3. Test set 전체 SHAP value 사전 계산
@@ -62,7 +79,7 @@ shap_values_test = explainer.shap_values(X_test)
 shap_arr = (
     shap_values_test if isinstance(shap_values_test, np.ndarray) else shap_values_test[1]
 )
-joblib.dump(shap_arr, MODEL_DIR / "shap_values_test.pkl")
+joblib.dump(shap_arr, MODEL_DIR / f"shap_values_test{SUFFIX}.pkl")
 print(f"shap_values_test 저장 → shape {shap_arr.shape}")
 
 # %% [markdown]
@@ -76,7 +93,7 @@ top20 = (
     .head(20)
     .reset_index(drop=True)
 )
-top20.to_csv(MODEL_DIR / "shap_top20.csv", index=False)
+top20.to_csv(MODEL_DIR / f"shap_top20{SUFFIX}.csv", index=False)
 print("\n상위 20 피처:")
 print(top20.to_string())
 
@@ -91,7 +108,7 @@ demo_shap_df = pd.DataFrame(
     columns=demo_sample.columns,
     index=demo_sample.index,
 )
-joblib.dump(demo_shap_df, MODEL_DIR / "shap_per_sample.pkl")
+joblib.dump(demo_shap_df, MODEL_DIR / f"shap_per_sample{SUFFIX}.pkl")
 print(f"\n데모 SHAP 저장 → shape {demo_shap_df.shape}")
 
 # %% [markdown]
@@ -120,7 +137,7 @@ for sample_id in demo_sample.index:
         "shap": [float(shap_row[f]) for f in top_features],
         "final_logit": base_value + float(shap_row.sum()),
     }
-joblib.dump(waterfall_demo, MODEL_DIR / "shap_waterfall_demo.pkl")
+joblib.dump(waterfall_demo, MODEL_DIR / f"shap_waterfall_demo{SUFFIX}.pkl")
 print(
     f"Waterfall 사전 패키지 → base={base_value:.4f}, "
     f"samples={len(waterfall_demo['samples'])}"
@@ -136,9 +153,9 @@ ax.barh(top15["sensor"][::-1], top15["mean_abs_shap"][::-1], color="#58a6ff")
 ax.set_xlabel("mean |SHAP|")
 ax.set_title("QualityLens — 상위 15 기여 센서")
 plt.tight_layout()
-fig.savefig(PROC_DIR / "shap_demo.png", dpi=120)
+fig.savefig(PROC_DIR / f"shap_demo{SUFFIX}.png", dpi=120)
 plt.close(fig)
-print(f"백업 이미지 → {PROC_DIR / 'shap_demo.png'}")
+print(f"백업 이미지 → {PROC_DIR / f'shap_demo{SUFFIX}.png'}")
 
 # %% [markdown]
 # ## 7. 센서 그룹별 평균 기여도
@@ -161,10 +178,10 @@ group_contrib = (
     .mean()
     .sort_values("mean_abs_shap", ascending=False)
 )
-group_contrib.to_csv(MODEL_DIR / "shap_group.csv", index=False)
+group_contrib.to_csv(MODEL_DIR / f"shap_group{SUFFIX}.csv", index=False)
 print("\n그룹별 평균 기여도:")
 print(group_contrib.to_string(index=False))
 
-print("\n=== T3 완료 ===")
+print(f"\n=== T3 완료 ({SOURCE}) ===")
 print("모든 SHAP 산출물이 사전 계산되어 본선장 재계산 불필요.")
 print("다음: app/ (T4 Streamlit UI)")

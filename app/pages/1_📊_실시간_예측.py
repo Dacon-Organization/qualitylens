@@ -18,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import streamlit as st  # noqa: E402
 
 from lib import stream  # noqa: E402
+from lib.data_loader import sidebar_badge  # noqa: E402
 from lib.demo import demo_sidebar  # noqa: E402
 from lib.load import (  # noqa: E402
     load_demo_result,
@@ -34,6 +35,7 @@ from lib.viz import (  # noqa: E402
 )
 
 st.set_page_config(page_title="P2 — 실시간 예측", page_icon="📊", layout="wide")
+sidebar_badge()
 demo_mode = demo_sidebar()
 stream.init_state()
 
