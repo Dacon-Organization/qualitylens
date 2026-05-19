@@ -111,6 +111,24 @@ def load_shap_per_sample() -> pd.DataFrame | None:
     return joblib.load(path)
 
 
+@st.cache_data
+def load_shap_waterfall_demo() -> dict | None:
+    """S-2 사전 패키지 — base_value + 샘플별 top 10 features/values/shap."""
+    path = MODEL_DIR / "shap_waterfall_demo.pkl"
+    if not path.exists():
+        return None
+    return joblib.load(path)
+
+
+@st.cache_data
+def load_shap_values_test():
+    """test set 전체 SHAP values (numpy array) — Dependence Plot용."""
+    path = MODEL_DIR / "shap_values_test.pkl"
+    if not path.exists():
+        return None
+    return joblib.load(path)
+
+
 def _dummy_test() -> tuple[pd.DataFrame, pd.Series]:
     rng = np.random.default_rng(42)
     X = pd.DataFrame(

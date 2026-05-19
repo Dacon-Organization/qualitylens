@@ -95,6 +95,38 @@ joblib.dump(demo_shap_df, MODEL_DIR / "shap_per_sample.pkl")
 print(f"\n데모 SHAP 저장 → shape {demo_shap_df.shape}")
 
 # %% [markdown]
+# ## 5.5 데모 Waterfall 사전 패키지 (S-2)
+# base_value + sample value + 누적 step 을 미리 직렬화 → 본선장 재계산 X
+
+
+base_value = float(
+    explainer.expected_value
+    if not isinstance(explainer.expected_value, (list, tuple, np.ndarray))
+    else np.asarray(explainer.expected_value).ravel()[0]
+)
+
+waterfall_demo = {
+    "base_value": base_value,
+    "samples": {},
+}
+for sample_id in demo_sample.index:
+    sample_row = demo_sample.loc[sample_id]
+    shap_row = demo_shap_df.loc[sample_id]
+    # 절댓값 상위 10 선정 (양·음 둘 다 보존)
+    top_features = shap_row.abs().sort_values(ascending=False).head(10).index.tolist()
+    waterfall_demo["samples"][int(sample_id)] = {
+        "features": top_features,
+        "values": [float(sample_row[f]) for f in top_features],
+        "shap": [float(shap_row[f]) for f in top_features],
+        "final_logit": base_value + float(shap_row.sum()),
+    }
+joblib.dump(waterfall_demo, MODEL_DIR / "shap_waterfall_demo.pkl")
+print(
+    f"Waterfall 사전 패키지 → base={base_value:.4f}, "
+    f"samples={len(waterfall_demo['samples'])}"
+)
+
+# %% [markdown]
 # ## 6. 발표용 백업 이미지 — top 15 bar plot
 
 
