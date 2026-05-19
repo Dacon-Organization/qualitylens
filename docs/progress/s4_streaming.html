@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"/><title>S-4 · 스트리밍 시뮬레이션</title>
+<style>
+:root{--bg:#0d1117;--panel:#161b22;--p2:#1f2630;--bd:#30363d;--t:#e6edf3;--td:#8b949e;
+--opus:#d2a8ff;--green:#3fb950;--warn:#d29922;--red:#f85149;--blue:#58a6ff;}
+*{box-sizing:border-box}body{margin:0;padding:24px;background:var(--bg);color:var(--t);
+font:14px/1.55 -apple-system,"Segoe UI","Malgun Gothic",sans-serif}
+h1{margin:0 0 4px;font-size:24px}.sub{color:var(--td);margin-bottom:20px}
+.meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.chip{padding:4px 10px;border-radius:12px;font-size:12px;font-weight:600;background:var(--p2);border:1px solid var(--bd);color:var(--td)}
+.chip.model{background:rgba(210,168,255,.16);color:var(--opus);border-color:transparent}
+.panel{background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:18px 22px;margin-bottom:16px}
+.panel h2{margin:0 0 10px;font-size:17px}
+.ticks{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin-top:10px}
+.tick{padding:10px 4px;border-radius:6px;text-align:center;font-size:11px;font-weight:700;border:1px solid var(--bd)}
+.tick.norm{background:rgba(63,185,80,.15);color:var(--green)}
+.tick.warn{background:rgba(210,153,34,.15);color:var(--warn)}
+.tick.dang{background:rgba(248,81,73,.18);color:var(--red)}
+.tick small{display:block;font-weight:400;color:var(--td);margin-top:2px}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--bd)}
+th{background:var(--p2);color:var(--td);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+code{background:var(--p2);padding:2px 6px;border-radius:4px;font-size:12px;color:#7ee787}
+pre{background:var(--p2);border:1px solid var(--bd);padding:14px;border-radius:8px;overflow:auto;font-size:12px}
+ul{margin:6px 0 0 18px}li{margin:4px 0}.done{color:var(--green)}.todo{color:var(--warn)}
+.banner{background:linear-gradient(135deg,rgba(63,185,80,.10),rgba(88,166,255,.10));border:1px solid var(--green);border-radius:12px;padding:16px 20px;margin-top:18px}
+.banner h3{margin:0 0 4px;color:var(--green);font-size:16px}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+</style></head><body>
+
+<h1>S-4 · 스트리밍 시뮬레이션</h1>
+<div class="sub">기획서 데모 시나리오 — "정상 → 이상 주입 → 복귀" 자동 재생</div>
+
+<div class="meta">
+  <span class="chip model">Opus · Streamlit rerun 패턴 + state 머신</span>
+  <span class="chip">브랜치 <code>feat/s4-streaming</code></span>
+  <span class="chip">D-3</span>
+</div>
+
+<div class="panel">
+  <h2>10-tick 시퀀스 (1초 간격)</h2>
+  <div class="ticks">
+    <div class="tick norm">t0<small>정상</small></div>
+    <div class="tick norm">t1<small>정상</small></div>
+    <div class="tick norm">t2<small>정상</small></div>
+    <div class="tick norm">t3<small>정상</small></div>
+    <div class="tick dang">t4<small>🚨 이상</small></div>
+    <div class="tick dang">t5<small>🚨 이상</small></div>
+    <div class="tick warn">t6<small>⚠ 복귀 중</small></div>
+    <div class="tick warn">t7<small>⚠ 복귀 중</small></div>
+    <div class="tick norm">t8<small>정상</small></div>
+    <div class="tick norm">t9<small>정상</small></div>
+  </div>
+  <p style="margin-top:14px;color:var(--td)">기획서 Slide 7 "정상 스트리밍 → 이상 주입 → P1 경고 → P2 불량 확률 급등 → P3 원인 → P4 조치 → P1 정상 복귀" 페르소나 시나리오와 정확히 정렬.</p>
+</div>
+
+<div class="panel">
+  <h2>변경 산출물</h2>
+  <table>
+    <thead><tr><th>파일</th><th>변경</th></tr></thead>
+    <tbody>
+      <tr><td><code>app/lib/stream.py</code></td><td><strong>신규</strong> — <code>StreamFrame</code> dataclass + <code>build_demo_sequence()</code> + state 머신 (init/start/pause/reset/advance)</td></tr>
+      <tr><td><code>app/pages/1_📊_실시간_예측.py</code> (P2)</td><td>📌 단일 샘플 / 🎬 스트리밍 라디오 + ▶ ⏸ 🔁 컨트롤 + progress bar + 자동 rerun 루프</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <h2>Streamlit rerun 패턴 — 핵심 구조</h2>
+<pre>if stream.is_running():
+    time.sleep(1.0)
+    if stream.advance():
+        st.rerun()    # 다음 tick으로 (state 보존)
+    else:
+        st.success("시뮬레이션 완료")</pre>
+  <p style="color:var(--td);margin-top:8px"><code>session_state</code>에 인덱스·시퀀스·실행 플래그를 보존 → 페이지 이동·새로고침에도 진행률 유지.</p>
+</div>
+
+<div class="panel">
+  <h2>체크리스트</h2>
+  <ul>
+    <li class="done">✓ <code>stream.py</code> 모듈 — StreamFrame + state 머신</li>
+    <li class="done">✓ <code>build_demo_sequence()</code> — 정상 4 / FAIL 2 / 복귀 4 자동 구성</li>
+    <li class="done">✓ P2 모드 라디오 (단일 / 스트리밍)</li>
+    <li class="done">✓ ▶ ⏸ 🔁 컨트롤 + progress bar</li>
+    <li class="done">✓ 자동 rerun 루프 + 종료 안내</li>
+    <li class="todo">⚠ Streamlit Cloud의 5분 idle timeout — 시연 시작 직전에 페이지 열기</li>
+  </ul>
+</div>
+
+<div class="banner">
+  <h3>🎉 Tier S 4개 작업 모두 완료</h3>
+  <p style="margin:0;color:var(--td)">기획서 평가 직접 영향 갭(G1~G4)을 모두 해소. 본선 D-Day 시연 준비 완료 — 이제 Tier A(식각 온도 라벨링·KPI 노출·주간 리포트·시연 영상)로 발표 완성도 폴리시.</p>
+</div>
+
+<div class="panel">
+  <h2>발표 시 연결</h2>
+  <p>본선 5분 데모의 뼈대 — P2에서 🎬 시작 한 번이면 정상→이상→복귀가 자동 재생. 그 사이 P3→P4로 화면 전환하며 "예측 → 설명 → 조치 → 복귀" 순환 루프를 한 호흡으로 보여줌. 즉흥 입력 없이 결정론.</p>
+</div>
+
+<div class="panel">
+  <h2>관련 문서</h2>
+  <ul>
+    <li><a href="INDEX.html">진행 인덱스</a></li>
+    <li><a href="s1_risk_tier.html">S-1</a> · <a href="s2_shap_waterfall.html">S-2</a> · <a href="s3_action_log.html">S-3</a></li>
+    <li><a href="../finals_polish_todo.md">finals_polish_todo.md</a> §1 Tier S-4</li>
+    <li><a href="../demo_script.md">demo_script.md</a> — 5분 발표 스크립트</li>
+  </ul>
+</div>
+
+</body></html>
