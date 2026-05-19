@@ -1,97 +1,83 @@
 # 2026 스마트 공장 운영 시스템 MVP 개발 해커톤
 
-## 대회 개요
+## 프로젝트 개요
 
 | 항목 | 내용 |
 |------|------|
-| **주최** | 차세대융합기술연구원 |
-| **운영** | 데이콘 |
-| **주제** | 스마트 공장 운영 시스템 MVP 개발 |
-| **일정** | 예선 접수 ~2026.05.13 10:00 / 본선 2026.05.22 (오프라인, 판교) |
-| **형태** | 팀 구성 1~5인, 예선(기획서) → 본선(당일 개발 해커톤) |
-| **상금** | 총 1,000만원 (대상 300, 최우수 200, 우수 100×2, 장려 50×2, 특별 50×2) |
+| 주제 | AI 기반 스마트 공장 운영 시스템 MVP 개발 |
+| 프로젝트명 | QualityLens |
+| 핵심 방향 | 공정 이상 예측, 원인 분석, 조치 가이드를 하나의 플랫폼으로 연결 |
+| 제출 기한 | 예선 ~ 2026.05.13(월) 10:00 |
+| 본선 | 2026.05.22(금) 오프라인 구현 및 발표 |
 
-## 선택 주제
+## 한 줄 소개
 
-**주제 2: 품질 이상 예측 및 불량률 개선 플랫폼**
+**QualityLens는 공정 센서 데이터를 기반으로 이상 징후를 미리 예측하고, 원인을 설명하고, 바로 실행할 조치까지 제안하는 AI 스마트 공장 운영 플랫폼입니다.**
 
-> 공정 데이터를 분석하여 품질 이상을 사전에 감지하고, 불량률을 줄이기 위한 AI 기반 모니터링 시스템
+## 핵심 문제 정의
 
-## 프로젝트: QualityLens
+- 제조 현장에서는 이상 징후를 늦게 발견하거나, 발견해도 원인을 바로 파악하지 못해 손실이 커집니다.
+- 단순 예측 모델만으로는 현장 의사결정에 바로 연결되기 어렵습니다.
+- 따라서 예측, 설명, 조치를 하나로 묶은 운영형 MVP가 필요합니다.
 
-**AI 기반 스마트 품질 예측·원인 분석 통합 플랫폼**
+## 핵심 해결 방식
 
-핵심 프레임워크: **Predict → Explain → Act**
+QualityLens는 `Predict → Explain → Act` 구조로 동작합니다.
 
-- **Predict**: XGBoost 분류 모델로 양품/불량 실시간 예측 (MCC 기반 최적화)
-- **Explain**: SHAP(TreeExplainer)으로 불량 원인을 공정 변수별 기여도로 분해
-- **Act**: SHAP 기여도 + 양품 통계 기준(Threshold) 결합 → 구체적 조치 가이드 제시
+- `Predict`: XGBoost로 공정 이상 여부를 예측합니다.
+- `Explain`: SHAP으로 어떤 센서와 공정 변수가 이상에 영향을 주었는지 설명합니다.
+- `Act`: Threshold Engine과 조치 가이드를 결합해 현장 작업자가 바로 실행할 수 있는 권고안을 제시합니다.
 
-### 타겟 사용자
+## 평가 기준 대응
 
-경기도 내 중소 전자부품 제조사의 QC 담당자 및 생산팀장
-→ 경기도 스마트공장 보급 확산 사업 취지와 정확히 부합
-
-### 기술 스택
-
-`Streamlit` | `XGBoost` | `SHAP` | `Plotly` | `Pandas` | `scikit-learn` | `imbalanced-learn`
-
-### 활용 데이터
-
-| 데이터셋 | 용도 | 규모 |
-|----------|------|------|
-| UCI SECOM | 주 데이터셋 (실제 반도체 제조 라인) | 1,567샘플 × 591센서, 불량 104건(6.6%) |
-| Kaggle Smart Manufacturing | 보조 (직관적 공정 파라미터 보강) | 온도/압력/진동/유량 |
-
-## 평가 기준 (예선 — 기획서)
-
-| 항목 | 배점 | 핵심 |
-|------|------|------|
-| 문제 정의 | 20점 | 제조 현장 문제의 구체성, 해결 필요성 |
-| AI 활용 계획 | 25점 | AI/데이터 기술의 적절성, 혁신성 |
-| 플랫폼 기획 | 20점 | 사용자 시나리오, UX 설계 완성도 |
-| MVP 구현 완성도 | 25점 | 기술 구현 가능성, 현실성 |
-| 발표 및 전달력 | 10점 | 논리적 구성, 전달 효과 |
-
-## 산출물
-
-- **예선**: 기획서 PDF (제공 양식 PPTX → PDF 변환)
-- **본선**: 당일 개발 MVP + 발표
-
-## 프로젝트 구조
-
-```
-smart-factory-hackathon/
-├── README.md                    ← 대회 개요 (이 파일)
-├── docs/                        ← 기획 문서, 발표 자료
-│   └── QualityLens_기획서.pptx
-├── skills/                      ← Skills.md 규칙 문서
-│   ├── data-pipeline/           ← Stage 1: 센서 데이터 → 전처리
-│   ├── modeling/                ← Stage 2: XGBoost 학습 → 예측 (Predict)
-│   ├── xai/                     ← Stage 3: SHAP 분석 → 조치 가이드 (Explain)
-│   ├── ui/                      ← Stage 4: Streamlit 대시보드 (Act)
-│   └── quality/                 ← Stage 5: 테스트 → 배포 → 발표
-├── src/                         ← 구현 코드
-├── data/                        ← 데이터셋
-└── assets/                      ← 이미지, 아이콘
-```
-
-## MVP 구현 범위 (5-Page Streamlit)
-
-| 페이지 | 기능 | 우선순위 |
-|--------|------|----------|
-| P1 종합 대시보드 | KPI 카드 + 알림 패널 + 불량률 추이 | 필수 |
-| P2 실시간 예측 | 센서 게이지 + 배치별 불량 확률 | 필수 |
-| P3 원인 분석 | SHAP Summary + Waterfall + Dependence | 필수 |
-| P4 조치 가이드 | 핵심 시나리오 데모 + 원클릭 수용 | 핵심 데모 |
-| P5 이력 관리 | 조치 이력 테이블 | 확장 |
-
-## 개발 일정 (예선 통과 후)
-
-| 기간 | 작업 |
+| 평가 항목 | 대응 포인트 |
 |------|------|
-| ~5/18 | 데이터 전처리 파이프라인 + XGBoost 학습·저장 |
-| ~5/19 | SHAP Explainer 사전 계산·캐싱 |
-| ~5/20 | Streamlit 페이지 골격 (레이아웃 + 네비게이션) |
-| ~5/21 | 시뮬레이터 데이터 세트 + Fail-Safe 영상 준비 |
-| 5/22 | **본선 당일**: 조립 + 연결 + 시각적 완성도 |
+| 문제 정의 | 이상 발견 지연과 원인 파악 지연으로 생기는 현장 손실을 구체적으로 정의 |
+| AI 활용 | XGBoost, SHAP, Threshold Engine을 결합해 AI가 실제 의사결정에 기여하도록 설계 |
+| 플랫폼 기획 | 예측, 설명, 조치가 이어지는 사용자 흐름과 데이터 흐름을 함께 구성 |
+| MVP 구현 완성도 | Streamlit 기반 5개 화면으로 실제 시연 가능한 범위를 정의 |
+| 발표/전달력 | 5분 내 설명 가능한 흐름과 데모 시나리오를 사전 설계 |
+
+## MVP 구성
+
+| 페이지 | 역할 | 상태 |
+|------|------|------|
+| P1 | 통합 대시보드 | 핵심 |
+| P2 | 실시간 예측 | 핵심 |
+| P3 | 원인 분석 | 핵심 |
+| P4 | 조치 가이드 | 핵심 |
+| P5 | 이력 조회 | 선택 |
+
+## 관련 문서
+
+- [프로젝트 Summary 초안](docs/project_summary.md)
+- [PPT 시각화 가이드](docs/ppt_visual_guide.md)
+- [본선 준비 Spec](docs/spec_finals_prep.md) ⭐ 본선 D-3 작성
+- [본선 준비 로드맵 HTML](docs/roadmap.html) ⭐ 진행 추적용
+
+### 스킬 카테고리
+
+| 카테고리 | 역할 |
+|------|------|
+| [data-pipeline](skills/data-pipeline/INDEX.md) | Stage 1 — 데이터 전처리 |
+| [modeling](skills/modeling/INDEX.md) | Stage 2 — XGBoost 학습/평가 |
+| [xai](skills/xai/INDEX.md) | Stage 3 — SHAP 원인 분석 |
+| [ui](skills/ui/INDEX.md) | Stage 4 — UI 구조 |
+| [quality](skills/quality/INDEX.md) | Stage 5 — 완성도/발표 전략 |
+| [codex-bridge](skills/codex-bridge/INDEX.md) ⭐ | 본선 — Claude↔Codex 라우팅 |
+| [streamlit-build](skills/streamlit-build/INDEX.md) ⭐ | 본선 — Streamlit 5페이지 구현 |
+| [demo-script](skills/demo-script/INDEX.md) ⭐ | 본선 — 5분 발표·시연 설계 |
+
+## 구현/제작 파일
+
+- `QualityLens_기획서.pptx`: 예선 제출용 발표 자료
+- `QualityLens_기획서.pdf`: 제출용 PDF
+- `build_pptx_v4.py`: PPT 자동 생성 스크립트
+- `diagrams/`: 아키텍처 및 흐름도 이미지
+
+## 권장 진행 순서
+
+1. `docs/project_summary.md`를 먼저 확정
+2. `docs/ppt_visual_guide.md` 기준으로 슬라이드 메시지 정리
+3. PPTX에 필요한 시각화만 추가
+4. PDF로 변환 후 제출

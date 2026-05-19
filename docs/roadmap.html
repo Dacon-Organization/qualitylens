@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>QualityLens — 본선 준비 로드맵</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --panel-2: #1f2630;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+    --accent: #58a6ff;
+    --accent-2: #7ee787;
+    --warn: #f0883e;
+    --danger: #ff7b72;
+    --opus: #d2a8ff;
+    --sonnet: #79c0ff;
+    --haiku: #56d364;
+    --codex: #ffa657;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
+    line-height: 1.55;
+    padding: 24px;
+  }
+  header.hero {
+    background: linear-gradient(135deg, #1f2630 0%, #0d1117 100%);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  header.hero h1 {
+    margin: 0 0 6px 0;
+    font-size: 28px;
+    letter-spacing: -0.5px;
+  }
+  header.hero .subtitle {
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+  .dday {
+    text-align: right;
+  }
+  .dday .label { color: var(--text-dim); font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; }
+  .dday .value {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--warn);
+    line-height: 1;
+    margin-top: 4px;
+  }
+  .dday .target { color: var(--text-dim); font-size: 13px; margin-top: 6px; }
+
+  section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+  }
+  section h2 {
+    margin: 0 0 6px 0;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  section h2::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 18px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+  section .hint { color: var(--text-dim); font-size: 13px; margin-bottom: 18px; }
+
+  .progress-bar {
+    height: 10px;
+    background: var(--panel-2);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 12px 0 18px;
+    border: 1px solid var(--border);
+  }
+  .progress-bar > span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    transition: width 0.4s ease;
+  }
+
+  .tracks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+  }
+  .track {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .track h3 { margin: 0 0 4px 0; font-size: 16px; }
+  .track .meta {
+    color: var(--text-dim);
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+  .track .model-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-right: 6px;
+    font-weight: 600;
+  }
+  .tag-opus   { background: rgba(210, 168, 255, 0.16); color: var(--opus); }
+  .tag-sonnet { background: rgba(121, 192, 255, 0.16); color: var(--sonnet); }
+  .tag-haiku  { background: rgba(86, 211, 100, 0.16); color: var(--haiku); }
+  .tag-codex  { background: rgba(255, 166, 87, 0.18); color: var(--codex); }
+
+  .task-list { list-style: none; padding: 0; margin: 10px 0 0 0; }
+  .task-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    border-top: 1px dashed var(--border);
+    font-size: 14px;
+  }
+  .task-list li:first-child { border-top: none; }
+  .task-list input[type="checkbox"] {
+    margin-top: 5px;
+    accent-color: var(--accent-2);
+    cursor: pointer;
+  }
+  .task-list label { flex: 1; cursor: pointer; }
+  .task-list label.done { color: var(--text-dim); text-decoration: line-through; }
+
+  .deps-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .deps-grid .node {
+    padding: 14px 10px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-align: center;
+    font-size: 13px;
+    position: relative;
+  }
+  .deps-grid .node strong { display: block; color: var(--accent); margin-bottom: 4px; font-size: 12px; }
+  .deps-arrow {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 18px;
+    margin: 8px 0;
+  }
+
+  table.routing {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 10px;
+  }
+  table.routing th, table.routing td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  table.routing th {
+    background: var(--panel-2);
+    color: var(--text-dim);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+  table.routing tr:hover td { background: var(--panel-2); }
+
+  .demo-timeline { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+  .demo-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 160px;
+    gap: 14px;
+    padding: 12px 14px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    align-items: center;
+  }
+  .demo-row .time { font-weight: 700; color: var(--accent-2); font-family: ui-monospace, monospace; }
+  .demo-row .topic { font-size: 14px; }
+  .demo-row .screen { color: var(--text-dim); font-size: 12px; text-align: right; }
+
+  .notes-area {
+    width: 100%;
+    min-height: 160px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    padding: 14px;
+    font-family: ui-monospace, "Consolas", monospace;
+    font-size: 13px;
+    resize: vertical;
+  }
+  .notes-area:focus { outline: 1px solid var(--accent); }
+  .notes-meta { color: var(--text-dim); font-size: 12px; margin-top: 8px; display: flex; justify-content: space-between; }
+  .notes-meta button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .notes-meta button:hover { color: var(--text); border-color: var(--accent); }
+
+  footer {
+    color: var(--text-dim);
+    font-size: 12px;
+    text-align: center;
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    margin-top: 24px;
+  }
+
+  @media (max-width: 720px) {
+    .deps-grid { grid-template-columns: repeat(2, 1fr); }
+    .demo-row { grid-template-columns: 60px 1fr; }
+    .demo-row .screen { grid-column: 1 / -1; text-align: left; }
+    .dday .value { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div>
+    <h1>QualityLens — 본선 준비 로드맵</h1>
+    <div class="subtitle">2026 스마트 공장 운영 시스템 MVP 해커톤 · Predict → Explain → Act</div>
+  </div>
+  <div class="dday">
+    <div class="label">본선 D-Day</div>
+    <div class="value" id="dday-value">D-?</div>
+    <div class="target" id="dday-target">2026-05-22 (금) 09:00 KST</div>
+  </div>
+</header>
+
+<section>
+  <h2>전체 진행률</h2>
+  <div class="hint">아래 트랙별 체크박스를 채우면 자동으로 합산됩니다. 상태는 브라우저에 저장됩니다.</div>
+  <div class="progress-bar"><span id="overall-progress" style="width:0%"></span></div>
+  <div id="overall-text" style="color: var(--text-dim); font-size: 13px;">0 / 0 완료</div>
+</section>
+
+<section>
+  <h2>사전 작업 5트랙 (D-3 ~ D-1)</h2>
+  <div class="hint">본선장 토큰 압박을 줄이기 위해 D-Day 이전에 끝내야 할 무거운 작업들. 각 트랙의 추천 모델과 Codex 폴백 모델이 표시됩니다.</div>
+  <div class="tracks" id="tracks-root"></div>
+</section>
+
+<section>
+  <h2>의존성 다이어그램</h2>
+  <div class="hint">왼쪽부터 오른쪽으로 데이터가 흐릅니다. 앞 트랙이 끝나야 다음 트랙이 시작됩니다.</div>
+  <div class="deps-grid">
+    <div class="node"><strong>T1</strong>데이터 파이프라인</div>
+    <div class="node"><strong>T2</strong>모델 학습/캐싱</div>
+    <div class="node"><strong>T3</strong>SHAP 사전 계산</div>
+    <div class="node"><strong>T4</strong>Streamlit UI</div>
+    <div class="node"><strong>T5</strong>발표·데모</div>
+  </div>
+  <div class="deps-arrow">↓ T1 ─ T2 ─ T3 가 모두 끝나면 T4 통합 가능 → T5 데모 완성 ↓</div>
+</section>
+
+<section>
+  <h2>하이브리드 모델 라우팅 (Claude ↔ Codex)</h2>
+  <div class="hint">본선장에서 Claude 사용 불가 시 동일 작업 카테고리의 Codex 모델로 폴백. <strong>옷이 같으면 사람이 같다</strong> 원칙 — 동일한 프롬프트 템플릿을 유지합니다.</div>
+  <table class="routing">
+    <thead>
+      <tr>
+        <th>작업 복잡도</th>
+        <th>Claude (D-3 ~ D-1)</th>
+        <th>Codex 폴백 (D-Day)</th>
+        <th>대표 작업</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>높음</strong></td>
+        <td><span class="model-tag tag-opus">Opus 4.7</span></td>
+        <td><span class="model-tag tag-codex">GPT-5.5</span></td>
+        <td>알고리즘 설계, SHAP 해석, 평가지표 튜닝, 버그 근본 원인</td>
+      </tr>
+      <tr>
+        <td><strong>중간</strong></td>
+        <td><span class="model-tag tag-sonnet">Sonnet 4.6</span></td>
+        <td><span class="model-tag tag-codex">GPT-5.4</span></td>
+        <td>Streamlit 페이지 구현, 차트 스타일링, 데이터 매핑</td>
+      </tr>
+      <tr>
+        <td><strong>낮음</strong></td>
+        <td><span class="model-tag tag-haiku">Haiku 4.5</span></td>
+        <td><span class="model-tag tag-codex">GPT-5.4</span></td>
+        <td>파일 탐색, 변수명 grep, 포맷 확인, 오탈자 수정</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>본선장 D-Day 체크리스트</h2>
+  <div class="hint">현장 도착 직후 ~ 발표 직전까지의 환경 점검. Codex 호출은 최소화 — 이미 사전 작업으로 끝나 있어야 함.</div>
+  <ul class="task-list" id="dday-list"></ul>
+</section>
+
+<section>
+  <h2>5분 발표 시나리오</h2>
+  <div class="hint">분당 토픽과 전환할 화면. 슬라이드 + Streamlit 라이브 데모를 번갈아 사용.</div>
+  <div class="demo-timeline" id="demo-timeline"></div>
+</section>
+
+<section>
+  <h2>작업 노트 (체크포인트 로그)</h2>
+  <div class="hint">트랙별 작업 완료 시점에 어떤 결정을 내렸는지·어떤 결과를 얻었는지 기록. 발표·보고서에 그대로 인용 가능. 브라우저에 자동 저장.</div>
+  <textarea class="notes-area" id="notes" placeholder="예) 2026-05-19 21:00 — T2 모델 학습 완료. MCC 0.41, threshold=0.32 적용 시 recall 0.78. scale_pos_weight=14.07."></textarea>
+  <div class="notes-meta">
+    <span id="notes-saved-at">아직 저장된 변경 사항이 없습니다.</span>
+    <button onclick="exportNotes()">노트 다운로드(.md)</button>
+  </div>
+</section>
+
+<footer>
+  로컬 저장: localStorage · 외부 의존성 없음 · 본선장에서도 오프라인 동작
+</footer>
+
+<script>
+  // ===== Configuration =====
+  const FINAL_TARGET = new Date('2026-05-22T09:00:00+09:00');
+  const STORAGE_KEY = 'qualitylens-roadmap-v1';
+
+  const tracks = [
+    {
+      id: 'T1', title: '데이터 파이프라인',
+      model: 'sonnet', codex: 'GPT-5.4',
+      output: 'data/processed/secom_{train,test}.pkl',
+      tasks: [
+        'UCI SECOM 원본 다운로드 + data/raw 배치',
+        'sensor-profiling 결측률·분산 리포트 생성',
+        'preprocessing 함수화 (스케일링 + 결측치)',
+        'feature-engineering 상관 0.95↑ 제거 후 피처 확정',
+        'Stratified Split + SMOTE (train only) 적용',
+        '.pkl 캐시 저장 + 로드 헬퍼 함수 작성',
+      ],
+    },
+    {
+      id: 'T2', title: '모델 학습 & 캐싱',
+      model: 'opus', codex: 'GPT-5.5',
+      output: 'models/xgb_secom.joblib + threshold_table.csv',
+      tasks: [
+        'scale_pos_weight 계산 + XGBoost K-Fold 학습',
+        'MCC / PR-AUC 평가 + Youden\'s J threshold 산출',
+        'PASS 데이터 mean±2σ 기반 sensor threshold 테이블 생성',
+        'joblib 직렬화 + Model Card 작성',
+        '단일 샘플 추론 < 10ms 검증 (라인 모니터링 요건)',
+      ],
+    },
+    {
+      id: 'T3', title: 'SHAP 사전 계산',
+      model: 'opus', codex: 'GPT-5.5',
+      output: 'models/shap_explainer.pkl + shap_top20.csv',
+      tasks: [
+        'TreeExplainer 생성 + test set 전체 SHAP value 계산',
+        '상위 20 피처 기여도 사전 추출 (재계산 방지)',
+        '샘플별 force plot 데이터 사전 저장 (HTML/JSON)',
+        '센서 그룹별 평균 기여도 집계',
+      ],
+    },
+    {
+      id: 'T4', title: 'Streamlit UI 5페이지',
+      model: 'opus', codex: 'GPT-5.4',
+      output: 'app/app.py + app/pages/P1~P5.py',
+      tasks: [
+        'P1 통합 대시보드 — KPI 카드, 시계열 차트',
+        'P2 실시간 예측 — 단일 샘플 입력 → 결과',
+        'P3 원인 분석 — SHAP 시각화 (사전 계산본 로드)',
+        'P4 조치 가이드 — threshold 위반 센서 → 권고',
+        'P5 이력 조회 — 예측 로그 테이블',
+        'st.cache_data 정책 명시 + 더미↔실데이터 토글',
+      ],
+    },
+    {
+      id: 'T5', title: '발표 & 데모',
+      model: 'sonnet', codex: 'GPT-5.4',
+      output: 'docs/demo_script.md + 백업 시나리오 2종',
+      tasks: [
+        '5분 발표 스크립트 작성 (분당 토픽)',
+        '시연 골든 패스 시나리오 정의 + 리허설',
+        '백업 시나리오 (네트워크/모델 로드 실패 대응)',
+        '발표 슬라이드 → 라이브 데모 전환 큐 설정',
+      ],
+    },
+  ];
+
+  const ddayList = [
+    '노트북 충전 100% + 어댑터·HDMI 어댑터 점검',
+    '오프라인 모드: 데이터·모델·SHAP 캐시 로컬 확인',
+    'Streamlit 앱 로컬 실행 → 5페이지 모두 무결성 점검',
+    '발표용 보조 디스플레이 해상도 사전 테스트',
+    'Codex Plus 구독 로그인 + 프롬프트 템플릿 확인',
+    '백업 슬라이드 PDF 별도 USB 보관',
+    '5분 발표 1회 시간 측정 리허설',
+    'Q&A 예상 질문 5개 답변 준비',
+  ];
+
+  const demoTimeline = [
+    { time: '0:00', topic: '문제 정의 — 이상 발견 지연이 만드는 현장 손실', screen: '슬라이드 1-2' },
+    { time: '1:00', topic: 'QualityLens 한 줄 소개 + Predict→Explain→Act 흐름', screen: '슬라이드 3' },
+    { time: '1:45', topic: 'P1 통합 대시보드 — KPI / 시계열', screen: 'Streamlit P1' },
+    { time: '2:30', topic: 'P2 실시간 예측 — 단일 샘플 입력 → 이상 판정', screen: 'Streamlit P2' },
+    { time: '3:15', topic: 'P3 원인 분석 — SHAP으로 기여 센서 식별', screen: 'Streamlit P3' },
+    { time: '3:50', topic: 'P4 조치 가이드 — threshold 위반 → 권고안', screen: 'Streamlit P4' },
+    { time: '4:20', topic: '평가 지표 / 차별점 / 확장성', screen: '슬라이드 4-5' },
+    { time: '4:45', topic: '마무리 — 질문 받기', screen: '슬라이드 6' },
+  ];
+
+  // ===== Persistence =====
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveState(state) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+  const state = loadState();
+  if (!state.checks) state.checks = {};
+  if (!state.notes) state.notes = '';
+
+  // ===== D-Day =====
+  function renderDDay() {
+    const now = new Date();
+    const diff = FINAL_TARGET - now;
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const el = document.getElementById('dday-value');
+    if (diff <= 0) {
+      el.textContent = '본선 진행 중';
+      el.style.color = 'var(--accent-2)';
+    } else {
+      el.textContent = 'D-' + days;
+      const sub = document.getElementById('dday-target');
+      sub.textContent = '2026-05-22 (금) 09:00 KST · 남은 시간 약 ' + hours + '시간';
+    }
+  }
+
+  // ===== Tracks =====
+  function renderTracks() {
+    const root = document.getElementById('tracks-root');
+    root.innerHTML = '';
+    tracks.forEach(t => {
+      const card = document.createElement('div');
+      card.className = 'track';
+      const tagClass = 'tag-' + t.model;
+      card.innerHTML =
+        '<h3>' + t.id + '. ' + t.title + '</h3>' +
+        '<div class="meta">산출물: <code>' + t.output + '</code></div>' +
+        '<div style="margin-bottom:8px;">' +
+          '<span class="model-tag ' + tagClass + '">Claude ' + t.model + '</span>' +
+          '<span class="model-tag tag-codex">Codex ' + t.codex + '</span>' +
+        '</div>' +
+        '<ul class="task-list">' +
+          t.tasks.map((task, i) => {
+            const key = t.id + '_' + i;
+            const checked = state.checks[key] ? 'checked' : '';
+            const labelClass = state.checks[key] ? 'done' : '';
+            return '<li>' +
+              '<input type="checkbox" id="' + key + '" data-key="' + key + '" ' + checked + '/>' +
+              '<label for="' + key + '" class="' + labelClass + '">' + task + '</label>' +
+            '</li>';
+          }).join('') +
+        '</ul>';
+      root.appendChild(card);
+    });
+    document.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb => {
+      cb.addEventListener('change', e => {
+        const key = e.target.dataset.key;
+        state.checks[key] = e.target.checked;
+        saveState(state);
+        const label = e.target.nextElementSibling;
+        label.className = e.target.checked ? 'done' : '';
+        renderProgress();
+      });
+    });
+  }
+
+  // ===== D-Day list =====
+  function renderDDayList() {
+    const root = document.getElementById('dday-list');
+    root.innerHTML = '';
+    ddayList.forEach((item, i) => {
+      const key = 'DDAY_' + i;
+      const checked = state.checks[key] ? 'checked' : '';
+      const labelClass = state.checks[key] ? 'done' : '';
+      root.innerHTML += '<li>' +
+        '<input type="checkbox" id="' + key + '" data-key="' + key + '" ' + checked + '/>' +
+        '<label for="' + key + '" class="' + labelClass + '">' + item + '</label>' +
+      '</li>';
+    });
+    document.querySelectorAll('#dday-list input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', e => {
+        const key = e.target.dataset.key;
+        state.checks[key] = e.target.checked;
+        saveState(state);
+        e.target.nextElementSibling.className = e.target.checked ? 'done' : '';
+        renderProgress();
+      });
+    });
+  }
+
+  // ===== Demo timeline =====
+  function renderDemo() {
+    const root = document.getElementById('demo-timeline');
+    root.innerHTML = demoTimeline.map(r =>
+      '<div class="demo-row">' +
+        '<div class="time">' + r.time + '</div>' +
+        '<div class="topic">' + r.topic + '</div>' +
+        '<div class="screen">' + r.screen + '</div>' +
+      '</div>'
+    ).join('');
+  }
+
+  // ===== Progress =====
+  function renderProgress() {
+    const total = tracks.reduce((sum, t) => sum + t.tasks.length, 0) + ddayList.length;
+    const done = Object.values(state.checks).filter(Boolean).length;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    document.getElementById('overall-progress').style.width = pct + '%';
+    document.getElementById('overall-text').textContent = done + ' / ' + total + ' 완료 (' + pct + '%)';
+  }
+
+  // ===== Notes =====
+  function setupNotes() {
+    const ta = document.getElementById('notes');
+    ta.value = state.notes;
+    let saveTimer;
+    ta.addEventListener('input', () => {
+      state.notes = ta.value;
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        saveState(state);
+        document.getElementById('notes-saved-at').textContent =
+          '저장됨 · ' + new Date().toLocaleString('ko-KR');
+      }, 400);
+    });
+    if (state.notes) {
+      document.getElementById('notes-saved-at').textContent =
+        '마지막 저장 · ' + new Date().toLocaleString('ko-KR');
+    }
+  }
+
+  function exportNotes() {
+    const blob = new Blob([state.notes || ''], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'qualitylens-notes-' + new Date().toISOString().slice(0, 10) + '.md';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ===== Init =====
+  renderDDay();
+  renderTracks();
+  renderDDayList();
+  renderDemo();
+  renderProgress();
+  setupNotes();
+  setInterval(renderDDay, 60000);
+</script>
+
+</body>
+</html>
