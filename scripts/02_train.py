@@ -224,8 +224,8 @@ model_card = f"""# Model Card — QualityLens XGBoost
 - 평가 지표: MCC (불균형 6.6% fail rate에 최적)
 
 ## 산출물
-- `models/xgb_secom.joblib`     — 직렬화 모델
-- `models/threshold_table.csv`  — sensor별 mean±2σ 정상 범위
+- `models/xgb_secom{SUFFIX}.joblib`     — 직렬화 모델
+- `models/threshold_table{SUFFIX}.csv`  — sensor별 mean±2σ 정상 범위
 
 ## 운영 규칙 (codex-bridge/token-saving.md)
 - 본선장에서 재학습 금지 — 직렬화 로드만
