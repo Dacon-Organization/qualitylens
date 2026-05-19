@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>QualityLens — 작업별 진행 인덱스</title>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --panel-2: #1f2630; --border: #30363d;
+    --text: #e6edf3; --text-dim: #8b949e; --accent: #58a6ff;
+    --sonnet: #79c0ff; --opus: #d2a8ff; --done: #7ee787; --pending: #f0883e;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; background: var(--bg); color: var(--text);
+    font-family: -apple-system, "Segoe UI", "Malgun Gothic", sans-serif; line-height: 1.55; }
+  h1 { margin: 0 0 4px 0; font-size: 26px; }
+  .subtitle { color: var(--text-dim); margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
+  th { background: var(--panel-2); color: var(--text-dim); text-transform: uppercase;
+    font-size: 11px; letter-spacing: 1px; font-weight: 600; }
+  tr:hover td { background: var(--panel-2); }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .tag-sonnet { background: rgba(121, 192, 255, 0.16); color: var(--sonnet); }
+  .tag-opus { background: rgba(210, 168, 255, 0.16); color: var(--opus); }
+  .status-done { color: var(--done); }
+  .status-pending { color: var(--pending); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-top: 18px; }
+  .panel h2 { margin: 0 0 8px 0; font-size: 18px; }
+  .panel p { color: var(--text-dim); font-size: 13px; margin: 0; }
+</style>
+</head>
+<body>
+<h1>📋 QualityLens — 작업별 진행 인덱스</h1>
+<div class="subtitle">본선 폴리시 작업의 단일 파일 진행 보고서 모음 · 외부 의존 없는 vanilla HTML</div>
+
+<div class="panel">
+  <h2>작업 진척 (Tier S — 평가 직접 영향)</h2>
+  <p>각 행의 진행 HTML 링크를 클릭하면 작업 상세를 확인할 수 있다.</p>
+  <table>
+    <thead>
+      <tr><th>코드</th><th>제목</th><th>모델</th><th>상태</th><th>진행 HTML</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>S-1</strong></td>
+        <td>3단계 컬러 코딩 (정상/경고/위험)</td>
+        <td><span class="tag tag-sonnet">Sonnet</span></td>
+        <td class="status-pending">진행 예정</td>
+        <td><a href="s1_risk_tier.html">s1_risk_tier.html</a></td>
+      </tr>
+      <tr>
+        <td><strong>S-2</strong></td>
+        <td>SHAP Waterfall + Dependence Plot</td>
+        <td><span class="tag tag-opus">Opus</span></td>
+        <td class="status-pending">진행 예정</td>
+        <td><a href="s2_shap_waterfall.html">s2_shap_waterfall.html</a></td>
+      </tr>
+      <tr>
+        <td><strong>S-3</strong></td>
+        <td>원클릭 수용 + 조치 이력 자동 기록</td>
+        <td><span class="tag tag-sonnet">Sonnet</span></td>
+        <td class="status-pending">진행 예정</td>
+        <td><a href="s3_action_log.html">s3_action_log.html</a></td>
+      </tr>
+      <tr>
+        <td><strong>S-4</strong></td>
+        <td>스트리밍 시뮬레이션</td>
+        <td><span class="tag tag-opus">Opus</span></td>
+        <td class="status-pending">진행 예정</td>
+        <td><a href="s4_streaming.html">s4_streaming.html</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <h2>관련 문서</h2>
+  <p>전체 갭 분석과 시간 배분은 <a href="../finals_polish_todo.md">finals_polish_todo.md</a> 참조 · 본선 D-Day 체크리스트는 <a href="../roadmap.html">roadmap.html</a> 참조.</p>
+</div>
+
+</body>
+</html>
