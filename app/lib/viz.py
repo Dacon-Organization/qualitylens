@@ -98,6 +98,119 @@ def shap_top_bar(top: pd.DataFrame, n: int = 15) -> go.Figure:
     return fig
 
 
+# === SHAP Waterfall + Dependence (S-2) =====================================
+# 기획서 약속 G2: "글로벌 피처 중요도 + 개별 Waterfall + Dependence Plot"
+# plotly 직접 구현 — shap.plots는 matplotlib 의존이라 Streamlit Cloud 호환성 ↓
+
+
+def shap_waterfall(
+    features: list[str],
+    shap_values: list[float],
+    base_value: float,
+    sample_values: list[float] | None = None,
+) -> go.Figure:
+    """plotly waterfall — base_value → 누적 SHAP → 최종 logit.
+
+    Args:
+        features: 표시할 피처 이름 (절댓값 큰 순으로 미리 정렬 권장)
+        shap_values: 각 피처의 SHAP value (부호 유지)
+        base_value: 모델 expected_value
+        sample_values: 피처별 원본 값 (라벨에 표시, 옵션)
+    """
+    # 절댓값 큰 순으로 정렬 → 영향력이 큰 피처가 위쪽
+    order = sorted(range(len(features)), key=lambda i: abs(shap_values[i]), reverse=True)
+    features = [features[i] for i in order]
+    shap_values = [shap_values[i] for i in order]
+    if sample_values is not None:
+        sample_values = [sample_values[i] for i in order]
+
+    final_value = base_value + sum(shap_values)
+
+    # waterfall 라벨: 센서명 + (실제값) — 길이 제한
+    labels = []
+    for i, f in enumerate(features):
+        if sample_values is not None:
+            labels.append(f"{f}<br><span style='font-size:11px;color:#8b949e'>값={sample_values[i]:+.2f}</span>")
+        else:
+            labels.append(f)
+
+    x_labels = ["base"] + labels + ["최종"]
+    measures = ["absolute"] + ["relative"] * len(shap_values) + ["total"]
+    y_values = [base_value] + shap_values + [final_value]
+
+    fig = go.Figure(
+        go.Waterfall(
+            x=x_labels,
+            measure=measures,
+            y=y_values,
+            text=[f"{v:+.3f}" for v in y_values],
+            textposition="outside",
+            connector={"line": {"color": "#30363d"}},
+            increasing={"marker": {"color": "#f85149"}},  # 양수 = 이상 확률 ↑ = 빨강
+            decreasing={"marker": {"color": "#3fb950"}},  # 음수 = 정상 확률 ↑ = 녹색
+            totals={"marker": {"color": "#58a6ff"}},
+        )
+    )
+    fig.update_layout(
+        title="SHAP Waterfall — base → 누적 → 최종",
+        height=480,
+        showlegend=False,
+        margin=dict(l=20, r=20, t=50, b=80),
+        xaxis_tickangle=-30,
+        yaxis_title="logit (SHAP 누적)",
+    )
+    return fig
+
+
+def shap_dependence(
+    sensor: str,
+    feature_values: pd.Series,
+    shap_values_for_sensor: pd.Series,
+    highlight_sample_id: int | None = None,
+) -> go.Figure:
+    """plotly dependence plot — 피처값 vs SHAP value 산점도."""
+    df = pd.DataFrame(
+        {
+            "value": feature_values.values,
+            "shap": shap_values_for_sensor.values,
+            "sample_id": feature_values.index,
+        }
+    )
+    fig = px.scatter(
+        df,
+        x="value",
+        y="shap",
+        color="shap",
+        color_continuous_scale=["#3fb950", "#1f2630", "#f85149"],
+        color_continuous_midpoint=0,
+        title=f"Dependence Plot — {sensor} (피처값 ↔ SHAP)",
+        hover_data=["sample_id"],
+    )
+    fig.add_hline(y=0, line_dash="dash", line_color="#8b949e", opacity=0.4)
+    if highlight_sample_id is not None and highlight_sample_id in df["sample_id"].values:
+        row = df[df["sample_id"] == highlight_sample_id].iloc[0]
+        fig.add_trace(
+            go.Scatter(
+                x=[row["value"]],
+                y=[row["shap"]],
+                mode="markers",
+                marker=dict(size=18, color="#d2a8ff", line=dict(color="white", width=2)),
+                name=f"샘플 #{highlight_sample_id}",
+                showlegend=True,
+            )
+        )
+    fig.update_layout(
+        height=380,
+        margin=dict(l=20, r=20, t=50, b=20),
+        xaxis_title=f"{sensor} 값 (스케일링됨)",
+        yaxis_title="SHAP value",
+    )
+    return fig
+
+
+# ==========================================================================
+
+
 def proba_timeline(proba_series: pd.Series) -> go.Figure:
     """시계열 차트 — 3단계 컬러 구간 배경 + 임계값 라인."""
     df = pd.DataFrame(

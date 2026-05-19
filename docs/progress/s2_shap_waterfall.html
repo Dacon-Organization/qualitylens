@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"/><title>S-2 · SHAP Waterfall + Dependence</title>
+<style>
+:root{--bg:#0d1117;--panel:#161b22;--p2:#1f2630;--bd:#30363d;--t:#e6edf3;--td:#8b949e;
+--opus:#d2a8ff;--green:#3fb950;--red:#f85149;--blue:#58a6ff;}
+*{box-sizing:border-box}body{margin:0;padding:24px;background:var(--bg);color:var(--t);
+font:14px/1.55 -apple-system,"Segoe UI","Malgun Gothic",sans-serif}
+h1{margin:0 0 4px;font-size:24px}.sub{color:var(--td);margin-bottom:20px}
+.meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.chip{padding:4px 10px;border-radius:12px;font-size:12px;font-weight:600;background:var(--p2);border:1px solid var(--bd);color:var(--td)}
+.chip.model{background:rgba(210,168,255,.16);color:var(--opus);border-color:transparent}
+.panel{background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:18px 22px;margin-bottom:16px}
+.panel h2{margin:0 0 10px;font-size:17px}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px}
+.flow .node{padding:14px 8px;background:var(--p2);border:1px solid var(--bd);border-radius:8px;text-align:center;font-size:12px}
+.flow .node b{display:block;margin-bottom:4px;color:var(--blue);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+.flow .arrow{text-align:center;color:var(--td);font-size:18px;align-self:center}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--bd)}
+th{background:var(--p2);color:var(--td);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+code{background:var(--p2);padding:2px 6px;border-radius:4px;font-size:12px;color:#7ee787}
+pre{background:var(--p2);border:1px solid var(--bd);padding:14px;border-radius:8px;overflow:auto;font-size:12px}
+.legend{display:flex;gap:14px;margin-top:8px;font-size:13px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:14px;height:14px;border-radius:3px;display:inline-block}
+ul{margin:6px 0 0 18px}li{margin:4px 0}.done{color:var(--green)}.todo{color:#d29922}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+</style></head><body>
+
+<h1>S-2 · SHAP Waterfall + Dependence Plot</h1>
+<div class="sub">기획서 G2 약속 — "글로벌 피처 중요도 + 개별 Waterfall + Dependence Plot 동시 제공"</div>
+
+<div class="meta">
+  <span class="chip model">Opus · 해석·시각화 설계</span>
+  <span class="chip">브랜치 <code>feat/s2-shap-waterfall</code></span>
+  <span class="chip">D-3</span>
+</div>
+
+<div class="panel">
+  <h2>P3 페이지 3섹션 구조</h2>
+  <div class="flow">
+    <div class="node"><b>① Global</b>상위 15 센서<br>(막대)</div>
+    <div class="arrow">→</div>
+    <div class="node"><b>② Waterfall</b>개별 샘플<br>base→누적→최종</div>
+    <div class="arrow">→</div>
+    <div class="node"><b>③ Dependence</b>센서값 ↔ SHAP<br>(산점도)</div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Waterfall 색 규약</h2>
+  <div class="legend">
+    <span><i style="background:#f85149"></i> 양수 — 이상 확률 ↑</span>
+    <span><i style="background:#3fb950"></i> 음수 — 정상 확률 ↑</span>
+    <span><i style="background:#58a6ff"></i> base / 최종 logit</span>
+  </div>
+  <pre>base_value + Σ SHAP(피처) = final_logit
+   └── 5.5 단계에서 사전 직렬화 → models/shap_waterfall_demo.pkl</pre>
+</div>
+
+<div class="panel">
+  <h2>변경 산출물</h2>
+  <table>
+    <thead><tr><th>파일</th><th>변경</th></tr></thead>
+    <tbody>
+      <tr><td><code>scripts/03_shap.py</code></td><td>5.5 단계 추가 — base_value + 데모 샘플별 top10 features/values/shap 직렬화</td></tr>
+      <tr><td><code>app/lib/viz.py</code></td><td><code>shap_waterfall()</code>, <code>shap_dependence()</code> 신설 (plotly 직접 구현)</td></tr>
+      <tr><td><code>app/lib/load.py</code></td><td><code>load_shap_waterfall_demo()</code>, <code>load_shap_values_test()</code> 로더 추가</td></tr>
+      <tr><td><code>app/pages/2_🔍_원인_분석.py</code></td><td>3섹션 구조 (글로벌 → Waterfall → Dependence) + 백업 이미지</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <h2>plotly 선택 이유</h2>
+  <p>shap.plots.waterfall은 matplotlib 의존이라 Streamlit Cloud에서 한글 폰트·인터랙션·반응형 모두 약함. plotly 직접 구현으로 ① 호버 ② 등급 컬러 통일 ③ 반응형 ④ 한글 폰트 깨짐 해결 동시 확보.</p>
+</div>
+
+<div class="panel">
+  <h2>체크리스트</h2>
+  <ul>
+    <li class="done">✓ <code>03_shap.py</code> 5.5단계 — base_value + 샘플별 top10 사전 직렬화</li>
+    <li class="done">✓ <code>shap_waterfall</code> — 절댓값 정렬 + 부호별 색 + 라벨에 원본 값</li>
+    <li class="done">✓ <code>shap_dependence</code> — 산점도 + 선택 샘플 강조 마커</li>
+    <li class="done">✓ P3 페이지 3섹션 + 백업 이미지 폴백</li>
+    <li class="todo">⚠ 사용자가 <code>python scripts/03_shap.py</code> 재실행 필요 (shap_waterfall_demo.pkl 생성)</li>
+    <li class="todo">⚠ Dependence Plot 라벨 매핑 (sensor_NNN → "식각 온도" 등)은 A-1에서 처리</li>
+  </ul>
+</div>
+
+<div class="panel">
+  <h2>발표 시 연결</h2>
+  <p>페르소나 시나리오 Step 3 "SHAP Waterfall: '식각 온도 (기여도 +0.34)' 1위" → 본 페이지의 Waterfall이 그대로 시연 가능. Dependence Plot 으로 "180°C 이상 불량 급등" 까지 한 화면에서 보여줌.</p>
+</div>
+
+<div class="panel">
+  <h2>다음 단계</h2>
+  <ul>
+    <li>S-3 (Sonnet) — 원클릭 수용 + 조치 이력 자동 기록</li>
+    <li>A-1 라벨 매핑 — sensor_NNN → 의미 라벨</li>
+  </ul>
+</div>
+
+<div class="panel">
+  <h2>관련 문서</h2>
+  <ul>
+    <li><a href="INDEX.html">진행 인덱스</a></li>
+    <li><a href="s1_risk_tier.html">S-1 · 3단계 컬러 코딩</a></li>
+    <li><a href="../finals_polish_todo.md">finals_polish_todo.md</a> §1 Tier S-2</li>
+  </ul>
+</div>
+
+</body></html>
