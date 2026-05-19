@@ -75,7 +75,35 @@ QualityLens는 `Predict → Explain → Act` 구조로 동작합니다.
 - `build_pptx_v4.py`: PPT 자동 생성 스크립트
 - `diagrams/`: 아키텍처 및 흐름도 이미지
 
-## 권장 진행 순서
+## 실행 방법 (본선 사전 작업)
+
+### 환경 준비
+
+```bash
+pip install -r requirements.txt
+```
+
+### 데이터 → 모델 → SHAP → UI 순차 실행
+
+```bash
+# T1 — 전처리 (UCI SECOM 원본 없으면 더미 폴백 자동)
+python scripts/01_preprocess.py
+
+# T2 — 학습 (XGBoost K-Fold + threshold engine)
+python scripts/02_train.py
+
+# T3 — SHAP 사전 계산
+python scripts/03_shap.py
+
+# T4 — Streamlit 5페이지 (브라우저 자동 열림)
+streamlit run app/app.py
+```
+
+### UCI SECOM 데이터 받기
+
+`data/raw/secom.data`, `data/raw/secom_labels.data` 를 [UCI 저장소](https://archive.ics.uci.edu/dataset/179/secom)에서 받아 배치. 없어도 더미 데이터로 파이프라인 전체가 동작합니다.
+
+## 권장 진행 순서 (예선용 PPT)
 
 1. `docs/project_summary.md`를 먼저 확정
 2. `docs/ppt_visual_guide.md` 기준으로 슬라이드 메시지 정리
