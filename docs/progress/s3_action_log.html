@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"/><title>S-3 · 원클릭 수용 + 조치 이력</title>
+<style>
+:root{--bg:#0d1117;--panel:#161b22;--p2:#1f2630;--bd:#30363d;--t:#e6edf3;--td:#8b949e;
+--sonnet:#79c0ff;--green:#3fb950;--blue:#58a6ff;}
+*{box-sizing:border-box}body{margin:0;padding:24px;background:var(--bg);color:var(--t);
+font:14px/1.55 -apple-system,"Segoe UI","Malgun Gothic",sans-serif}
+h1{margin:0 0 4px;font-size:24px}.sub{color:var(--td);margin-bottom:20px}
+.meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.chip{padding:4px 10px;border-radius:12px;font-size:12px;font-weight:600;background:var(--p2);border:1px solid var(--bd);color:var(--td)}
+.chip.model{background:rgba(121,192,255,.16);color:var(--sonnet);border-color:transparent}
+.panel{background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:18px 22px;margin-bottom:16px}
+.panel h2{margin:0 0 10px;font-size:17px}
+.loop{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px;align-items:center}
+.loop .node{padding:12px 8px;background:var(--p2);border:1px solid var(--bd);border-radius:8px;text-align:center;font-size:12px}
+.loop .node b{display:block;margin-bottom:4px;color:var(--blue);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+.loop .arrow{text-align:center;color:var(--td);font-size:18px}
+.loop .last{background:rgba(63,185,80,.10);border-color:var(--green)}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--bd)}
+th{background:var(--p2);color:var(--td);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+code{background:var(--p2);padding:2px 6px;border-radius:4px;font-size:12px;color:#7ee787}
+pre{background:var(--p2);border:1px solid var(--bd);padding:14px;border-radius:8px;overflow:auto;font-size:12px}
+ul{margin:6px 0 0 18px}li{margin:4px 0}.done{color:var(--green)}.todo{color:#d29922}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+</style></head><body>
+
+<h1>S-3 · 원클릭 수용 + 조치 이력 자동 기록</h1>
+<div class="sub">기획서 G3 약속 — "원클릭 수용 버튼 + 조치 이력 자동 기록" · 순환 루프 완성</div>
+
+<div class="meta">
+  <span class="chip model">Sonnet · 위젯 + state 관리</span>
+  <span class="chip">브랜치 <code>feat/s3-action-log</code></span>
+  <span class="chip">D-3</span>
+</div>
+
+<div class="panel">
+  <h2>순환 루프 — 마지막 고리 완성</h2>
+  <div class="loop">
+    <div class="node"><b>① Predict</b>P2 이상 예측</div>
+    <div class="arrow">→</div>
+    <div class="node"><b>② Explain</b>P3 SHAP</div>
+    <div class="arrow">→</div>
+    <div class="node last"><b>③ Act</b>P4 권고 + ✅ 수용</div>
+  </div>
+  <p style="margin-top:14px;color:var(--td)">→ <strong>수용 시 P5 조치 이력 탭에 자동 기록</strong> · 같은 센서 누적 시 "반복 원인 Top 5" 자동 집계 (페르소나 B 박 팀장 시나리오 선반영)</p>
+</div>
+
+<div class="panel">
+  <h2>변경 산출물</h2>
+  <table>
+    <thead><tr><th>파일</th><th>변경</th></tr></thead>
+    <tbody>
+      <tr><td><code>app/lib/action_log.py</code></td><td><strong>신규</strong> — session_state 기반 인메모리 로그 / KST 타임스탬프 / DataFrame 변환 헬퍼</td></tr>
+      <tr><td><code>app/pages/3_🛠_조치_가이드.py</code> (P4)</td><td>각 권고 카드 옆 ✅ 수용 버튼 + 중복 수용 방지 + 누적 카운터</td></tr>
+      <tr><td><code>app/pages/4_📜_이력_조회.py</code> (P5)</td><td>탭 2개 — 📊 예측 이력 / ✅ 조치 이력 · CSV export 2종 · 반복 원인 Top 5</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <h2>action_log 모듈 API</h2>
+<pre>from lib import action_log
+
+action_log.init_log()                          # session_state 초기화
+action_log.append(action_log.make_entry(...))  # 한 건 추가
+df = action_log.as_dataframe()                 # 조회용 DataFrame
+action_log.clear()                             # 초기화 버튼용</pre>
+</div>
+
+<div class="panel">
+  <h2>저장 정책</h2>
+  <p>본선 시연은 단일 세션 → <code>st.session_state</code> 만으로 충분. Streamlit Cloud는 컨테이너 재시작 시 휘발 (의도된 동작). 실 운영 시 DB(Postgres/Supabase) 연동 권장 — <a href="../finals_polish_todo.md">finals_polish_todo.md</a> Phase 1 로드맵 일부.</p>
+</div>
+
+<div class="panel">
+  <h2>체크리스트</h2>
+  <ul>
+    <li class="done">✓ <code>action_log.py</code> 신규 모듈 — TypedDict 엔트리 + KST 타임스탬프</li>
+    <li class="done">✓ P4 권고 카드별 수용 버튼 + 중복 방지 + 누적 카운터</li>
+    <li class="done">✓ P5 탭 2개 + CSV export 2종 + 반복 원인 Top 5 집계</li>
+    <li class="done">✓ 페르소나 B (박 팀장) "반복 원인 Top 5" 시나리오 선반영</li>
+    <li class="todo">⚠ DB 영속화는 본선 후 Phase 1 로드맵</li>
+  </ul>
+</div>
+
+<div class="panel">
+  <h2>발표 시 연결</h2>
+  <p>페르소나 시나리오 Step 4 "팝업 → 수용 → 이력 자동 기록" 그대로 시연. P4에서 수용 → 즉시 P5 탭으로 이동해 새 행이 누적되는 모습을 보여주면 "순환 루프 완결" 메시지 시각적 입증.</p>
+</div>
+
+<div class="panel">
+  <h2>다음 단계</h2>
+  <ul>
+    <li>S-4 (Opus) — 스트리밍 시뮬레이션 (정상→이상 주입→복귀)</li>
+  </ul>
+</div>
+
+<div class="panel">
+  <h2>관련 문서</h2>
+  <ul>
+    <li><a href="INDEX.html">진행 인덱스</a></li>
+    <li><a href="s1_risk_tier.html">S-1</a> · <a href="s2_shap_waterfall.html">S-2</a></li>
+    <li><a href="../finals_polish_todo.md">finals_polish_todo.md</a> §1 Tier S-3</li>
+  </ul>
+</div>
+
+</body></html>
