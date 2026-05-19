@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>QualityLens · 01. T1 전처리 (real)</title>
+  <script src="../../assets/vendor/plotly.min.js"></script>
+  <style>
+    
+    body, html {
+        font-family: "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    }
+    
+    body { max-width: 1080px; margin: 32px auto; padding: 0 24px; color: #1f2328; }
+    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #d0d7de; padding-bottom: 12px; }
+    h1 { margin: 0; font-size: 22px; }
+    .badge { background: #1e7c3a; color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; }
+    .meta { color: #656d76; font-size: 13px; }
+    .section { margin: 28px 0; }
+    .section h2 { font-size: 18px; border-bottom: 1px solid #eaeef2; padding-bottom: 6px; }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    th, td { border: 1px solid #d0d7de; padding: 6px 10px; text-align: left; }
+    th { background: #f6f8fa; }
+    img { max-width: 100%; border: 1px solid #eaeef2; border-radius: 4px; }
+    footer { margin-top: 48px; padding-top: 12px; border-top: 1px solid #d0d7de; font-size: 12px; color: #656d76; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>01. T1 전처리 (real)</h1>
+      <div class="meta">생성: 2026-05-19 17:08 KST</div>
+    </div>
+    <span class="badge">🟢 real (UCI SECOM)</span>
+  </header>
+  <div class="section"><h2>1. 데이터 형상</h2><table><tr><th>속성</th><th>값</th></tr><tr><td>소스</td><td>real</td></tr><tr><td>원본 shape</td><td>(1567, 590)</td></tr><tr><td>결측치 컬럼 제거 후</td><td>(1567, 562)</td></tr><tr><td>저분산·고상관 제거 후</td><td>(1567, 248)</td></tr><tr><td>train (SMOTE 후)</td><td>(2340, 248)</td></tr><tr><td>test</td><td>(314, 248)</td></tr><tr><td>불량 비율 (원본)</td><td>6.64%</td></tr></table></div>
+<div class="section"><h2>2. 결측치 분포 (상위 20)</h2><table><tr><th>sensor</th><th>missing_rate</th></tr><tr><td>sensor_157</td><td>91.19%</td></tr><tr><td>sensor_292</td><td>91.19%</td></tr><tr><td>sensor_293</td><td>91.19%</td></tr><tr><td>sensor_158</td><td>91.19%</td></tr><tr><td>sensor_492</td><td>85.58%</td></tr><tr><td>sensor_358</td><td>85.58%</td></tr><tr><td>sensor_085</td><td>85.58%</td></tr><tr><td>sensor_220</td><td>85.58%</td></tr><tr><td>sensor_246</td><td>64.96%</td></tr><tr><td>sensor_109</td><td>64.96%</td></tr><tr><td>sensor_110</td><td>64.96%</td></tr><tr><td>sensor_111</td><td>64.96%</td></tr><tr><td>sensor_518</td><td>64.96%</td></tr><tr><td>sensor_516</td><td>64.96%</td></tr><tr><td>sensor_245</td><td>64.96%</td></tr><tr><td>sensor_244</td><td>64.96%</td></tr><tr><td>sensor_382</td><td>64.96%</td></tr><tr><td>sensor_383</td><td>64.96%</td></tr><tr><td>sensor_384</td><td>64.96%</td></tr><tr><td>sensor_517</td><td>64.96%</td></tr></table></div>
+  <footer>
+    QualityLens · 2026 스마트 공장 운영 시스템 MVP 해커톤 · 본선 발표 부록
+    · <a href="index.html">← 인덱스</a>
+  </footer>
+</body>
+</html>

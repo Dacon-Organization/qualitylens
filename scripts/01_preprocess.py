@@ -202,3 +202,39 @@ print(f"피처 수: {X_train_sm.shape[1]}")
 print(f"train: {len(y_train_sm)} (SMOTE 적용)")
 print(f"test:  {len(y_test)}")
 print("다음: scripts/02_train.py")
+
+# %% [markdown]
+# ## 9. HTML 보고서 출력 (P-A G3)
+
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from app.lib.report_render import write as write_report
+
+sections = [
+    {
+        "title": "1. 데이터 형상",
+        "body_html": (
+            f"<table><tr><th>속성</th><th>값</th></tr>"
+            f"<tr><td>소스</td><td>{SOURCE}</td></tr>"
+            f"<tr><td>원본 shape</td><td>{X_raw.shape}</td></tr>"
+            f"<tr><td>결측치 컬럼 제거 후</td><td>{X_clean.shape}</td></tr>"
+            f"<tr><td>저분산·고상관 제거 후</td><td>{X_uncorr.shape}</td></tr>"
+            f"<tr><td>train (SMOTE 후)</td><td>{X_train_sm.shape}</td></tr>"
+            f"<tr><td>test</td><td>{X_test.shape}</td></tr>"
+            f"<tr><td>불량 비율 (원본)</td><td>{y_raw.mean()*100:.2f}%</td></tr>"
+            f"</table>"
+        ),
+    },
+    {
+        "title": "2. 결측치 분포 (상위 20)",
+        "body_html": (
+            "<table><tr><th>sensor</th><th>missing_rate</th></tr>"
+            + "".join(
+                f"<tr><td>{s}</td><td>{r*100:.2f}%</td></tr>"
+                for s, r in X_raw.isna().mean().sort_values(ascending=False).head(20).items()
+            )
+            + "</table>"
+        ),
+    },
+]
+write_report("preprocessing", source=SOURCE, sections=sections)
