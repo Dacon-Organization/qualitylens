@@ -18,7 +18,7 @@ from lib.load import (
     load_thresholds,
     status_banner,
 )
-from lib.viz import proba_timeline
+from lib.viz import proba_timeline, render_tier_badge, risk_tier
 
 st.set_page_config(
     page_title="QualityLens",
@@ -55,6 +55,20 @@ else:
     sample_size = len(X_test)
     fail_count = int((proba >= 0.5).sum())
     fail_rate = fail_count / sample_size * 100
+
+# -----------------------------------------------------------------------------
+# 라인 상태 — 3단계 컬러 배지 (S-1)
+# -----------------------------------------------------------------------------
+
+line_proba = fail_rate / 100  # 라인 전체 이상 비율을 등급 입력으로
+line_tier = risk_tier(line_proba)
+st.markdown(
+    f'<div style="margin: 8px 0 16px 0;">'
+    f'<span style="color: #8b949e; font-size: 13px; margin-right: 12px;">현재 라인 상태</span>'
+    f"{render_tier_badge(line_proba)}"
+    f"</div>",
+    unsafe_allow_html=True,
+)
 
 # -----------------------------------------------------------------------------
 # KPI 카드

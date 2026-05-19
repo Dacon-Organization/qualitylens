@@ -20,7 +20,13 @@ from lib.load import (  # noqa: E402
     load_model,
     load_test_set,
 )
-from lib.viz import gauge_proba  # noqa: E402
+from lib.viz import (  # noqa: E402
+    DANGER_THRESHOLD,
+    WARN_THRESHOLD,
+    gauge_proba,
+    render_tier_badge,
+    risk_tier,
+)
 
 st.set_page_config(page_title="P2 — 실시간 예측", page_icon="📊", layout="wide")
 demo_mode = demo_sidebar()
@@ -58,15 +64,35 @@ else:
     proba = float(model.predict_proba(sample)[0, 1])
     label = int(proba >= 0.5)
 
+# 3단계 컬러 배지 (S-1) — 비전문가도 즉시 인지
+tier = risk_tier(proba)
+st.markdown(
+    f'<div style="margin: 8px 0 12px 0;">'
+    f"{render_tier_badge(proba)}"
+    f'<span style="color:#8b949e; font-size:12px; margin-left:14px;">'
+    f"임계치: 경고 {WARN_THRESHOLD:.2f} · 위험 {DANGER_THRESHOLD:.2f}"
+    f"</span></div>",
+    unsafe_allow_html=True,
+)
+
 col_a, col_b = st.columns([1, 1])
 
 with col_a:
     st.plotly_chart(gauge_proba(proba), use_container_width=True)
 
 with col_b:
-    if label == 1:
-        st.error(f"### 🚨 이상 (FAIL)\n\n이상 확률 **{proba*100:.1f}%**")
+    if tier.code == "danger":
+        st.error(
+            f"### 🚨 위험 — 이상 (FAIL)\n\n이상 확률 **{proba*100:.1f}%**"
+        )
         st.markdown("**즉시 조치 필요** — P3 원인 분석 → P4 조치 가이드 순으로 확인")
+    elif tier.code == "warn":
+        st.warning(
+            f"### ⚠️ 경고 — 이상 가능성\n\n이상 확률 **{proba*100:.1f}%**"
+        )
+        st.markdown(
+            "임계치 초과 가능성. P3 원인 분석으로 어느 센서가 영향 미치는지 점검"
+        )
     else:
         st.success(f"### ✅ 정상 (PASS)\n\n이상 확률 **{proba*100:.1f}%**")
         st.markdown("정상 범위 내에서 운영 중입니다.")
