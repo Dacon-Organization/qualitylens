@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"/><title>S-1 · 3단계 컬러 코딩</title>
+<style>
+:root{--bg:#0d1117;--panel:#161b22;--p2:#1f2630;--bd:#30363d;--t:#e6edf3;--td:#8b949e;
+--norm:#3fb950;--warn:#d29922;--dang:#f85149;--sonnet:#79c0ff;}
+*{box-sizing:border-box}body{margin:0;padding:24px;background:var(--bg);color:var(--t);
+font:14px/1.55 -apple-system,"Segoe UI","Malgun Gothic",sans-serif}
+h1{margin:0 0 4px;font-size:24px}.sub{color:var(--td);margin-bottom:20px}
+.meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.chip{padding:4px 10px;border-radius:12px;font-size:12px;font-weight:600;background:var(--p2);border:1px solid var(--bd);color:var(--td)}
+.chip.model{background:rgba(121,192,255,.16);color:var(--sonnet);border-color:transparent}
+.panel{background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:18px 22px;margin-bottom:16px}
+.panel h2{margin:0 0 10px;font-size:17px}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
+.tier{padding:16px;border-radius:10px;border:1px solid var(--bd);text-align:center}
+.tier .badge{display:inline-block;padding:6px 14px;border-radius:18px;color:white;font-weight:700;margin-bottom:8px}
+.tier .range{font-family:ui-monospace,Consolas,monospace;color:var(--td);font-size:13px}
+.norm{background:rgba(63,185,80,.06)}.warn{background:rgba(210,153,34,.06)}.dang{background:rgba(248,81,73,.06)}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--bd)}
+th{background:var(--p2);color:var(--td);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+code{background:var(--p2);padding:2px 6px;border-radius:4px;font-size:12px;color:#7ee787}
+pre{background:var(--p2);border:1px solid var(--bd);padding:14px;border-radius:8px;overflow:auto;font-size:12px}
+ul{margin:6px 0 0 18px}li{margin:4px 0}
+.done{color:var(--norm)}.todo{color:var(--warn)}
+a{color:#58a6ff;text-decoration:none}a:hover{text-decoration:underline}
+</style></head><body>
+
+<h1>S-1 · 3단계 컬러 코딩 (정상/경고/위험)</h1>
+<div class="sub">기획서 약속 G1 — "비전문가도 즉시 인지" 핵심 가치 구현</div>
+
+<div class="meta">
+  <span class="chip model">Sonnet · 규칙 기반 UI</span>
+  <span class="chip">브랜치 <code>feat/s1-risk-tier-colors</code></span>
+  <span class="chip">예상 PR · #67</span>
+  <span class="chip">D-3</span>
+</div>
+
+<div class="panel">
+  <h2>등급 정의</h2>
+  <div class="tiers">
+    <div class="tier norm"><div class="badge" style="background:#3fb950">🟢 정상</div><div class="range">proba &lt; 0.30</div></div>
+    <div class="tier warn"><div class="badge" style="background:#d29922">🟡 경고</div><div class="range">0.30 ≤ proba &lt; 0.50</div></div>
+    <div class="tier dang"><div class="badge" style="background:#f85149">🔴 위험</div><div class="range">proba ≥ 0.50</div></div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>변경 산출물</h2>
+  <table>
+    <thead><tr><th>파일</th><th>변경 내용</th></tr></thead>
+    <tbody>
+      <tr><td><code>app/lib/viz.py</code></td><td><code>RiskTier</code> dataclass + <code>risk_tier()</code> + <code>render_tier_badge()</code> · <code>gauge_proba</code>·<code>proba_timeline</code> 3구간 적용</td></tr>
+      <tr><td><code>app/app.py</code> (P1)</td><td>KPI 위에 "현재 라인 상태" 컬러 배지 한 줄</td></tr>
+      <tr><td><code>app/pages/1_📊_실시간_예측.py</code> (P2)</td><td>게이지 위 컬러 배지 + 결과 카드 3분기(정상/경고/위험)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <h2>핵심 API</h2>
+<pre>from lib.viz import risk_tier, render_tier_badge
+tier = risk_tier(0.78)           # → RiskTier(code='danger', label='위험', ...)
+st.markdown(render_tier_badge(0.78), unsafe_allow_html=True)</pre>
+</div>
+
+<div class="panel">
+  <h2>체크리스트</h2>
+  <ul>
+    <li class="done">✓ <code>risk_tier()</code> · <code>render_tier_badge()</code> 신설</li>
+    <li class="done">✓ <code>gauge_proba</code> 게이지 3구간 컬러 + 등급 라벨 타이틀</li>
+    <li class="done">✓ <code>proba_timeline</code> 시계열 3구간 hrect 배경 + 임계 라인 2개</li>
+    <li class="done">✓ P1 라인 전체 컬러 배지</li>
+    <li class="done">✓ P2 결과 영역 3분기 + 컬러 배지</li>
+    <li class="todo">⚠ P4 위반 카드는 이미 deviation σ 기반 — 향후 동일 컬러 룰로 통일 (S-3에서)</li>
+  </ul>
+</div>
+
+<div class="panel">
+  <h2>다음 단계</h2>
+  <ul>
+    <li>S-2 (Opus) — SHAP Waterfall + Dependence Plot</li>
+    <li>S-3에서 P4 권고 카드 색상도 동일 3단계로 통일</li>
+    <li>본선 D-1 — 페르소나 시나리오 (식각 온도 → 78% → 위험 배지)와 정렬</li>
+  </ul>
+</div>
+
+<div class="panel">
+  <h2>관련 문서</h2>
+  <ul>
+    <li><a href="INDEX.html">진행 인덱스</a></li>
+    <li><a href="../finals_polish_todo.md">finals_polish_todo.md</a> §1 Tier S-1</li>
+    <li><a href="../roadmap.html">roadmap.html</a></li>
+  </ul>
+</div>
+
+</body></html>
