@@ -11,6 +11,7 @@ import pandas as pd  # noqa: E402
 import streamlit as st  # noqa: E402
 
 from lib import action_log  # noqa: E402
+from lib.data_loader import sidebar_badge  # noqa: E402
 from lib.demo import demo_sidebar  # noqa: E402
 from lib.load import (  # noqa: E402
     load_demo_result,
@@ -19,6 +20,7 @@ from lib.load import (  # noqa: E402
 )
 
 st.set_page_config(page_title="P5 — 이력 조회", page_icon="📜", layout="wide")
+sidebar_badge()
 demo_mode = demo_sidebar()
 action_log.init_log()
 

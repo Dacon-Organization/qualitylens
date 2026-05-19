@@ -12,6 +12,7 @@ Jupyter/VS Code 셀(`# %%`) 단위 실행 가능. CLI에서는::
 
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -27,6 +28,22 @@ RAW_DIR = ROOT / "data" / "raw"
 PROC_DIR = ROOT / "data" / "processed"
 PROC_DIR.mkdir(parents=True, exist_ok=True)
 
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="T1 전처리 — UCI SECOM 실데이터 또는 더미")
+    parser.add_argument(
+        "--source",
+        choices=["real", "dummy"],
+        default="real",
+        help="real: data/raw 의 UCI 원본 사용 / dummy: 합성 더미 생성",
+    )
+    return parser.parse_args()
+
+
+ARGS = parse_args() if __name__ == "__main__" else argparse.Namespace(source="real")
+SOURCE = ARGS.source  # "real" or "dummy"
+SUFFIX = f"_{SOURCE}"  # "_real" or "_dummy"
+
 RANDOM_STATE = 42
 TEST_SIZE = 0.2
 
@@ -34,40 +51,49 @@ TEST_SIZE = 0.2
 # ## 1. 원본 로드 (없으면 더미)
 
 
-def load_secom() -> tuple[pd.DataFrame, pd.Series, bool]:
-    """SECOM 원본을 로드. 없으면 더미 데이터 반환."""
+def load_secom(source: str) -> tuple[pd.DataFrame, pd.Series, bool]:
+    """source 에 따라 실데이터 또는 더미를 반환.
+
+    Returns
+    -------
+    X, y, is_dummy_actually
+        is_dummy_actually 는 source='dummy' 일 때만 True.
+        source='real' 인데 파일 없으면 FileNotFoundError 발생.
+    """
     data_path = RAW_DIR / "secom.data"
     labels_path = RAW_DIR / "secom_labels.data"
 
-    if data_path.exists() and labels_path.exists():
+    if source == "real":
+        if not (data_path.exists() and labels_path.exists()):
+            raise FileNotFoundError(
+                f"실데이터 모드인데 원본 부재: {data_path}. "
+                "scripts/00_download_secom.py 를 먼저 실행하거나 --source dummy 사용."
+            )
         X = pd.read_csv(data_path, sep=r"\s+", header=None)
         labels = pd.read_csv(labels_path, sep=r"\s+", header=None)
-        # 첫 컬럼: -1(PASS) / 1(FAIL) → 0/1 로 변환
         y = (labels.iloc[:, 0] == 1).astype(int)
         X.columns = [f"sensor_{i:03d}" for i in range(X.shape[1])]
         return X, y, False
 
-    # 더미 폴백: 1567 × 591 정규분포 + 6.6% 불량
-    print("[WARN] 원본 SECOM 없음 → 더미 데이터 생성 (1567 × 591, fail 6.6%)")
+    # source == "dummy"
+    print("[INFO] 더미 모드 — 1567 × 591 합성 데이터 생성 (fail 6.6%)")
     rng = np.random.default_rng(RANDOM_STATE)
     n, p = 1567, 591
     X = pd.DataFrame(
         rng.normal(size=(n, p)),
         columns=[f"sensor_{i:03d}" for i in range(p)],
     )
-    # 일부 컬럼에 결측치 주입 (10~30%)
     for i in rng.choice(p, size=80, replace=False):
         mask = rng.random(n) < rng.uniform(0.1, 0.3)
         X.iloc[mask, i] = np.nan
-    # 불량 라벨 — 일부 센서 강한 신호로 만들기
     score = X.iloc[:, [3, 17, 42]].fillna(0).sum(axis=1)
-    threshold = score.quantile(0.934)  # 상위 6.6%
+    threshold = score.quantile(0.934)
     y = (score > threshold).astype(int)
     return X, y, True
 
 
-X_raw, y_raw, is_dummy = load_secom()
-print(f"원본: {X_raw.shape} / 불량 비율 {y_raw.mean()*100:.2f}%")
+X_raw, y_raw, is_dummy = load_secom(SOURCE)
+print(f"[{SOURCE}] 원본: {X_raw.shape} / 불량 비율 {y_raw.mean()*100:.2f}%")
 
 # %% [markdown]
 # ## 2. 결측치 처리 — 50% 이상 결측 컬럼 제거, 나머지 median
@@ -156,23 +182,22 @@ print(
 
 
 def save_processed() -> None:
-    pd.to_pickle(X_train_sm, PROC_DIR / "secom_X_train.pkl")
-    pd.to_pickle(y_train_sm, PROC_DIR / "secom_y_train.pkl")
-    pd.to_pickle(X_test, PROC_DIR / "secom_X_test.pkl")
-    pd.to_pickle(y_test, PROC_DIR / "secom_y_test.pkl")
-    # 데모 샘플 — 시연용 4건 (PASS 2 + FAIL 2)
+    pd.to_pickle(X_train_sm, PROC_DIR / f"secom_X_train{SUFFIX}.pkl")
+    pd.to_pickle(y_train_sm, PROC_DIR / f"secom_y_train{SUFFIX}.pkl")
+    pd.to_pickle(X_test, PROC_DIR / f"secom_X_test{SUFFIX}.pkl")
+    pd.to_pickle(y_test, PROC_DIR / f"secom_y_test{SUFFIX}.pkl")
     fail_idx = y_test[y_test == 1].index[:2]
     pass_idx = y_test[y_test == 0].index[:2]
     demo_idx = list(fail_idx) + list(pass_idx)
     demo_sample = X_test.loc[demo_idx]
-    demo_sample.to_pickle(PROC_DIR / "demo_sample.pkl")
-    print(f"저장 완료 → {PROC_DIR}")
+    demo_sample.to_pickle(PROC_DIR / f"demo_sample{SUFFIX}.pkl")
+    print(f"[{SOURCE}] 저장 완료 → {PROC_DIR}")
 
 
 save_processed()
 
-print("\n=== T1 완료 ===")
-print(f"더미 모드: {is_dummy}")
+print(f"\n=== T1 완료 ({SOURCE}) ===")
+print(f"실제 더미 폴백: {is_dummy}")
 print(f"피처 수: {X_train_sm.shape[1]}")
 print(f"train: {len(y_train_sm)} (SMOTE 적용)")
 print(f"test:  {len(y_test)}")

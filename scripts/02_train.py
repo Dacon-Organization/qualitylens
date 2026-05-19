@@ -18,6 +18,7 @@ CLI::
 
 from __future__ import annotations
 
+import argparse
 from pathlib import Path
 
 import joblib
@@ -37,6 +38,22 @@ PROC_DIR = ROOT / "data" / "processed"
 MODEL_DIR = ROOT / "models"
 MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="T2 모델 학습 — XGBoost")
+    parser.add_argument(
+        "--source",
+        choices=["real", "dummy"],
+        default="real",
+        help="real: data/raw 의 UCI 원본 사용 / dummy: 합성 더미 생성",
+    )
+    return parser.parse_args()
+
+
+ARGS = parse_args() if __name__ == "__main__" else argparse.Namespace(source="real")
+SOURCE = ARGS.source  # "real" or "dummy"
+SUFFIX = f"_{SOURCE}"  # "_real" or "_dummy"
+
 RANDOM_STATE = 42
 N_SPLITS = 5
 
@@ -45,10 +62,10 @@ N_SPLITS = 5
 
 
 def load_processed() -> tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series]:
-    X_train = pd.read_pickle(PROC_DIR / "secom_X_train.pkl")
-    y_train = pd.read_pickle(PROC_DIR / "secom_y_train.pkl")
-    X_test = pd.read_pickle(PROC_DIR / "secom_X_test.pkl")
-    y_test = pd.read_pickle(PROC_DIR / "secom_y_test.pkl")
+    X_train = pd.read_pickle(PROC_DIR / f"secom_X_train{SUFFIX}.pkl")
+    y_train = pd.read_pickle(PROC_DIR / f"secom_y_train{SUFFIX}.pkl")
+    X_test = pd.read_pickle(PROC_DIR / f"secom_X_test{SUFFIX}.pkl")
+    y_test = pd.read_pickle(PROC_DIR / f"secom_y_test{SUFFIX}.pkl")
     return X_train, y_train, X_test, y_test
 
 
@@ -157,18 +174,18 @@ def build_threshold_table(X: pd.DataFrame, y: pd.Series) -> pd.DataFrame:
 
 
 threshold_table = build_threshold_table(X_test, y_test)
-threshold_table.to_csv(MODEL_DIR / "threshold_table.csv", index=False)
-print(f"\nthreshold_table — {len(threshold_table)} sensors → models/threshold_table.csv")
+threshold_table.to_csv(MODEL_DIR / f"threshold_table{SUFFIX}.csv", index=False)
+print(f"\nthreshold_table — {len(threshold_table)} sensors → models/threshold_table{SUFFIX}.csv")
 
 # %% [markdown]
 # ## 8. 직렬화
 
 
-joblib.dump(final_model, MODEL_DIR / "xgb_secom.joblib")
-print(f"모델 저장 → {MODEL_DIR / 'xgb_secom.joblib'}")
+joblib.dump(final_model, MODEL_DIR / f"xgb_secom{SUFFIX}.joblib")
+print(f"모델 저장 → {MODEL_DIR / f'xgb_secom{SUFFIX}.joblib'}")
 
 # 데모 결과 사전 캐싱
-demo_sample = pd.read_pickle(PROC_DIR / "demo_sample.pkl")
+demo_sample = pd.read_pickle(PROC_DIR / f"demo_sample{SUFFIX}.pkl")
 demo_proba = final_model.predict_proba(demo_sample)[:, 1]
 demo_result = pd.DataFrame(
     {
@@ -177,7 +194,7 @@ demo_result = pd.DataFrame(
         "pred_label": (demo_proba >= best_threshold).astype(int),
     }
 )
-demo_result.to_csv(PROC_DIR / "demo_result.csv", index=False)
+demo_result.to_csv(PROC_DIR / f"demo_result{SUFFIX}.csv", index=False)
 
 # %% [markdown]
 # ## 9. Model Card
@@ -187,7 +204,7 @@ model_card = f"""# Model Card — QualityLens XGBoost
 
 ## 학습 환경
 - 알고리즘: XGBoost (binary:logistic, eval_metric=aucpr)
-- 데이터: UCI SECOM (또는 더미)
+- 데이터 소스: **{SOURCE.upper()}** (UCI SECOM 실데이터 / 더미 합성)
 - Split: Stratified, test_size=0.2, random_state=42
 - 검증: Stratified K-Fold (k={N_SPLITS})
 - 클래스 불균형: SMOTE 적용 + scale_pos_weight={pos_weight:.2f}
@@ -215,8 +232,8 @@ model_card = f"""# Model Card — QualityLens XGBoost
 - 단일 샘플 추론 < 10ms (라인 모니터링 요건)
 """
 
-(MODEL_DIR / "model_card.md").write_text(model_card, encoding="utf-8")
-print(f"Model Card → {MODEL_DIR / 'model_card.md'}")
+(MODEL_DIR / f"model_card{SUFFIX}.md").write_text(model_card, encoding="utf-8")
+print(f"Model Card → {MODEL_DIR / f'model_card{SUFFIX}.md'}")
 
 print("\n=== T2 완료 ===")
 print(f"운영 threshold = {best_threshold:.4f}")
