@@ -206,10 +206,17 @@ dummy_roc = perf_table.iloc[1]["roc_auc"]
 diff = real_roc - dummy_roc
 overlap_pct = len(overlap) / 10 * 100
 
+if diff > 0.05:
+    _perf_sentence = "실데이터가 명확히 우수."
+elif diff < -0.05:
+    _perf_sentence = "더미가 더 잘 분류 — 실데이터의 노이즈·불균형 도전 큼."
+else:
+    _perf_sentence = "실데이터·더미 성능이 유사 — 더미가 합리적으로 설계됨."
+
 conclusion = f"""## 결론 요약
 
 - **모델 성능**: 실데이터 ROC-AUC = {real_roc:.3f}, 더미 = {dummy_roc:.3f} (Δ {diff:+.3f}).
-  {"실데이터가 명확히 우수." if diff > 0.05 else "실데이터·더미 성능이 유사 — 더미가 합리적으로 설계됨."}
+  {_perf_sentence}
 - **SHAP Top 10 겹침**: {len(overlap)}/10 ({overlap_pct:.0f}%). 공통 센서: {sorted(overlap) if overlap else '없음'}.
 - **익명화 한계 주의**: SECOM 센서 의미 라벨은 익명화되어 있어 "어떤 센서가 식각 온도인지" 검증 불가.
   본 보고서는 분포·기여도 패턴만 검증하며, 라벨 매핑은 발표 단계의 기획 가정.
