@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>QualityLens · 검증 리포트 인덱스</title>
+  <style>
+    
+    body, html {
+        font-family: "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    }
+    
+    body { max-width: 980px; margin: 32px auto; padding: 0 24px; color: #1f2328; }
+    h1 { margin: 0 0 8px; }
+    .meta { color: #656d76; font-size: 13px; margin-bottom: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+    .card { border: 1px solid #d0d7de; border-radius: 8px; padding: 18px; background: white; transition: transform .15s; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.06); }
+    .card a { text-decoration: none; color: inherit; display: block; }
+    .num { font-size: 24px; font-weight: 700; color: #58a6ff; }
+    .label { margin-top: 6px; font-size: 14px; }
+    footer { margin-top: 36px; padding-top: 12px; border-top: 1px solid #d0d7de; font-size: 12px; color: #656d76; }
+  </style>
+</head>
+<body>
+  <h1>QualityLens 검증 리포트</h1>
+  <div class="meta">생성: 2026-05-19 17:46 KST · 본선 발표 부록</div>
+  <div class="grid">
+    
+<div class="card">
+  <a href="01_preprocessing.html">
+    <div class="num">01</div>
+    <div class="label">✅ T1 전처리</div>
+  </a>
+</div>
+
+<div class="card">
+  <a href="02_training.html">
+    <div class="num">02</div>
+    <div class="label">✅ T2 모델 학습</div>
+  </a>
+</div>
+
+<div class="card">
+  <a href="03_shap.html">
+    <div class="num">03</div>
+    <div class="label">✅ T3 SHAP 분석</div>
+  </a>
+</div>
+
+<div class="card">
+  <a href="04_compare.html">
+    <div class="num">04</div>
+    <div class="label">✅ real vs dummy 비교</div>
+  </a>
+</div>
+
+<div class="card">
+  <span>
+    <div class="num">05</div>
+    <div class="label">⏳ Playwright E2E 검증</div>
+  </span>
+</div>
+  </div>
+  <footer>
+    P-A 실데이터 통합·검증 산출물 — spec: smart-factory-hackathon/docs/spec_p_a_real_data_integration.md
+  </footer>
+</body>
+</html>

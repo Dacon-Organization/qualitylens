@@ -185,3 +185,35 @@ print(group_contrib.to_string(index=False))
 print(f"\n=== T3 완료 ({SOURCE}) ===")
 print("모든 SHAP 산출물이 사전 계산되어 본선장 재계산 불필요.")
 print("다음: app/ (T4 Streamlit UI)")
+
+# %% [markdown]
+# ## 8. HTML 보고서 출력 (P-A G3)
+
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from app.lib.report_render import write as write_report, embed_plotly
+from app.lib.fonts import plotly_template_with_korean
+import plotly.graph_objects as go
+
+fig_top = go.Figure(go.Bar(
+    x=top20["mean_abs_shap"][::-1].tolist(),
+    y=top20["sensor"][::-1].tolist(),
+    orientation="h",
+))
+fig_top.update_layout(title_text="상위 20 SHAP 기여 센서", xaxis_title="mean |SHAP|", height=520, **plotly_template_with_korean())
+
+first_sid = next(iter(waterfall_demo["samples"]))
+first_data = waterfall_demo["samples"][first_sid]
+fig_wf = go.Figure(go.Waterfall(
+    x=first_data["features"],
+    y=first_data["shap"],
+    measure=["relative"] * len(first_data["features"]),
+))
+fig_wf.update_layout(title_text=f"Waterfall — 샘플 {first_sid} (base={waterfall_demo['base_value']:.3f})", **plotly_template_with_korean())
+
+_sections = [
+    {"title": "1. 평균 |SHAP| Top 20", "body_html": embed_plotly(fig_top, "shap_top20_chart")},
+    {"title": "2. 데모 샘플 Waterfall (첫 샘플)", "body_html": embed_plotly(fig_wf, "shap_waterfall_chart")},
+    {"title": "3. 그룹별 평균 기여도", "body_html": group_contrib.to_html(index=False, float_format="%.4f")},
+]
+write_report("shap", source=SOURCE, sections=_sections)
