@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>QualityLens — 자유 양식 발표 자료 (시연·Q&A 보조)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans KR', sans-serif; color: #0d1117; background: #f6f8fa;
+    line-height: 1.6; padding: 24px;
+  }
+  .container { max-width: 1400px; margin: 0 auto; }
+  h1 { font-size: 32px; margin: 24px 0 12px; color: #0d1117; }
+  h2 {
+    font-size: 22px; margin: 32px 0 12px; color: #1f6feb;
+    border-bottom: 2px solid #1f6feb; padding-bottom: 6px;
+  }
+  h3 { font-size: 16px; margin: 16px 0 8px; color: #0d1117; }
+  p, li { font-size: 14px; }
+  ul, ol { margin-left: 24px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: #fff; }
+  th, td { border: 1px solid #d0d7de; padding: 8px 12px; text-align: left; font-size: 13px; }
+  th { background: #1f6feb; color: #fff; font-weight: 600; }
+  tr:nth-child(even) td { background: #f6f8fa; }
+
+  .grid { display: grid; gap: 16px; margin: 12px 0; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .card {
+    background: #fff; padding: 16px; border-radius: 8px;
+    border-left: 4px solid #1f6feb; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  .card h3 { margin-top: 0; color: #1f6feb; }
+  .card.warn { border-left-color: #d29922; }
+  .card.warn h3 { color: #d29922; }
+  .card.danger { border-left-color: #f85149; }
+  .card.danger h3 { color: #f85149; }
+
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 8px;
+    font-size: 11px; font-weight: 600; color: #fff;
+  }
+  .badge.ok { background: #3fb950; }
+  .badge.warn { background: #d29922; }
+  .badge.danger { background: #f85149; }
+  .badge.info { background: #1f6feb; }
+
+  .header {
+    background: linear-gradient(135deg, #1f6feb 0%, #8957e5 100%);
+    color: #fff; padding: 32px; border-radius: 12px; margin-bottom: 24px;
+  }
+  .header h1 { color: #fff; }
+  .header .sub { font-size: 18px; opacity: 0.95; margin-top: 4px; }
+
+  .toc {
+    background: #fff; padding: 16px 24px; border-radius: 8px;
+    margin-bottom: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  .toc ul { margin-left: 16px; }
+  .toc a { color: #1f6feb; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  code {
+    background: #f6f8fa; padding: 2px 6px; border-radius: 4px;
+    font-family: 'Consolas', 'Monaco', monospace; font-size: 12px;
+    border: 1px solid #d0d7de;
+  }
+  pre {
+    background: #0d1117; color: #c9d1d9; padding: 12px; border-radius: 6px;
+    overflow-x: auto; font-family: 'Consolas', monospace; font-size: 12px;
+    margin: 8px 0;
+  }
+
+  .highlight { background: #fff8c5; padding: 1px 4px; border-radius: 3px; }
+  .footer {
+    text-align: center; color: #6e7681; font-size: 12px; margin-top: 32px;
+    border-top: 1px solid #d0d7de; padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- =========================== HEADER =========================== -->
+  <div class="header">
+    <h1>🏭 QualityLens — 자유 양식 발표 자료</h1>
+    <div class="sub">시연 · Q&A 답변 · 의사결정 근거 통합 — 2026 스마트 공장 운영 시스템 MVP 해커톤 본선</div>
+  </div>
+
+  <!-- =========================== TOC =========================== -->
+  <div class="toc">
+    <h3>📑 목차</h3>
+    <ul>
+      <li><a href="#about">1. About — Quality + Lens 정체성</a></li>
+      <li><a href="#problem">2. 문제 정의 + 시장 갭</a></li>
+      <li><a href="#ai">3. AI 활용 — 왜 XGBoost + SHAP + WER?</a></li>
+      <li><a href="#platform">4. 플랫폼 — 4영역 통합 7페이지</a></li>
+      <li><a href="#mvp">5. MVP 핵심 갭 — CSV 업로드 + Onboarding</a></li>
+      <li><a href="#bench">6. 벤치마킹 비교표</a></li>
+      <li><a href="#qa">7. Q&A 심층 답변 10개</a></li>
+      <li><a href="#decision">8. 의사결정 근거 로그 (왜 X를 썼는가)</a></li>
+      <li><a href="#tech">9. 기술 스택 + 의존성</a></li>
+      <li><a href="#roadmap">10. 향후 로드맵</a></li>
+    </ul>
+  </div>
+
+  <!-- =========================== ABOUT =========================== -->
+  <h2 id="about">1. About — Quality + Lens 정체성</h2>
+  <p>QualityLens는 <span class="highlight">Quality(품질)</span>를 <span class="highlight">Lens(렌즈)</span>로 들여다보는 투명 AI 플랫폼입니다.
+  기존 제조 AI의 "블랙박스" 한계를 극복해, 중소 제조 현장 작업자가 <span class="highlight">"왜 불량인가"</span>를 즉시 이해하고 조치할 수 있게 합니다.</p>
+
+  <div class="grid grid-3">
+    <div class="card">
+      <h3>🎯 미션</h3>
+      <p>마키나락스급 설명력을 <span class="highlight">1/100 가격</span>으로 중소 제조에.</p>
+    </div>
+    <div class="card">
+      <h3>🛠 핵심 기술</h3>
+      <p>XGBoost + SHAP + Western Electric Rules + Pareto 80/20 통합.</p>
+    </div>
+    <div class="card">
+      <h3>🚀 차별점</h3>
+      <p>Streamlit 1-Click 무료 배포 · CSV 업로드 → 30초 인사이트.</p>
+    </div>
+  </div>
+
+  <!-- =========================== PROBLEM =========================== -->
+  <h2 id="problem">2. 문제 정의 + 시장 갭</h2>
+  <div class="grid grid-2">
+    <div class="card danger">
+      <h3>현장 페인포인트</h3>
+      <ul>
+        <li>이상 알람 → 원인 파악까지 <b>평균 6시간</b></li>
+        <li>SPC 통계 전문가 부재로 관리도 직접 못 그림</li>
+        <li>마키나락스·DELMIA는 <b>수억~수십억</b> 도입 비용</li>
+        <li>Tableau/PowerBI는 BI만 — 실시간 이상감지 ❌</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>시장 공백 (Whitespace)</h3>
+      <p style="margin-top: 8px;">"대기업 전용 AI 솔루션" ↔ "범용 BI 도구" 사이에 <span class="highlight">중소 제조 + 설명력 있는 AI</span> 공백.
+      QualityLens는 이 공백을 <b>Streamlit 기반 경량 + SHAP 설명력</b>으로 채웁니다.</p>
+    </div>
+  </div>
+
+  <!-- =========================== AI =========================== -->
+  <h2 id="ai">3. AI 활용 — 왜 XGBoost + SHAP + WER?</h2>
+
+  <h3>🔧 모델 선정 의사결정 트리</h3>
+  <table>
+    <thead><tr><th>고려 대상</th><th>적합도</th><th>선정/탈락 이유</th></tr></thead>
+    <tbody>
+      <tr><td><b>XGBoost</b> ⭐</td><td>✅ 선정</td><td>591센서 표 형식 + 6.6% 극심한 불균형에 강건, 트리 기반 → SHAP 자연 결합</td></tr>
+      <tr><td>LightGBM</td><td>대안</td><td>속도 우위지만 XGBoost와 정확도 차이 미미, 익숙도 우선</td></tr>
+      <tr><td>딥러닝 (TabNet 등)</td><td>❌ 탈락</td><td>SECOM 1,567행 → 데이터 부족, 해석성 떨어짐</td></tr>
+      <tr><td>로지스틱 회귀</td><td>❌ 탈락</td><td>비선형 관계 캡처 부족, MCC 0.5 이하</td></tr>
+    </tbody>
+  </table>
+
+  <h3>🔍 XAI 선정</h3>
+  <table>
+    <thead><tr><th>XAI 기법</th><th>적합도</th><th>판단</th></tr></thead>
+    <tbody>
+      <tr><td><b>SHAP</b> ⭐</td><td>✅ 선정</td><td>게임이론 기반 공정 분해, Waterfall + Top-K 텍스트 자동 생성</td></tr>
+      <tr><td>LIME</td><td>탈락</td><td>샘플마다 다른 근사 모델 — 일관성 부족</td></tr>
+      <tr><td>Permutation Importance</td><td>탈락</td><td>전역만 — 개별 샘플 설명 불가</td></tr>
+      <tr><td>Attention 가중치</td><td>탈락</td><td>딥러닝 한정, XGBoost 미적용</td></tr>
+    </tbody>
+  </table>
+
+  <h3>📊 Western Electric Rules — 왜 추가했는가</h3>
+  <p>단일 점 임계값(threshold) 방식은 <span class="highlight">"작은 시프트"</span>를 놓침. WER 4종 룰로 패턴 감지 → Shewhart 대비 <b>5~10배 빠른 이상 감지</b> (출처: jmp.com CUSUM 비교).</p>
+
+  <!-- =========================== PLATFORM =========================== -->
+  <h2 id="platform">4. 플랫폼 — 4영역 통합 7페이지</h2>
+  <div class="grid grid-2">
+    <div class="card"><h3>🛡️ 품질 (Quality)</h3>
+      <p>P1 실시간 예측 + P2 SHAP 원인 분석 (3계층: 글로벌/Waterfall/Dependence)</p></div>
+    <div class="card warn"><h3>🚨 안전 (Safety)</h3>
+      <p>메인 상단 3단계 알림 배너 + Western Electric Rules 자동 감지</p></div>
+    <div class="card"><h3>⚙️ 설비 (Equipment)</h3>
+      <p>P5 SPC 관리도 (UCL/LCL/±σ 보조선) + 센서 분포 임계 마킹</p></div>
+    <div class="card"><h3>📈 생산 (Production)</h3>
+      <p>P4 이력 누적 + 조치 효과 추적 + Pareto 80/20 우선순위</p></div>
+  </div>
+
+  <!-- =========================== MVP =========================== -->
+  <h2 id="mvp">5. MVP 핵심 갭 — 사용자 CSV 업로드 + Onboarding</h2>
+  <p>외부 검토자 피드백에서 발견된 <span class="highlight">MVP 결정적 갭</span>: 실무자가 자기 데이터로 시연할 수 없으면 "toy"로 평가됨.</p>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>📤 PR-19: CSV 업로드</h3>
+      <ul>
+        <li>591개 sensor_NNN 컬럼 일부 또는 전부</li>
+        <li>누락 자동 0 채움 (z-score 평균 가정)</li>
+        <li>인코딩 UTF-8/UTF-8-sig/CP949 자동 감지</li>
+        <li>결과: pred_proba + pred_label + risk_tier(🟢🟡🔴) + CSV 다운로드</li>
+        <li>샘플 템플릿 다운로드 → 그대로 재업로드 가능</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>👋 PR-20: Onboarding 모달</h3>
+      <ul>
+        <li>st.dialog 4슬라이드 워크스루</li>
+        <li>① Quality+Lens 정체성 ② CSV 가이드 ③ 4영역 ④ Predict→Explain→Act</li>
+        <li>session_state["_onboarded"] 보존 — 한 번만</li>
+        <li>사이드바 "❓ 사용 안내 다시 보기" 재오픈</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- =========================== BENCH =========================== -->
+  <h2 id="bench">6. 벤치마킹 비교표</h2>
+  <table>
+    <thead><tr><th>구분</th><th>마키나락스</th><th>DELMIA</th><th>Tableau/PowerBI</th><th>QualityLens</th></tr></thead>
+    <tbody>
+      <tr><td>타겟</td><td>대기업 (현대차, 국방)</td><td>글로벌 (자동차/항공)</td><td>IT/기획 부서</td><td><b>중소 제조 + QC</b></td></tr>
+      <tr><td>도입 비용</td><td>수억~수십억</td><td>수십억+</td><td>수백만 라이선스</td><td><b>무료 Streamlit Cloud</b></td></tr>
+      <tr><td>도입 기간</td><td>수개월</td><td>12개월+</td><td>1~3개월 학습</td><td><b>즉시 (1-Click 배포)</b></td></tr>
+      <tr><td>실시간 이상 감지</td><td>✅</td><td>✅</td><td>❌</td><td>✅ (XGBoost + WER)</td></tr>
+      <tr><td>설명력 (XAI)</td><td>일부</td><td>일부</td><td>❌</td><td><b>✅ SHAP 자동 텍스트</b></td></tr>
+      <tr><td>제조 표준 시각화 (SPC/Pareto/Cpk)</td><td>✅</td><td>✅</td><td>❌</td><td>✅ 통합</td></tr>
+      <tr><td>현장 작업자 즉시 사용</td><td>❌ 교육 필요</td><td>❌ 교육 필요</td><td>❌ BI 학습</td><td><b>✅ 첫날부터</b></td></tr>
+    </tbody>
+  </table>
+
+  <!-- =========================== Q&A =========================== -->
+  <h2 id="qa">7. Q&A 심층 답변 10개</h2>
+  <ol>
+    <li><b>Q. 왜 SHAP?</b> A. 게임이론 기반 공정 분해. 각 센서 기여도를 "센서_003이 45% 영향" 같은 한국어 텍스트로 자동 변환 → 비전문가 작업자도 즉시 이해.</li>
+    <li><b>Q. 왜 XGBoost?</b> A. 591센서 표 형식 + 6.6% 극심한 불균형에 강건. 5-Fold CV MCC 0.98±0.01. 트리 기반이라 SHAP 자연 결합. 학습 5분 내 가능.</li>
+    <li><b>Q. SMOTE 부작용?</b> A. SMOTE는 train에만 적용 (test는 원본 분포 유지) → 검증 신뢰성 보존. scale_pos_weight 동적 조정으로 보강.</li>
+    <li><b>Q. Western Electric Rules 추가 이유?</b> A. 단일 점 3σ 임계값보다 패턴(연속 3점/5점/8점) 감지가 5~10배 빠름. 작은 시프트도 놓치지 않음.</li>
+    <li><b>Q. 591개 센서 의미?</b> A. SECOM 데이터셋은 익명화 → 센서 의미는 모름. 우리는 분포·기여도 패턴만 정직하게 사용.</li>
+    <li><b>Q. 4영역 통합 정말?</b> A. 단일 데이터 소스(timestamp+state)로 7페이지 일관. 사이드바 자유 이동 시 mode 보존(PR-7 session_state fix).</li>
+    <li><b>Q. 중소공장이 정말 쓸 수 있나?</b> A. 📤 데이터 업로드 페이지에서 자기 CSV 한 번 → 30초 내 첫 인사이트. 591개 컬럼 부족해도 자동 정렬. UTF-8/CP949 자동 감지.</li>
+    <li><b>Q. 모델 드리프트는?</b> A. 본 MVP는 정적 모델. 본선 후 P-D 로드맵에 KS test + PSI 기반 드리프트 모니터링 포함.</li>
+    <li><b>Q. 시연 영상은?</b> A. 5분 시나리오(정상→이상→SHAP→조치→복귀). docs/presentation/demo_video_guide.md 가이드 기반.</li>
+    <li><b>Q. 향후 확장성?</b> A. 591센서 추상화 → 반도체 식각, 자동차 도장, 식품 공정 등 산업 확장. Claude↔Codex 하이브리드(HANDOVER 50줄) 협업 인프라 검증됨.</li>
+  </ol>
+
+  <!-- =========================== DECISION LOG =========================== -->
+  <h2 id="decision">8. 의사결정 근거 로그 (왜 X를 썼는가)</h2>
+  <table>
+    <thead><tr><th>결정</th><th>이유</th><th>대안 검토</th><th>관련 PR</th></tr></thead>
+    <tbody>
+      <tr><td>Streamlit (UI)</td><td>1-Click 배포, Python 일관, multipage 표준</td><td>Dash/Gradio 탈락 (디자인/속도)</td><td>P-A 전체</td></tr>
+      <tr><td>XGBoost (모델)</td><td>불균형 강건, 트리 → SHAP 결합</td><td>딥러닝 데이터 부족 탈락</td><td>scripts/02_train.py</td></tr>
+      <tr><td>SHAP (XAI)</td><td>게임이론 일관성, Waterfall</td><td>LIME 일관성 부족 탈락</td><td>scripts/03_shap.py</td></tr>
+      <tr><td>SMOTE (불균형)</td><td>train만 적용, test 보존</td><td>scale_pos_weight 단독 약함</td><td>scripts/01_preprocess.py</td></tr>
+      <tr><td>Western Electric Rules</td><td>패턴 감지 5~10배 빠름</td><td>EWMA 복잡도 높음 탈락</td><td>PR-14 (app/lib/spc.py)</td></tr>
+      <tr><td>Pareto 80/20</td><td>현장 의사결정 가속화</td><td>—</td><td>PR-15 (app/lib/viz.py)</td></tr>
+      <tr><td>session_state widget key</td><td>호출처 무변경, 표준 패턴</td><td>tuple 반환 5곳 수정 탈락</td><td>PR-7 (app/lib/demo.py)</td></tr>
+      <tr><td>CSV 업로드 + 자동 정렬</td><td>MVP 핵심 — 실무자 즉시 사용</td><td>—</td><td>PR-19 (app/lib/upload.py)</td></tr>
+      <tr><td>st.dialog onboarding</td><td>첫 사용자 1분 안내</td><td>—</td><td>PR-20 (app/lib/onboarding.py)</td></tr>
+      <tr><td>HANDOVER + SESSION_LOG</td><td>Claude↔Codex 무손실 인계</td><td>—</td><td>PR-3</td></tr>
+      <tr><td>dummy 산출물 git 커밋</td><td>Streamlit Cloud 배포 안정성</td><td>Git LFS 셋업 복잡 탈락</td><td>PR-1 (.gitignore)</td></tr>
+    </tbody>
+  </table>
+
+  <!-- =========================== TECH =========================== -->
+  <h2 id="tech">9. 기술 스택 + 의존성</h2>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>핵심 라이브러리 (requirements.txt)</h3>
+      <pre>numpy==1.26.4
+pandas==2.2.2
+scikit-learn==1.5.1
+imbalanced-learn==0.12.3
+xgboost==2.1.1
+shap==0.46.0
+joblib==1.4.2
+matplotlib==3.9.2
+plotly==5.24.1
+streamlit==1.39.0</pre>
+    </div>
+    <div class="card">
+      <h3>파일 구조 (핵심)</h3>
+      <pre>smart-factory-hackathon/
+├── app/
+│   ├── app.py          (메인)
+│   ├── pages/0~5       (업로드 + P1-P5)
+│   └── lib/
+│       ├── demo.py, data_loader.py, viz.py
+│       ├── upload.py, onboarding.py
+│       └── spc.py
+├── data/processed/
+├── models/
+├── scripts/01~03, build_demo_result.py
+└── docs/
+    ├── HANDOVER.md, SESSION_LOG.md
+    ├── pitch_30s.md
+    └── presentation/slides.html, freeform.html</pre>
+    </div>
+  </div>
+
+  <!-- =========================== ROADMAP =========================== -->
+  <h2 id="roadmap">10. 향후 로드맵</h2>
+  <table>
+    <thead><tr><th>단계</th><th>제목</th><th>예상 시기</th></tr></thead>
+    <tbody>
+      <tr><td>P-B 잔여</td><td>PR-17 Cpk/Cp 게이지, PR-16 OEE 3각형, PR-9 시나리오 토글</td><td>본선 후 1주</td></tr>
+      <tr><td>P-C</td><td>한글 폰트 전수 점검 (Noto Sans KR 임베드)</td><td>본선 후 1주</td></tr>
+      <tr><td>P-D</td><td>real 산출물 배포 연구 (quantization·LFS·외부 호스팅 4안)</td><td>본선 후 2주</td></tr>
+      <tr><td>P-E 잔여</td><td>PR-E4 의사결정 근거 대시보드 (Q&A 면접 대비)</td><td>본선 후 2주</td></tr>
+      <tr><td>확장</td><td>드리프트 모니터링 (KS test + PSI), DB 연동, MES API 통합</td><td>중기</td></tr>
+      <tr><td>비전</td><td>반도체 식각 → 자동차 도장 → 식품 공정 산업 확장</td><td>장기</td></tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <p>QualityLens — 2026 스마트 공장 운영 시스템 MVP 해커톤 본선</p>
+    <p>이동원 (kik328288@gmail.com) · 작성일 2026-05-22 KST</p>
+    <p>코드: github.com/mygithub05253/Dacon/smart-factory-hackathon</p>
+  </div>
+
+</div>
+</body>
+</html>
