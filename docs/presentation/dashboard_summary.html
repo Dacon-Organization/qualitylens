@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>QualityLens — 종합 대시보드 (정적 미러)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: 'Noto Sans KR', -apple-system, 'Segoe UI', sans-serif;
+    color: #0d1117;
+    background: #f6f8fa;
+    line-height: 1.5;
+    padding: 24px;
+  }
+
+  .container { max-width: 1280px; margin: 0 auto; }
+
+  header {
+    text-align: center;
+    padding: 24px 0 32px;
+    border-bottom: 2px solid #1f6feb;
+    margin-bottom: 24px;
+  }
+  header h1 { font-size: 32px; color: #0d1117; }
+  header .tagline { font-size: 14px; color: #6e7681; margin-top: 6px; }
+
+  section { margin-bottom: 32px; }
+  section h2 {
+    font-size: 22px; color: #1f6feb; margin-bottom: 14px;
+    padding-bottom: 6px; border-bottom: 1px solid #d0d7de;
+  }
+
+  /* KPI 4열 그리드 */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .kpi-card {
+    padding: 20px;
+    border-radius: 10px;
+    border-left: 5px solid;
+    min-height: 130px;
+  }
+  .kpi-card.win { background: linear-gradient(135deg, #3fb95018, #3fb95005); border-color: #3fb950; }
+  .kpi-card.info { background: linear-gradient(135deg, #1f6feb18, #1f6feb05); border-color: #1f6feb; }
+  .kpi-card.accent { background: linear-gradient(135deg, #8957e518, #8957e505); border-color: #8957e5; }
+  .kpi-card .icon { font-size: 28px; }
+  .kpi-card .label { font-size: 13px; color: #6e7681; margin: 6px 0; }
+  .kpi-card .value { font-size: 32px; font-weight: 800; }
+  .kpi-card .delta { font-size: 13px; font-weight: 600; margin-top: 6px; color: #3fb950; }
+  .kpi-card .delta.bad { color: #f85149; }
+
+  /* Alert gradient card */
+  .alert-card {
+    background: linear-gradient(135deg, #f8514928, #ffffff);
+    border-left: 5px solid #f85149;
+    padding: 18px 24px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .alert-card .title { font-size: 16px; font-weight: 700; color: #f85149; margin-bottom: 6px; }
+  .alert-card .msg { font-size: 14px; }
+
+  /* Comparison table */
+  table {
+    width: 100%; border-collapse: collapse; font-size: 14px;
+    border-radius: 8px; overflow: hidden;
+  }
+  th {
+    padding: 12px 14px; text-align: left;
+    background: #1f6feb; color: #fff; font-weight: 600;
+  }
+  td { padding: 10px 14px; border-bottom: 1px solid #d0d7de; }
+  td.delta-up { color: #3fb950; font-weight: 600; }
+  td.delta-down-good { color: #3fb950; font-weight: 600; }
+  td.delta-down-bad { color: #f85149; font-weight: 600; }
+  tr:nth-child(even) td { background: #f6f8fa; }
+
+  /* Numbered steps */
+  ol.numbered {
+    list-style: none; padding: 0; margin: 12px 0;
+  }
+  ol.numbered li {
+    display: flex; align-items: flex-start; gap: 14px;
+    margin-bottom: 14px; font-size: 14px;
+  }
+  ol.numbered .badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #1f6feb; color: #fff; font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* Verdict box */
+  .verdict {
+    padding: 16px 20px; border-radius: 8px;
+    border-left: 5px solid; margin: 8px 0;
+    font-size: 15px;
+  }
+  .verdict.win { background: #3fb95020; border-color: #3fb950; }
+  .verdict.warn { background: #d2992220; border-color: #d29922; }
+  .verdict.bad { background: #f8514920; border-color: #f85149; }
+  .verdict .icon { font-size: 18px; margin-right: 8px; }
+
+  /* Knowledge base note */
+  .kb-note {
+    background: #1f6feb15;
+    border-left: 5px solid #1f6feb;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 40px; padding-top: 20px;
+    border-top: 1px solid #d0d7de;
+    font-size: 12px; color: #6e7681;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>📋 QualityLens — 종합 대시보드</h1>
+    <div class="tagline">조치 이력 + 비즈니스 임팩트 + 작업 흐름 — 경영진·생산관리자 한눈에</div>
+  </header>
+
+  <!-- 1. KPI 4열 그리드 -->
+  <section>
+    <h2>💼 비즈니스 임팩트 (이번 달 누적)</h2>
+    <div class="kpi-grid">
+      <div class="kpi-card win">
+        <div class="icon">📊</div>
+        <div class="label">예방한 불량 (이번 달)</div>
+        <div class="value">42건</div>
+        <div class="delta">▲ 지난달 대비 +28%</div>
+      </div>
+      <div class="kpi-card win">
+        <div class="icon">💰</div>
+        <div class="label">절감된 예상 비용</div>
+        <div class="value">4,200만원</div>
+        <div class="delta">▲ +1,150만원</div>
+      </div>
+      <div class="kpi-card info">
+        <div class="icon">⏱</div>
+        <div class="label">평균 조치 응답 시간</div>
+        <div class="value">3.2분</div>
+        <div class="delta">▼ 지난달 대비 -42%</div>
+      </div>
+      <div class="kpi-card accent">
+        <div class="icon">👥</div>
+        <div class="label">활성 작업자 수</div>
+        <div class="value">8명</div>
+        <div class="delta">▲ +2명</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Alert gradient -->
+  <section>
+    <h2>🚨 진행 중 이상 알림</h2>
+    <div class="alert-card">
+      <div class="title">🚨 진행 중 이상 9건 — 즉시 조치 필요</div>
+      <div class="msg">현재 분석 중인 샘플 51건 중 <b>9건</b>이 이상 확률 50% 이상. P3 조치 가이드에서 우선순위 처리 권고.</div>
+    </div>
+  </section>
+
+  <!-- 3. 비교표 -->
+  <section>
+    <h2>📊 이번 주 vs 지난 주 비교</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>지표</th>
+          <th>이번 주</th>
+          <th>지난 주</th>
+          <th>변화</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>예방 불량 (건)</td><td>12</td><td>9</td><td class="delta-up">+33.3%</td></tr>
+        <tr><td>절감 비용 (만원)</td><td>1,250</td><td>920</td><td class="delta-up">+35.9%</td></tr>
+        <tr><td>평균 응답 시간 (분)</td><td>3.0</td><td>4.1</td><td class="delta-down-good">-26.8%</td></tr>
+        <tr><td>오탐 (False Positive)</td><td>2</td><td>5</td><td class="delta-down-good">-60.0%</td></tr>
+        <tr><td>이상 확률 평균</td><td>0.082</td><td>0.095</td><td class="delta-down-good">-13.7%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 4. 권장 작업 Top 3 -->
+  <section>
+    <h2>📋 이번 시프트 권장 작업 Top 3</h2>
+    <ol class="numbered">
+      <li>
+        <span class="badge">1</span>
+        <span><b>sensor_003 (식각 챔버 온도)</b> 점검 — 최근 24시간 위반 5회, 냉각 밸브 5% 개방 권고. 예상 소요 3분.</span>
+      </li>
+      <li>
+        <span class="badge">2</span>
+        <span><b>sensor_146 (진공도)</b> 누설 점검 — 터보 펌프 + O-링 확인. 예상 소요 20분. 미조치 시 다음 시프트 영향 가능.</span>
+      </li>
+      <li>
+        <span class="badge">3</span>
+        <span><b>P5 SPC 차트 점검</b> — Western Electric Rules 위반 패턴 확인. Rule 4 (연속 8점 한쪽) 위반 감지 시 평균 이동 의심.</span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- 5. Verdict -->
+  <section>
+    <h2>🎯 의사결정 — 라인 전체 상태</h2>
+    <div class="verdict warn">
+      <span class="icon">⚠️</span>
+      <b>주의 필요</b> — 이상률 17.6% (평소 6.6% 대비 다소 증가). P5 SPC 패턴 점검 권고.
+    </div>
+  </section>
+
+  <!-- 6. 이력의 의미 -->
+  <section>
+    <h2>📚 이력 데이터의 의미</h2>
+    <div class="kb-note">
+      본 이력은 <b>신규 작업자 교육용 지식 베이스(Knowledge Base)</b>로 활용되며, <b>차기 AI 모델 재학습(Retraining)</b>의 핵심 데이터가 됩니다.
+      → 누적될수록 모델 정확도 + 작업자 숙련도 향상.
+    </div>
+  </section>
+
+  <footer>
+    QualityLens — 2026 스마트 공장 운영 시스템 MVP 해커톤 본선 · 본 정적 대시보드는 발표 슬라이드 임베드 + 시연 네트워크 이슈 시 보험용
+  </footer>
+</div>
+</body>
+</html>

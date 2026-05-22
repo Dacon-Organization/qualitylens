@@ -6,7 +6,7 @@
 ---
 
 ## 0. 한 줄 현황
-**P-F 진행 중** — PR-21~23, E1R, 22 모두 머지(#90~93). **PR-26 인앱 UX 완료** (sensor_dictionary 15센서 + action_rules 10센서 + st.switch_page CTA + popover 도움말). 다음 PR-24 작업 대시보드.
+**P-F 진행 중** — PR-21/E1R/23/22/26 머지(#90~94). **PR-24 작업 대시보드 A+B 완료** (dashboard_cards + 종합 페이지 + 정적 HTML). 다음 PR-E5 발표 결과 시각화 4장.
 
 ## 1. 환경
 - 원본 디렉토리: `C:\Users\kik32\workspace\Dacon\smart-factory-hackathon` (워크트리 미사용, origin 직접 작업)
@@ -15,7 +15,8 @@
 - Plan: `~/.claude/plans/qualitylens-gentle-panda.md` (P-F 섹션 11건)
 
 ## 2. 마지막 결정 사항 (최근 5건, 신규 → 과거)
-- 2026-05-22 14:15: **PR-26** — sensor_dictionary.csv (15센서 한글 매핑) + sensor_names.py + action_rules.py (10센서 룰베이스). P3에 AI 우선 권고 섹션 (SHAP top 3 → 자동 권고). P0/P1/P2/P3에 st.switch_page CTA. P3에 popover 인앱 도움말. last_alert_sample session_state로 P2 연계.
+- 2026-05-22 14:35: **PR-24** — `app/lib/dashboard_cards.py` (kpi_card / verdict_box / numbered_step / comparison_table / alert_gradient_card / render_kpi_grid). `app/pages/6_📋_종합_대시보드.py` 신규 (Step 11+12 비즈니스 임팩트). `docs/presentation/dashboard_summary.html` 정적 미러 (발표 슬라이드 임베드용 보험).
+- 2026-05-22 14:15: **PR-26** 머지(#94) — sensor_dictionary (15센서) + sensor_names + action_rules (10센서) + P3 AI 우선 권고 + popover + st.switch_page CTA.
 - 2026-05-22 13:45: **PR-22** 머지(#93) — viz_advanced.py 9함수. P2/P3/P4/P5 통합. st.tabs lazy 렌더.
 - 2026-05-22 13:15: **PR-23** 머지(#92) — onboarding.py 4→7슬라이드. SVG inline 시각화 3장 (demo flow / SHAP example / action flow). 비전문가용 자세한 해설.
 - 2026-05-22 12:55: **PR-E1R** 머지(#91) — slides.html 16:9 변환 (273×186mm → 320×180mm). 폰트 비례 확대. KPI 카드 + Verdict 박스 신규 (PR-E5 대비).
@@ -44,8 +45,9 @@
 | PR-E1R | 발표 16:9 재작업 | ✅ 머지(#91) |
 | PR-23 | Onboarding 7슬라이드 + SVG 3장 | ✅ 머지(#92) |
 | PR-22 | 시각화 풀 확장 (viz_advanced 9함수) | ✅ 머지(#93) |
-| **PR-26** | 인앱 UX (sensor_dictionary 15 + action_rules 10 + CTA + popover) | ✅ 로컬 완료, commit/push 대기 |
-| PR-24 | 작업 대시보드 A+B + 비즈니스 임팩트 | 🚧 다음 |
+| PR-26 | 인앱 UX (sensor_dictionary + action_rules + CTA) | ✅ 머지(#94) |
+| **PR-24** | 작업 대시보드 A+B (dashboard_cards + P6 신규 + 정적 HTML) | ✅ 로컬 완료, commit/push 대기 |
+| PR-E5 | 발표 결과 시각화 4장 (slides 13~16) | 🚧 다음 |
 | PR-22 | 시각화 풀 확장 (Step 4~7) | ⏳ |
 | PR-26 | 인앱 UX (Step 8/9/13/14/15) — 데이터 딕셔너리 + CTA | ⏳ |
 | PR-24 | 작업 대시보드 A+B + 비즈니스 임팩트 | ⏳ |

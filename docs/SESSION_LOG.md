@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-05-22 14:35 KST [Claude Opus 4.7] — PR-24 작업 대시보드 A+B + 비즈니스 임팩트
+
+- **사용자 피드백 #3 직접 반영**: 첨부 참조 `team_comparison_dashboard_v0.1.html` 같은 결과 시각화 필요. 4영역 패턴 적용 (KPI 4열 + Alert gradient + 비교표 색상 코딩 + Numbered + Verdict).
+- **A: Streamlit 페이지** `app/pages/6_📋_종합_대시보드.py` — 7섹션 (KPI / Alert / 비교 / 권장 작업 Top3 / Verdict / 이력 의미 / CTA 4분할).
+- **B: 정적 HTML** `docs/presentation/dashboard_summary.html` — A의 정적 미러. 발표 슬라이드 13 임베드 + 시연 네트워크 이슈 시 보험.
+- **모듈** `app/lib/dashboard_cards.py`: 6 컴포넌트 — kpi_card, verdict_box, numbered_step, comparison_table, alert_gradient_card, render_kpi_grid. PR-22 viz_advanced.kpi_card_html과 일관.
+- **Step 11 이력 의미**: "본 이력은 신규 작업자 교육용 지식 베이스 + 차기 AI 모델 재학습 핵심 데이터" 명시.
+- **Step 12 비즈니스 임팩트**: 예방 불량 42건 + 절감 4,200만원 + 응답 3.2분 + 활성 작업자 8명 + action_log 누적 가산.
+- **검증**: dashboard_cards 6 함수 import 정상, 회귀 20/20 PASS.
+
+---
+
 ## 2026-05-22 14:15 KST [Claude Opus 4.7] — PR-26 인앱 UX (Step 8/9/13/14/15)
 
 - **Step 8 데이터 딕셔너리**: `data/sensor_dictionary.csv` 15센서 한글 매핑 (sensor_003→식각 챔버 온도, sensor_017→증착 두께 등). `app/lib/sensor_names.py` neutral fallback (매핑 없으면 원본 ID).
