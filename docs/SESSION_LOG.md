@@ -5,6 +5,13 @@
 
 ---
 
+## 2026-05-22 09:32 KST [Claude Opus 4.7] — P-B/PR-2 캡처 인프라 구축
+
+- **이관**: 루트 산만 18종(slide-1~8, qa-slide1~8, thumbnails, test-slide2) → `docs/captures/v0/{slides,qa,./}` (`git mv`로 히스토리 보존)
+- **신규**: `docs/captures/INDEX.md`(전체 버전 목록 + 발행 규칙) + `v0/notes.md`(이관 메타) + `v1/README.md`(다음 캡처 가이드)
+- **운영 규칙**: 새 버전 발행 트리거 4종 명시 — UI/폰트/소스/리허설
+- **다음**: PR-4 대시보드(Linear/Notion 벤치) → PR-6 발표 보강 → PR-5 본선 후
+
 ## 2026-05-22 09:13 KST [Claude Opus 4.7] — P-B/PR-3 HANDOVER + SESSION_LOG 구축
 
 - **목적**: Claude ↔ Codex 전환 시 컨텍스트 손실 0으로 만들기 위한 인계 인프라

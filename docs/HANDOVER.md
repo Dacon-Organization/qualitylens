@@ -1,12 +1,12 @@
 # HANDOVER — Claude ↔ Codex 인계 노트
 
-> **마지막 갱신**: 2026-05-22 09:13 KST · **도구**: Claude Opus 4.7
+> **마지막 갱신**: 2026-05-22 09:32 KST · **도구**: Claude Opus 4.7
 > **이 파일만 읽으면** 다음 액션을 5분 내 식별 가능해야 함. 50줄 한계 유지.
 
 ---
 
 ## 0. 한 줄 현황
-P-B PR-1(Streamlit 배포 hotfix) **완료 / 머지** → PR-3(이 파일) 진행 중 → 다음 PR-2(캡처) → PR-4(대시보드) → PR-6(발표) → PR-5(real 연구).
+P-B PR-1(hotfix #81) ✅ → PR-3(메모리 #82) ✅ → **PR-2(캡처 인프라) 진행 중** → 다음 PR-4(대시보드) → PR-6(발표) → PR-5(real 연구).
 
 ## 1. 환경
 - 워크트리: `C:\Users\kik32\workspace\Dacon\.claude\worktrees\confident-allen-747529\smart-factory-hackathon`
@@ -15,16 +15,16 @@ P-B PR-1(Streamlit 배포 hotfix) **완료 / 머지** → PR-3(이 파일) 진�
 - 인코딩: 스크립트 실행 시 `PYTHONIOENCODING=utf-8` 강제 (Windows cp949 회피)
 
 ## 2. 마지막 결정 사항 (최근 5건, 신규 → 과거)
-- 2026-05-22: **A+E 조합 채택** — dummy 7종 git 커밋 + graceful degradation (PR #81)
+- 2026-05-22: 캡처 v0 = 루트 산만 18종 이관, v1 = 첫 정상 배포 캡처 5종 대기 (PR-2)
+- 2026-05-22: **A+E 조합 채택** — dummy 7종 git 커밋 + graceful degradation (#81)
 - 2026-05-22: P-B 전체 6 sub-PR 분할 — Hotfix → 메모리 → 캡처 → 대시보드 → 발표 → real연구
 - 2026-05-22: 한글 폰트 전수 점검은 **P-C로 분리** (별도 spec)
 - 2026-05-22: Codex 라우팅 = 하이브리드 (기본 5.4, 설계·분석만 5.5)
-- 2026-05-22: 캡처 위치 = `docs/captures/v{n}/` (PR-2에서 구축)
 
 ## 3. 다음 액션 (TOP 3, 우선순위 순)
-1. **PR-3 마무리** — 이 HANDOVER + `SESSION_LOG.md` 신규 + commit + push + PR (브랜치 `claude/confident-allen-747529`)
-2. **PR-2 착수** — `docs/captures/v0/`(루트 산만 캡처 이관) + `v1/`(현 시점 스크린샷 5종) + `INDEX.md`. 별도 PR.
-3. **PR-4 착수** — `docs/dashboard/index.html` (Linear/Notion/Basecamp 정보 구조 벤치마킹), `scripts/06_build_dashboard.py`. 별도 PR.
+1. **PR-2 마무리** — captures/{v0,v1,INDEX.md} commit + push + PR (이 사이클에서 머지)
+2. **PR-4 착수** — `docs/dashboard/index.html` (Linear/Notion/Basecamp 정보 구조 벤치마킹), `scripts/06_build_dashboard.py`. 별도 PR.
+3. **PR-6 착수** — `docs/presentation/spec_vs_impl_diff.md` (기획서 PDF 대비 변경점) + `qa_pack_p_b.md`. Opus.
 
 ## 4. 차단 요소 / 사용자 확인 대기
 - 없음. 진행 자율 위임.
@@ -49,9 +49,9 @@ P-B PR-1(Streamlit 배포 hotfix) **완료 / 머지** → PR-3(이 파일) 진�
 | PR | 제목 | 상태 | 비고 |
 |---|---|---|---|
 | **PR-1** | Hotfix: dummy + graceful | ✅ 머지 (#81) | 06ccd76 |
-| **PR-3** | HANDOVER + SESSION_LOG | 🚧 진행 중 | 이 파일 |
-| PR-2 | 캡처 v{n} 인프라 | ⏳ 대기 | 다음 |
-| PR-4 | 작업 추적 대시보드 v1 | ⏳ 대기 | |
+| **PR-3** | HANDOVER + SESSION_LOG | ✅ 머지 (#82) | 520b8f1 |
+| **PR-2** | 캡처 v{n} 인프라 | 🚧 진행 중 | v0 이관 + v1 README |
+| PR-4 | 작업 추적 대시보드 v1 | ⏳ 다음 | Linear/Notion 벤치 |
 | PR-6 | 기획서 변경점 + 발표 보강 | ⏳ 대기 | |
 | PR-5 | real 배포 연구 | ⏳ 본선 후 | |
 
