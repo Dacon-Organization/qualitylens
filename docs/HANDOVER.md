@@ -1,59 +1,52 @@
 # HANDOVER — Claude ↔ Codex 인계 노트
 
-> **마지막 갱신**: 2026-05-22 09:32 KST · **도구**: Claude Opus 4.7
+> **마지막 갱신**: 2026-05-22 11:50 KST · **도구**: Claude Opus 4.7
 > **이 파일만 읽으면** 다음 액션을 5분 내 식별 가능해야 함. 50줄 한계 유지.
 
 ---
 
 ## 0. 한 줄 현황
-P-B PR-1(hotfix #81) ✅ → PR-3(메모리 #82) ✅ → **PR-2(캡처 인프라) 진행 중** → 다음 PR-4(대시보드) → PR-6(발표) → PR-5(real 연구).
+P-B 확장 진행 중 — PR-1/3/2 ✅, **PR-7 mode 버그 fix 진행 중** → 다음 PR-19(CSV 업로드) → PR-20(모달) → PR-8(UI) → PR-10(데이터) → PR-15/14/11 → P-E(발표 산출물 E1/E2/E3).
 
 ## 1. 환경
 - 워크트리: `C:\Users\kik32\workspace\Dacon\.claude\worktrees\confident-allen-747529\smart-factory-hackathon`
-- 브랜치: `claude/confident-allen-747529` (origin/main과 동기)
-- Python 3.12.4 · 모든 의존성 OK (xgboost/shap/sklearn/imblearn)
-- 인코딩: 스크립트 실행 시 `PYTHONIOENCODING=utf-8` 강제 (Windows cp949 회피)
+- 브랜치: `claude/confident-allen-747529` (origin/main과 동기, squash merge 후 force-with-lease 패턴)
+- Python 3.12.4 · 의존성 OK · 인코딩 `PYTHONIOENCODING=utf-8` 강제 (Windows)
 
 ## 2. 마지막 결정 사항 (최근 5건, 신규 → 과거)
-- 2026-05-22: 캡처 v0 = 루트 산만 18종 이관, v1 = 첫 정상 배포 캡처 5종 대기 (PR-2)
-- 2026-05-22: **A+E 조합 채택** — dummy 7종 git 커밋 + graceful degradation (#81)
-- 2026-05-22: P-B 전체 6 sub-PR 분할 — Hotfix → 메모리 → 캡처 → 대시보드 → 발표 → real연구
-- 2026-05-22: 한글 폰트 전수 점검은 **P-C로 분리** (별도 spec)
-- 2026-05-22: Codex 라우팅 = 하이브리드 (기본 5.4, 설계·분석만 5.5)
+- 2026-05-22 11:32: MVP 핵심 갭 — PR-19(CSV 업로드)·PR-20(onboarding 모달) 필수 격상
+- 2026-05-22 11:18: 평가 배점 확정 — PT 15분+Q&A 5분, 5항목 100점 (AI 25, MVP 25 최대 비중)
+- 2026-05-22 11:05: 대회 정보 재명확 — MVP 4단계, 4영역 통합, 산출물 3종 (PDF+HTML+영상)
+- 2026-05-22 10:48: 필수 9→11개 확정, PR-10 A+B 함께 (timestamp + state)
+- 2026-05-22 10:35: 실무 시각화 5종 (SPC/Pareto/OEE/Cpk/색맹) 추가 후보
 
 ## 3. 다음 액션 (TOP 3, 우선순위 순)
-1. **PR-2 마무리** — captures/{v0,v1,INDEX.md} commit + push + PR (이 사이클에서 머지)
-2. **PR-4 착수** — `docs/dashboard/index.html` (Linear/Notion/Basecamp 정보 구조 벤치마킹), `scripts/06_build_dashboard.py`. 별도 PR.
-3. **PR-6 착수** — `docs/presentation/spec_vs_impl_diff.md` (기획서 PDF 대비 변경점) + `qa_pack_p_b.md`. Opus.
+1. **PR-7 마무리** — demo.py 패치 완료, commit + push --force-with-lease + PR + squash merge
+2. **PR-19 착수** — `app/pages/0_📤_데이터_업로드.py` + `app/lib/upload.py` 신규 (90분, MVP 핵심)
+3. **PR-20 착수** — `app/lib/onboarding.py` st.dialog 4슬라이드 모달 (45분)
 
 ## 4. 차단 요소 / 사용자 확인 대기
-- 없음. 진행 자율 위임.
+- 없음. Auto mode 진행 자율 위임.
 
 ## 5. 도구 전환 가이드
 
-**Claude → Codex** 전환 트리거:
-- Claude 5시간 토큰 한도 도달
-- 단순 반복 작업 (HTML 템플릿 채움, 파일 rename, INDEX 갱신)
+**Claude → Codex** 전환 트리거: Claude 5시간 한도 도달 / 단순 반복 작업.
 
-**Codex가 받아야 할 컨텍스트** (이 3개면 충분):
+**Codex가 받아야 할 컨텍스트** (3개면 충분):
 1. `docs/HANDOVER.md` (이 파일) — 현황 + 다음 액션
-2. `docs/SESSION_LOG.md` 최근 5일 — 결정 이력
-3. `docs/spec_p_b_streamlit_deploy_hotfix.md` — 전체 P-B 계획
-4. (선택) `docs/dashboard/data.json` — 진행도 데이터 (PR-4 머지 후)
+2. `docs/SESSION_LOG.md` 최근 5건 — 결정 이력
+3. `C:\Users\kik32\.claude\plans\qualitylens-gentle-panda.md` — P-B 확장 + P-E 발표 산출물 전체 plan (PR-7~20, PR-E1~E4)
 
-**Codex 작업 후 복귀 시**:
-- Codex가 이 HANDOVER + SESSION_LOG에 자신의 작업을 기록 (날짜·도구·결정 1줄)
-- Claude는 이 파일들만 다시 읽고 이어받음
+**Codex 작업 후 복귀**: HANDOVER + SESSION_LOG에 자신의 작업 1줄 기록.
 
-## 6. 진행 중 sub-PR 상태판
-| PR | 제목 | 상태 | 비고 |
-|---|---|---|---|
-| **PR-1** | Hotfix: dummy + graceful | ✅ 머지 (#81) | 06ccd76 |
-| **PR-3** | HANDOVER + SESSION_LOG | ✅ 머지 (#82) | 520b8f1 |
-| **PR-2** | 캡처 v{n} 인프라 | 🚧 진행 중 | v0 이관 + v1 README |
-| PR-4 | 작업 추적 대시보드 v1 | ⏳ 다음 | Linear/Notion 벤치 |
-| PR-6 | 기획서 변경점 + 발표 보강 | ⏳ 대기 | |
-| PR-5 | real 배포 연구 | ⏳ 본선 후 | |
+## 6. 진행 중 sub-PR 상태판 (필수 11개)
+| PR | 제목 | 상태 |
+|---|---|---|
+| PR-1/3/2 | hotfix + 메모리 + 캡처 | ✅ #81/#82/#83 |
+| **PR-7** | mode 버그 fix | 🚧 commit 대기 |
+| PR-19/20 | CSV 업로드 + onboarding 모달 | ⏳ MVP 핵심 |
+| PR-8/10/15/14/11 | UI/데이터/Pareto/SPC/브랜딩 | ⏳ |
+| PR-E1/E2/E3 | 발표 PDF + 자유양식 + 시연 가이드 | ⏳ 대회 제출 필수 |
 
 ---
-*갱신 규칙: 매 sub-PR 머지 후 §0, §2, §3, §6를 동시에 업데이트. 50줄 초과 시 §2 가장 오래된 항목 1건을 SESSION_LOG로 이동.*
+*갱신 규칙: 매 sub-PR 머지 후 §0/§2/§3/§6 동시 갱신. 50줄 초과 시 §2 오래된 항목 → SESSION_LOG로 이동.*

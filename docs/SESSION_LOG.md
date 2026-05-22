@@ -5,12 +5,28 @@
 
 ---
 
-## 2026-05-22 09:32 KST [Claude Opus 4.7] — P-B/PR-2 캡처 인프라 구축
+## 2026-05-22 11:50 KST [Claude Opus 4.7] — P-B 확장 PR-7 mode 버그 fix
 
-- **이관**: 루트 산만 18종(slide-1~8, qa-slide1~8, thumbnails, test-slide2) → `docs/captures/v0/{slides,qa,./}` (`git mv`로 히스토리 보존)
-- **신규**: `docs/captures/INDEX.md`(전체 버전 목록 + 발행 규칙) + `v0/notes.md`(이관 메타) + `v1/README.md`(다음 캡처 가이드)
-- **운영 규칙**: 새 버전 발행 트리거 4종 명시 — UI/폰트/소스/리허설
-- **다음**: PR-4 대시보드(Linear/Notion 벤치) → PR-6 발표 보강 → PR-5 본선 후
+- **문제**: `app/lib/demo.py:11-31`의 `st.sidebar.radio(..., index=0)` 하드코딩 + session_state 미사용 → 페이지 이동 시 라디오 강제 reset
+- **수정**: widget `key="_demo_mode_radio"` 도입으로 Streamlit 자동 보존 + 외부 읽기용 `_demo_mode` 별도 미러
+- **호출처 영향**: 0 (반환 시그니처 동일, app.py + pages/1~4 무변경)
+- **검증**: ast.parse OK, import OK, lines 52
+- **다음**: commit + PR + merge → PR-19 (CSV 업로드, MVP 핵심)
+
+## 2026-05-22 11:32 KST [Claude Opus 4.7] — P-B 확장 plan 최종 확정 (필수 11개)
+
+- **MVP 핵심 갭 발견** — 사용자 피드백: 실무자 자기 데이터 업로드 + 사용 안내 모달 부재
+- **PR-19/20 필수 격상** — CSV 업로드 90분, onboarding 모달 45분
+- **평가 배점 매핑** — PR-7/19/20/10 = MVP 구현 25점 직접 / PR-8/14/17 = AI 활용 25점
+- **plan 파일**: `C:\Users\kik32\.claude\plans\qualitylens-gentle-panda.md` (10번 갱신, 변경 이력 누적)
+- **총 작업**: 11개 필수 + 5개 여유 = 약 9.7시간 (Phase A 코드 7시간 + Phase B 발표 3시간)
+
+## 2026-05-22 09:50 KST [Claude Opus 4.7] — P-B/PR-2 캡처 인프라 머지 완료 (#83)
+
+- **이관**: 루트 18종(slide-1~8, qa-slide1~8, thumbnails, test-slide2) → `docs/captures/v0/{slides,qa,./}` (git mv)
+- **신규**: `docs/captures/INDEX.md` 발행 규칙 + `v0/notes.md` + `v1/README.md` 가이드
+- **운영 규칙**: 신규 v 발행 트리거 4종 — UI/폰트/소스/리허설
+- **다음**: PR-7 → PR-19 → PR-20 → ...
 
 ## 2026-05-22 09:13 KST [Claude Opus 4.7] — P-B/PR-3 HANDOVER + SESSION_LOG 구축
 
