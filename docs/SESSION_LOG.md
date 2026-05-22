@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-05-22 13:45 KST [Claude Opus 4.7] — PR-22 시각화 풀 확장 (Step 4~7)
+
+- **신규 모듈** `app/lib/viz_advanced.py`: 9함수 — violin_normal_anomaly / correlation_heatmap / boxplot_violations / roi_bar / cumulative_trend / confusion_matrix / pareto_cumulative / top_violations_bar / kpi_card_html.
+- **PALETTE** (Okabe-Ito 기반 7색): normal/warn/danger/info/neutral/accent/highlight — PR-18 색맹 친화 UI 대비.
+- **P2 통합**: 심화 분석 섹션 + st.tabs (Violin 정상/이상 분포 + 상위5 상관 heatmap). 상위 5 센서 selectbox로 동적.
+- **P3 통합**: 위반 센서 시각화 섹션 + st.tabs (편차 분포 박스플롯 + ROI 막대 — 편차σ×100만원 보수적 추정).
+- **P4 통합**: 분석 시각화 섹션 + st.tabs (누적 추세 듀얼축 + 혼동행렬 정확도 자동 표시).
+- **P5 통합**: Pareto 섹션 st.tabs로 (기본 Pareto + 누적 곡선). 누적 곡선은 80% 기준선 + 필요 센서 수 자동 annotation.
+- **성능**: st.tabs lazy 렌더, viz_advanced 단일 모듈로 의존성 추적 용이. 회귀 20/20 PASS.
+
+---
+
 ## 2026-05-22 13:15 KST [Claude Opus 4.7] — PR-23 Onboarding 7슬라이드 + SVG 시각화
 
 - **사용자 처방 반영**: "처음 튜토리얼 모달이 상당히 자세해야 함. 실제 예시 동작도 자연스럽게 보여주는 것도 좋을 듯!" → onboarding.py 4슬라이드 → **7슬라이드** 확장.

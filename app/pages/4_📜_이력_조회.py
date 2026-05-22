@@ -18,6 +18,7 @@ from lib.load import (  # noqa: E402
     load_model,
     load_test_set,
 )
+from lib.viz_advanced import confusion_matrix, cumulative_trend  # noqa: E402
 
 st.set_page_config(page_title="P5 — 이력 조회", page_icon="📜", layout="wide")
 # PR-21: demo_sidebar() 먼저 → session_state → get_source() → sidebar_badge에 명시
@@ -75,6 +76,31 @@ with tab_pred:
         mime="text/csv",
         key="dl_predictions",
     )
+
+    # PR-22 신규 — 누적 추세 + Confusion Matrix
+    st.divider()
+    st.subheader("📈 분석 시각화 — 누적 추세 + 혼동행렬")
+    adv1, adv2 = st.tabs(["📈 누적 추세", "🎯 혼동행렬"])
+    with adv1:
+        if "timestamp" in filtered.columns:
+            st.plotly_chart(
+                cumulative_trend(filtered, title="시간대별 이상 누적 + 이동평균"),
+                use_container_width=True,
+            )
+        else:
+            st.info("timestamp 컬럼 없음 — 누적 추세 생략")
+    with adv2:
+        if "actual" in filtered.columns:
+            st.plotly_chart(
+                confusion_matrix(filtered["actual"], filtered["pred_label"]),
+                use_container_width=True,
+            )
+            st.caption(
+                "💡 TP(정확한 이상 탐지) + TN(정확한 정상 판정) / 전체 = 정확도. "
+                "FP(오탐) 줄이려면 threshold 상향, FN(놓침) 줄이려면 하향."
+            )
+        else:
+            st.info("actual 라벨 없음 (실데이터 모드에서만 표시) — 혼동행렬 생략")
 
 # -----------------------------------------------------------------------------
 # 탭 2 — 조치 이력 (S-3)

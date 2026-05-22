@@ -18,6 +18,7 @@ from lib.load import load_demo_result, load_test_set
 from lib.onboarding import reopen_button_sidebar
 from lib.spc import compute_limits, detect_western_electric, violation_summary
 from lib.viz import pareto_chart, sensor_histogram, spc_chart
+from lib.viz_advanced import pareto_cumulative
 
 st.set_page_config(
     page_title="QualityLens — SPC & Pareto",
@@ -116,24 +117,36 @@ with st.expander("💡 Pareto란?", expanded=False):
         """
     )
 
-col_p1, col_p2 = st.columns([3, 2])
+tab_pareto_simple, tab_pareto_advanced = st.tabs(["📊 기본 Pareto", "📈 누적 곡선 (80% 라인)"])
 
-with col_p1:
+with tab_pareto_simple:
+    col_p1, col_p2 = st.columns([3, 2])
+    with col_p1:
+        st.plotly_chart(
+            pareto_chart(top20.head(10), category_col="sensor", value_col="mean_abs_shap"),
+            use_container_width=True,
+        )
+    with col_p2:
+        st.markdown("**해석 (현장 작업자용)**")
+        top3 = top20.head(3)
+        msg_lines = [
+            f"- **{row['sensor']}** — 영향도 {row['mean_abs_shap']:.3f}"
+            for _, row in top3.iterrows()
+        ]
+        st.markdown("\n".join(msg_lines))
+        st.info(
+            "💡 위 3개 센서만 안정화해도 전체 불량 원인의 상당 부분을 잡을 수 있습니다."
+        )
+
+with tab_pareto_advanced:
+    # PR-22 신규 — Pareto 누적 곡선 + 80% 기준선 + 필요 센서 수 자동 계산
     st.plotly_chart(
-        pareto_chart(top20.head(10), category_col="sensor", value_col="mean_abs_shap"),
+        pareto_cumulative(top20.head(15), category_col="sensor", value_col="mean_abs_shap"),
         use_container_width=True,
     )
-
-with col_p2:
-    st.markdown("**해석 (현장 작업자용)**")
-    top3 = top20.head(3)
-    msg_lines = [
-        f"- **{row['sensor']}** — 영향도 {row['mean_abs_shap']:.3f}"
-        for _, row in top3.iterrows()
-    ]
-    st.markdown("\n".join(msg_lines))
-    st.info(
-        "💡 위 3개 센서만 안정화해도 전체 불량 원인의 상당 부분을 잡을 수 있습니다."
+    st.caption(
+        "💡 막대 = 개별 기여도 · 라인 = 누적 % · 점선 = 80% 기준선. "
+        "회의 1회에 \"몇 개를 집중 해결할지\" 즉시 결정 가능."
     )
 
 st.divider()

@@ -31,6 +31,7 @@ from lib.viz import (  # noqa: E402
     shap_top_bar,
     shap_waterfall,
 )
+from lib.viz_advanced import correlation_heatmap, violin_normal_anomaly  # noqa: E402
 
 st.set_page_config(page_title="P3 — 원인 분석", page_icon="🔍", layout="wide")
 # PR-21: demo_sidebar() 먼저 → session_state → get_source() → sidebar_badge에 명시
@@ -172,7 +173,65 @@ else:
 st.divider()
 
 # -----------------------------------------------------------------------------
-# (4) 백업 이미지
+# (4) PR-22 신규 — 심화 분석: 정상/이상 분포 비교 + 상관 행렬
+# -----------------------------------------------------------------------------
+
+st.subheader("🔬 심화 분석 — 정상/이상 분포 + 센서 상관 행렬")
+st.caption(
+    "비전문가도 직관적으로: \"이 센서가 이상일 때 vs 정상일 때 분포가 어떻게 다른가?\" "
+    "+ \"이 센서와 함께 튀는 다른 센서는?\""
+)
+
+if shap_values_test is not None and len(top20) >= 5:
+    tab_adv1, tab_adv2 = st.tabs(["📊 정상/이상 분포 (Violin)", "🔗 상위 5 센서 상관 행렬"])
+
+    top5_sensors = top20["sensor"].head(5).tolist()
+
+    with tab_adv1:
+        try:
+            X_t, y_t = load_test_set(source=source)
+            sel_sensor = st.selectbox(
+                "센서 선택 (상위 5)",
+                options=top5_sensors,
+                key="violin_sensor_select",
+            )
+            if sel_sensor in X_t.columns:
+                proba_test = shap_values_test.sum(axis=1) if hasattr(shap_values_test, "sum") else None
+                # y_test 라벨 기반 분리
+                normal_vals = X_t.loc[y_t == 0, sel_sensor]
+                anomaly_vals = X_t.loc[y_t == 1, sel_sensor]
+                if len(normal_vals) > 0 and len(anomaly_vals) > 0:
+                    st.plotly_chart(
+                        violin_normal_anomaly(normal_vals, anomaly_vals, sensor_name=sel_sensor),
+                        use_container_width=True,
+                    )
+                else:
+                    st.info("정상/이상 샘플 분리 부족 — Violin 생략")
+        except FileNotFoundError:
+            st.info("실데이터 부재 — Violin 생략. 사이드바에서 실데이터 모드 전환 시 표시됩니다.")
+
+    with tab_adv2:
+        try:
+            X_t, _ = load_test_set(source=source)
+            present = [s for s in top5_sensors if s in X_t.columns]
+            if len(present) >= 2:
+                st.plotly_chart(
+                    correlation_heatmap(X_t[present], title="상위 5 센서 간 상관 행렬"),
+                    use_container_width=True,
+                )
+                st.caption(
+                    "💡 절대값 |0.7| 이상은 강한 상관 — 함께 움직이는 센서. "
+                    "원인 분석 시 이 그룹을 동시에 점검."
+                )
+            else:
+                st.info("센서 수 부족 — 상관 행렬 생략")
+        except FileNotFoundError:
+            st.info("실데이터 부재 — 상관 행렬 생략")
+
+st.divider()
+
+# -----------------------------------------------------------------------------
+# (5) 백업 이미지
 # -----------------------------------------------------------------------------
 
 st.subheader("📷 백업 — 상위 15 센서 정적 이미지")

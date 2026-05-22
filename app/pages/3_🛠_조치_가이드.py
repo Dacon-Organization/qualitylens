@@ -21,6 +21,7 @@ from lib.load import (  # noqa: E402
     load_test_set,
     load_thresholds,
 )
+from lib.viz_advanced import boxplot_violations, roi_bar  # noqa: E402
 
 st.set_page_config(page_title="P4 — 조치 가이드", page_icon="🛠", layout="wide")
 # PR-21: demo_sidebar() 먼저 → session_state → get_source() → sidebar_badge에 명시
@@ -149,6 +150,48 @@ else:
             with status_col:
                 if not already_logged:
                     st.caption("수용 시 P5 이력 조회의 '조치 이력' 탭에 자동 기록")
+
+st.divider()
+
+# -----------------------------------------------------------------------------
+# PR-22 신규 — 시각화: 위반 센서 분포 + ROI
+# -----------------------------------------------------------------------------
+
+st.subheader("📊 위반 센서 시각화 — 편차 분포 + 예상 절감")
+
+tab_box, tab_roi = st.tabs(["📊 편차 분포 (Top 10)", "💰 예상 절감 (ROI)"])
+
+with tab_box:
+    if len(violations) > 0:
+        st.plotly_chart(
+            boxplot_violations(violations, title="위반 센서 σ 편차 (큰 순)"),
+            use_container_width=True,
+        )
+        st.caption(
+            "💡 3σ 이상 = 명백한 이상, 4σ 이상 = 긴급. 색상: 🔴 4σ↑ / 🟡 3σ↑ / 🔵 그 외."
+        )
+    else:
+        st.success("✅ 위반 센서 없음 — 박스플롯 생략")
+
+with tab_roi:
+    if len(violations) > 0:
+        # ROI 추정: 편차 σ × 가중치 (100만원/σ — 보수적 추정)
+        top_n = violations.head(6)
+        savings = [float(d) * 100 for d in top_n["deviation"]]
+        st.plotly_chart(
+            roi_bar(
+                sensors=top_n["sensor"].tolist(),
+                expected_savings_kr=savings,
+                title="센서별 예상 절감액 (조치 시) — 편차 σ × 100만원",
+            ),
+            use_container_width=True,
+        )
+        st.caption(
+            "💡 보수적 추정: 편차 1σ당 평균 100만원 절감 가정. "
+            "실제 ROI는 공정/제품에 따라 다를 수 있음."
+        )
+    else:
+        st.info("✅ 위반 센서 없음 — ROI 차트 생략")
 
 st.divider()
 st.caption(
