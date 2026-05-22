@@ -17,13 +17,14 @@ from __future__ import annotations
 import streamlit as st
 
 
+# PR-18 — Okabe-Ito 색맹 친화 팔레트 (viz.py와 통일)
 _PALETTE = {
-    "win": "#3fb950",
-    "warn": "#d29922",
-    "bad": "#f85149",
-    "info": "#1f6feb",
-    "neutral": "#6e7681",
-    "accent": "#8957e5",
+    "win": "#009E73",      # Bluish Green
+    "warn": "#E69F00",     # Orange
+    "bad": "#D55E00",      # Vermillion
+    "info": "#0072B2",     # Blue
+    "neutral": "#6e7681",  # Gray (보조)
+    "accent": "#CC79A7",   # Reddish Purple
 }
 
 

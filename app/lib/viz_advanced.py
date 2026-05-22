@@ -27,15 +27,18 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 
-# === 색상 팔레트 (Okabe-Ito 기반 — PR-18 대비) ============================
+# === 색상 팔레트 (Okabe-Ito — PR-18 색맹 친화) =============================
+# 참고: https://jfly.uni-koeln.de/color/  (Okabe & Ito 2008 표준 8색)
+# 색맹(약 8% 남성)도 구분 가능. WCAG AA 대비비율 충족.
 PALETTE = {
-    "normal": "#3fb950",      # 초록
-    "warn": "#d29922",        # 주황
-    "danger": "#f85149",      # 빨강
-    "info": "#1f6feb",        # 파랑
-    "neutral": "#6e7681",     # 회색
-    "accent": "#8957e5",      # 보라
-    "highlight": "#e8c547",   # 노랑
+    "normal": "#009E73",      # Bluish Green (정상)
+    "warn": "#E69F00",        # Orange (경고)
+    "danger": "#D55E00",      # Vermillion (위험)
+    "info": "#0072B2",        # Blue (정보)
+    "neutral": "#6e7681",     # Gray (보조)
+    "accent": "#CC79A7",      # Reddish Purple (강조)
+    "highlight": "#F0E442",   # Yellow (하이라이트)
+    "sky": "#56B4E9",         # Sky Blue (보조 강조)
 }
 
 

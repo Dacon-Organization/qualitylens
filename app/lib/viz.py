@@ -9,24 +9,59 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 
-# === 3단계 위험 등급 (S-1) =================================================
+# === 3단계 위험 등급 (S-1 + PR-18 색맹 친화) ================================
 # 기획서 약속: "정상/경고/위험 3단계 컬러 코딩 → 비전문가도 즉시 이상 인지"
+#
+# PR-18 — Okabe-Ito 색맹 친화 팔레트 적용:
+#   - 색맹(약 8% 남성, 0.5% 여성)도 구분 가능한 8색 표준 (Okabe & Ito 2008)
+#   - 색상 외에 형태(symbol) + 텍스트 라벨 중복 전달 (WCAG 1.4.1 권장)
+#
+# 매핑:
+#   정상 "Bluish Green" #009E73 → ● (circle) 기호
+#   경고 "Orange"       #E69F00 → ▲ (triangle) 기호
+#   위험 "Vermillion"   #D55E00 → ■ (square) 기호
+#
+# 참고: https://jfly.uni-koeln.de/color/
 
 WARN_THRESHOLD = 0.30
 DANGER_THRESHOLD = 0.50
 
 
+# Okabe-Ito 8색 팔레트 (모듈 공용)
+OKABE_ITO = {
+    "black": "#000000",
+    "orange": "#E69F00",
+    "sky_blue": "#56B4E9",
+    "bluish_green": "#009E73",
+    "yellow": "#F0E442",
+    "blue": "#0072B2",
+    "vermillion": "#D55E00",
+    "reddish_purple": "#CC79A7",
+}
+
+
 @dataclass(frozen=True)
 class RiskTier:
-    code: str  # "normal" | "warn" | "danger"
-    label: str  # "정상" | "경고" | "위험"
-    color: str  # hex
-    emoji: str
+    code: str          # "normal" | "warn" | "danger"
+    label: str         # "정상" | "경고" | "위험"
+    color: str         # Okabe-Ito hex (색맹 친화)
+    emoji: str         # 일반 사용자용 이모지
+    symbol: str        # 색맹 사용자용 기하 기호 (●▲■)
+    plotly_marker: str  # plotly Scatter marker_symbol 이름
 
 
-TIER_NORMAL = RiskTier("normal", "정상", "#3fb950", "🟢")
-TIER_WARN = RiskTier("warn", "경고", "#d29922", "🟡")
-TIER_DANGER = RiskTier("danger", "위험", "#f85149", "🔴")
+TIER_NORMAL = RiskTier(
+    code="normal", label="정상", color=OKABE_ITO["bluish_green"],
+    emoji="🟢", symbol="●", plotly_marker="circle",
+)
+TIER_WARN = RiskTier(
+    code="warn", label="경고", color=OKABE_ITO["orange"],
+    emoji="🟡", symbol="▲", plotly_marker="triangle-up",
+)
+TIER_DANGER = RiskTier(
+    code="danger", label="위험", color=OKABE_ITO["vermillion"],
+    emoji="🔴", symbol="■", plotly_marker="square",
+)
 
 
 def risk_tier(proba: float) -> RiskTier:
@@ -74,12 +109,21 @@ def gauge_proba(proba: float, threshold: float = DANGER_THRESHOLD) -> go.Figure:
 
 
 def render_tier_badge(proba: float) -> str:
-    """Streamlit markdown용 컬러 배지 HTML."""
+    """Streamlit markdown용 컬러 배지 HTML.
+
+    PR-18 — 색맹 친화 강화:
+    - 색상 외에 기하 기호 (●▲■) 중복 전달
+    - 텍스트 라벨 (정상/경고/위험) 명시
+    - 두꺼운 테두리 (3px) — 형태 식별성 강화
+    - 흰 배경 보장 (다크모드 호환)
+    """
     tier = risk_tier(proba)
     return (
-        f'<div style="display:inline-block;padding:6px 16px;border-radius:20px;'
-        f'background:{tier.color};color:white;font-weight:700;font-size:15px;">'
-        f"{tier.emoji} {tier.label} · {proba*100:.1f}%"
+        f'<div style="display:inline-block;padding:8px 18px;border-radius:24px;'
+        f'background:{tier.color};color:#ffffff;font-weight:800;font-size:15px;'
+        f'border:3px solid {tier.color};box-shadow:0 0 0 2px #ffffff inset;'
+        f'letter-spacing:0.3px;">'
+        f"{tier.symbol} {tier.emoji} {tier.label} · {proba*100:.1f}%"
         f"</div>"
     )
 
@@ -146,8 +190,8 @@ def shap_waterfall(
             text=[f"{v:+.3f}" for v in y_values],
             textposition="outside",
             connector={"line": {"color": "#30363d"}},
-            increasing={"marker": {"color": "#f85149"}},  # 양수 = 이상 확률 ↑ = 빨강
-            decreasing={"marker": {"color": "#3fb950"}},  # 음수 = 정상 확률 ↑ = 녹색
+            increasing={"marker": {"color": "#D55E00"}},  # 양수 = 이상 확률 ↑ = 빨강
+            decreasing={"marker": {"color": "#009E73"}},  # 음수 = 정상 확률 ↑ = 녹색
             totals={"marker": {"color": "#58a6ff"}},
         )
     )
@@ -181,7 +225,7 @@ def shap_dependence(
         x="value",
         y="shap",
         color="shap",
-        color_continuous_scale=["#3fb950", "#1f2630", "#f85149"],
+        color_continuous_scale=["#009E73", "#1f2630", "#D55E00"],
         color_continuous_midpoint=0,
         title=f"Dependence Plot — {sensor} (피처값 ↔ SHAP)",
         hover_data=["sample_id"],
@@ -273,7 +317,7 @@ def spc_chart(
     fig.add_trace(
         go.Scatter(
             x=x_idx, y=series.values, mode="lines+markers", name="값",
-            line=dict(color="#1f6feb", width=2),
+            line=dict(color="#0072B2", width=2),
             marker=dict(size=6),
         )
     )
@@ -281,9 +325,9 @@ def spc_chart(
     # 중심선 + 관리한계
     fig.add_hline(y=limits.center, line_dash="solid", line_color="#8b949e",
                   annotation_text=f"CL={limits.center:.3f}", annotation_position="left")
-    fig.add_hline(y=limits.ucl, line_dash="dash", line_color="#f85149",
+    fig.add_hline(y=limits.ucl, line_dash="dash", line_color="#D55E00",
                   annotation_text=f"UCL={limits.ucl:.3f}", annotation_position="left")
-    fig.add_hline(y=limits.lcl, line_dash="dash", line_color="#f85149",
+    fig.add_hline(y=limits.lcl, line_dash="dash", line_color="#D55E00",
                   annotation_text=f"LCL={limits.lcl:.3f}", annotation_position="left")
 
     # ±1σ, ±2σ 보조선 (보일 듯 말 듯 옅게)
@@ -303,7 +347,7 @@ def spc_chart(
                     y=series.iloc[viol_idx].values,
                     mode="markers",
                     name="⚠️ WER 위반",
-                    marker=dict(size=14, color="#f85149", symbol="x", line=dict(width=2)),
+                    marker=dict(size=14, color="#D55E00", symbol="x", line=dict(width=2)),
                 )
             )
 
@@ -343,7 +387,7 @@ def pareto_chart(
             x=work[category_col],
             y=work[value_col],
             name="영향도",
-            marker_color="#1f6feb",
+            marker_color="#0072B2",
             yaxis="y",
         )
     )
@@ -353,8 +397,8 @@ def pareto_chart(
             y=work["cum_pct"],
             name="누적 %",
             mode="lines+markers",
-            marker=dict(size=8, color="#f85149"),
-            line=dict(width=2, color="#f85149"),
+            marker=dict(size=8, color="#D55E00"),
+            line=dict(width=2, color="#D55E00"),
             yaxis="y2",
         )
     )
@@ -362,7 +406,7 @@ def pareto_chart(
     fig.add_hline(
         y=80,
         line_dash="dash",
-        line_color="#d29922",
+        line_color="#E69F00",
         yref="y2",
         annotation_text="80% 기준",
         annotation_position="right",
@@ -393,19 +437,19 @@ def sensor_histogram(
         title=title,
         labels={"x": "센서값", "count": "빈도"},
     )
-    fig.update_traces(marker_color="#1f6feb", opacity=0.85)
+    fig.update_traces(marker_color="#0072B2", opacity=0.85)
     if threshold_low is not None:
         fig.add_vline(
             x=threshold_low,
             line_dash="dash",
-            line_color="#f85149",
+            line_color="#D55E00",
             annotation_text=f"하한 {threshold_low:.2f}",
         )
     if threshold_high is not None:
         fig.add_vline(
             x=threshold_high,
             line_dash="dash",
-            line_color="#f85149",
+            line_color="#D55E00",
             annotation_text=f"상한 {threshold_high:.2f}",
         )
     fig.update_layout(
