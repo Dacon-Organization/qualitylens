@@ -25,20 +25,46 @@ VALID_SOURCES = ("real", "dummy")
 
 
 def resolve_source(explicit: str | None = None) -> str:
-    """우선순위: 명시 인자 > 환경변수 DEMO_MODE > 자동 감지 (real 우선)."""
+    """우선순위: 명시 인자 > 환경변수 DEMO_MODE > 자동 감지 (real 우선).
+
+    PR-27: 명시 "real" 요청이라도 핵심 산출물 부재 시 dummy로 graceful fallback.
+    Streamlit Cloud 무료 티어/git LFS 미적용 환경에서 _real 산출물 일부만 push된 경우 대응.
+    fallback 발생 시 session_state["_real_fallback"]=True로 표시 → 사이드바 안내.
+    """
     forced = explicit or os.getenv("DEMO_MODE")
     if forced in VALID_SOURCES:
+        if forced == "real" and not _real_artifacts_complete():
+            # 사용자 선택은 real이지만 산출물 부재 → 데이터만 dummy fallback
+            try:
+                st.session_state["_real_fallback"] = True
+            except Exception:
+                pass
+            return "dummy"
+        if forced == "real":
+            try:
+                st.session_state["_real_fallback"] = False
+            except Exception:
+                pass
         return forced
     return _detect_default_source()
 
 
-def _detect_default_source() -> str:
+def _real_artifacts_complete() -> bool:
+    """real 모드 정상 동작에 필요한 핵심 산출물 7종 모두 존재 여부."""
     required = [
         MODEL_DIR / "xgb_secom_real.joblib",
+        MODEL_DIR / "shap_explainer_real.pkl",
+        MODEL_DIR / "shap_per_sample_real.pkl",
+        MODEL_DIR / "shap_values_test_real.pkl",
+        MODEL_DIR / "shap_waterfall_demo_real.pkl",
         PROC_DIR / "secom_X_test_real.pkl",
         PROC_DIR / "secom_y_test_real.pkl",
     ]
-    return "real" if all(p.exists() for p in required) else "dummy"
+    return all(p.exists() for p in required)
+
+
+def _detect_default_source() -> str:
+    return "real" if _real_artifacts_complete() else "dummy"
 
 
 def _set_session_source(source: str) -> None:
@@ -151,14 +177,32 @@ def load_shap_values_test(source: str | None = None):
 
 
 def sidebar_badge(source: str | None = None) -> None:
-    """사이드바 우측에 현재 데이터 소스를 작은 배지로 표시.
+    """사이드바 배지 — 현재 소스 + PR-27 graceful fallback 알림.
 
-    PR-21: source 인자 명시 지원 — demo_sidebar() 선택 결과를 정확히 반영.
-    None인 경우 session_state["_data_source"] → 자동 감지 순으로 폴백.
+    PR-21: source 인자 명시 지원 (demo_sidebar() 선택 결과 정확 반영).
+    PR-27: real 산출물 부재로 dummy fallback 시 명확한 안내 표시.
     """
+    # PR-27: 사용자가 선택한 모드와 실제 사용 source 분리
+    user_choice = st.session_state.get("_demo_mode_radio", "")
+    user_wants_real = user_choice.startswith("실데이터")
+
     if source is None:
         source = st.session_state.get("_data_source") or current_source()
-    if source == "real":
+
+    fallback_active = st.session_state.get("_real_fallback", False)
+
+    if user_wants_real and fallback_active:
+        # 사용자는 real 원하지만 산출물 부재 → 명확한 안내
+        st.sidebar.markdown(
+            "<div style='padding:6px 10px;border-radius:6px;background:#c89400;"
+            "color:white;font-size:12px;display:inline-block;'>🟡 real → dummy 폴백</div>",
+            unsafe_allow_html=True,
+        )
+        st.sidebar.caption(
+            "⚠️ 실데이터 산출물(xgb_secom_real.joblib 등 7종)이 Cloud에 없어 데모로 폴백. "
+            "로컬에서 `scripts/01~03_*.py --source real` 실행 후 LFS push 시 정상 동작."
+        )
+    elif source == "real":
         st.sidebar.markdown(
             "<div style='padding:6px 10px;border-radius:6px;background:#1e7c3a;"
             "color:white;font-size:12px;display:inline-block;'>🟢 real (UCI SECOM)</div>",
@@ -167,7 +211,7 @@ def sidebar_badge(source: str | None = None) -> None:
     else:
         st.sidebar.markdown(
             "<div style='padding:6px 10px;border-radius:6px;background:#c89400;"
-            "color:white;font-size:12px;display:inline-block;'>🟡 dummy (폴백)</div>",
+            "color:white;font-size:12px;display:inline-block;'>🟡 dummy (데모)</div>",
             unsafe_allow_html=True,
         )
 

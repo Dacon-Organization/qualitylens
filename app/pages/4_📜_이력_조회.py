@@ -41,18 +41,38 @@ with tab_pred:
     if demo_mode or model is None:
         df = load_demo_result(source=source)
         df = df.assign(label=df["pred_label"].map({0: "PASS", 1: "FAIL"}))
+        # PR-27: 데모용 actual 라벨 — confusion matrix 시연 가능하도록 추가
+        # 모델의 pred_label과 가벼운 노이즈 (90% 동의, 10% 불일치)로 actual 시뮬레이션
+        if "actual" not in df.columns:
+            import numpy as np
+            rng = np.random.default_rng(42)
+            df["actual"] = df["pred_label"].copy()
+            flip_idx = rng.choice(len(df), size=max(1, len(df) // 10), replace=False)
+            df.loc[df.index[flip_idx], "actual"] = 1 - df.loc[df.index[flip_idx], "actual"]
     else:
-        X_test, y_test = load_test_set(source=source)
-        proba = model.predict_proba(X_test)[:, 1]
-        df = pd.DataFrame(
-            {
-                "sample_id": X_test.index,
-                "pred_proba": proba,
-                "pred_label": (proba >= 0.5).astype(int),
-                "actual": y_test.values,
-            }
-        )
-        df = df.assign(label=df["pred_label"].map({0: "PASS", 1: "FAIL"}))
+        # PR-27: 실데이터 산출물 부재 시 데모 결과로 graceful fallback
+        try:
+            X_test, y_test = load_test_set(source=source)
+            proba = model.predict_proba(X_test)[:, 1]
+            df = pd.DataFrame(
+                {
+                    "sample_id": X_test.index,
+                    "pred_proba": proba,
+                    "pred_label": (proba >= 0.5).astype(int),
+                    "actual": y_test.values,
+                }
+            )
+            df = df.assign(label=df["pred_label"].map({0: "PASS", 1: "FAIL"}))
+        except FileNotFoundError:
+            st.info("💡 실데이터 테스트셋 부재 — 데모 결과로 폴백 (Cloud 환경).")
+            df = load_demo_result(source=source)
+            df = df.assign(label=df["pred_label"].map({0: "PASS", 1: "FAIL"}))
+            if "actual" not in df.columns:
+                import numpy as np
+                rng = np.random.default_rng(42)
+                df["actual"] = df["pred_label"].copy()
+                flip_idx = rng.choice(len(df), size=max(1, len(df) // 10), replace=False)
+                df.loc[df.index[flip_idx], "actual"] = 1 - df.loc[df.index[flip_idx], "actual"]
 
     col1, col2 = st.columns([2, 1])
     with col1:

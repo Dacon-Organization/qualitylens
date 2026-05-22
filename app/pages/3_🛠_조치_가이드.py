@@ -83,14 +83,26 @@ if demo_mode:
     sample = samples.iloc[sample_choice]
     sample_id = samples.index[sample_choice]
 else:
-    X_test, _ = load_test_set(source=source)
-    idx = st.selectbox(
-        "샘플 ID",
-        options=X_test.index.tolist(),
-        format_func=lambda i: f"sample #{i}",
-    )
-    sample = X_test.loc[idx]
-    sample_id = idx
+    # PR-27: 실데이터 산출물 부재 시 데모 샘플로 graceful fallback
+    try:
+        X_test, _ = load_test_set(source=source)
+        idx = st.selectbox(
+            "샘플 ID",
+            options=X_test.index.tolist(),
+            format_func=lambda i: f"sample #{i}",
+        )
+        sample = X_test.loc[idx]
+        sample_id = idx
+    except FileNotFoundError:
+        st.info("💡 실데이터 테스트셋 부재 — 데모 샘플로 폴백 (Cloud 환경 제약).")
+        samples = load_demo_sample(source=source)
+        sample_choice = st.selectbox(
+            "데모 샘플 (폴백)",
+            options=range(len(samples)),
+            format_func=lambda i: f"샘플 #{samples.index[i]}",
+        )
+        sample = samples.iloc[sample_choice]
+        sample_id = samples.index[sample_choice]
 
 
 def find_violations(sample_row: pd.Series, table: pd.DataFrame) -> pd.DataFrame:

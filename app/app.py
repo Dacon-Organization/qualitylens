@@ -81,7 +81,7 @@ elif demo_mode or model is None:
     sample_size, fail_count, fail_rate = _demo_metrics()
     proba_series = demo_result["pred_proba"]
 else:
-    # 실데이터 모드 — test set 로드 실패 시 데모 결과로 자동 폴백 (graceful degradation)
+    # PR-27: 실데이터 산출물 부재 시 데모 결과로 graceful (메시지 간결)
     try:
         X_test, y_test = load_test_set(source=source)
         proba = model.predict_proba(X_test)[:, 1]
@@ -91,8 +91,8 @@ else:
         import pandas as pd
 
         proba_series = pd.Series(proba[:100])
-    except FileNotFoundError as exc:
-        st.warning(f"⚠️ 테스트셋 부재 — 데모 결과로 폴백: {exc}")
+    except FileNotFoundError:
+        st.info("💡 실데이터 테스트셋 부재 — 데모 결과로 폴백 (Cloud 환경 제약).")
         sample_size, fail_count, fail_rate = _demo_metrics()
         proba_series = demo_result["pred_proba"]
 

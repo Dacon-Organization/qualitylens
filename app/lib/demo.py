@@ -1,18 +1,17 @@
-"""데모 ↔ 실데이터 토글 + session_state SSoT (PR-21).
+"""데모 ↔ 실데이터 토글 + session_state SSoT (PR-21 + PR-27 persistent key).
 
 사이드바 라디오로 모드 전환. 데모 모드는 사전 캐싱된 결과만 사용.
 
 세션 상태 (SSoT — 페이지 간 일관성):
-    st.session_state["_demo_mode_radio"] : str  (Streamlit widget 자동 보존)
-    st.session_state["_demo_mode"]       : bool (외부 코드 읽기용 bool 미러)
-    st.session_state["_data_source"]     : str  ("dummy"|"real" — 캐시 키 source)
+    st.session_state["_demo_mode_radio"]     : str  (Streamlit widget — 페이지 이동 시 destroy 가능)
+    st.session_state["_demo_mode_persistent"]: str  (PR-27 backup — widget destroy 무관 보존)
+    st.session_state["_demo_mode"]           : bool (외부 코드 읽기용 bool 미러)
+    st.session_state["_data_source"]         : str  ("dummy"|"real" — 캐시 키 source)
 
-PR-21 핵심:
-  - 페이지 진입 시 ensure_demo_state() 호출로 session_state 일관성 보장
-  - get_source() 헬퍼로 "dummy"|"real" 문자열을 모든 페이지에서 동일하게 도출
-  - 모든 load_*(source=source) 호출부와 캐시 키 일치 → mode 전환 시 캐시 무효화
-
-페이지 이동 시에도 사용자가 선택한 모드 + cache key가 모두 보존된다.
+PR-27 추가:
+  - Streamlit 멀티페이지에서 widget이 destroy 되면 session_state[widget_key]가 사라지는 동작 회피
+  - persistent backup key (_demo_mode_persistent)에 즉시 backup → 다음 페이지에서 widget을 올바른 값으로 재초기화
+  - URL query param "mode" 양방향 동기화 (새로고침/직접 진입 시에도 모드 보존)
 """
 
 from __future__ import annotations
@@ -20,22 +19,51 @@ from __future__ import annotations
 import streamlit as st
 
 _OPTIONS = ["데모 (결정론)", "실데이터 (UCI SECOM)"]
+_WIDGET_KEY = "_demo_mode_radio"
+_PERSISTENT_KEY = "_demo_mode_persistent"
+
+
+def _sync_from_query_params() -> None:
+    """URL ?mode=real|dummy → session_state (페이지 진입/새로고침 시)."""
+    try:
+        mode = st.query_params.get("mode")
+        if mode == "real" and st.session_state.get(_PERSISTENT_KEY) != _OPTIONS[1]:
+            st.session_state[_PERSISTENT_KEY] = _OPTIONS[1]
+        elif mode == "dummy" and st.session_state.get(_PERSISTENT_KEY) != _OPTIONS[0]:
+            st.session_state[_PERSISTENT_KEY] = _OPTIONS[0]
+    except Exception:  # noqa: BLE001 — query_params API는 Streamlit 버전마다 불안정
+        pass
+
+
+def _sync_to_query_params(source: str) -> None:
+    """session_state → URL ?mode=... (사용자 변경 시)."""
+    try:
+        if st.query_params.get("mode") != source:
+            st.query_params["mode"] = source
+    except Exception:  # noqa: BLE001
+        pass
 
 
 def ensure_demo_state() -> tuple[bool, str]:
-    """세션 상태 SSoT 초기화 — 모든 페이지 진입 시 자동 호출 가능.
+    """세션 상태 SSoT 초기화 — 모든 페이지 진입 시 자동 호출.
 
-    호출 후 보장:
-      - st.session_state["_demo_mode_radio"] 존재
-      - st.session_state["_demo_mode"] : bool
-      - st.session_state["_data_source"] : "dummy" | "real"
-
-    반환: (is_demo, source)
+    PR-27: persistent backup key + URL query param 양방향 동기로
+    멀티페이지 widget destroy + 새로고침 양쪽에서 모드 보존.
     """
-    if "_demo_mode_radio" not in st.session_state:
-        st.session_state["_demo_mode_radio"] = _OPTIONS[0]
+    # 1순위: URL query param (외부 진입)
+    _sync_from_query_params()
 
-    selected = st.session_state["_demo_mode_radio"]
+    # 2순위: persistent backup (이전 페이지에서 backup 한 값)
+    if _PERSISTENT_KEY in st.session_state:
+        # widget 키가 없거나 다르면 persistent로 복원
+        if st.session_state.get(_WIDGET_KEY) != st.session_state[_PERSISTENT_KEY]:
+            st.session_state[_WIDGET_KEY] = st.session_state[_PERSISTENT_KEY]
+    # 3순위: 기본 데모
+    elif _WIDGET_KEY not in st.session_state:
+        st.session_state[_WIDGET_KEY] = _OPTIONS[0]
+        st.session_state[_PERSISTENT_KEY] = _OPTIONS[0]
+
+    selected = st.session_state[_WIDGET_KEY]
     is_demo = selected.startswith("데모")
     source = "dummy" if is_demo else "real"
 
@@ -61,11 +89,10 @@ def get_source() -> str:
 def demo_sidebar() -> bool:
     """사이드바 라디오 렌더링 + 모드 반환.
 
-    Streamlit widget `key`로 페이지 간 라디오 상태 자동 보존.
-    `_demo_mode_radio`는 widget 직접 관리, `_demo_mode` / `_data_source`는
-    외부 모듈이 읽기 편하도록 미러링.
+    PR-27 fix: persistent backup key + URL query param 양방향 동기 →
+    멀티페이지 widget destroy / 새로고침 양쪽에서 모드 보존.
     """
-    # 페이지 진입 시 session_state 초기화 (없으면 데모 기본)
+    # 페이지 진입 시 session_state 초기화 (URL → persistent → widget 순)
     ensure_demo_state()
 
     st.sidebar.title("🎬 운영 모드")
@@ -73,12 +100,16 @@ def demo_sidebar() -> bool:
     selected = st.sidebar.radio(
         "데이터 소스",
         options=_OPTIONS,
-        key="_demo_mode_radio",  # Streamlit이 session_state에 자동 보존
+        key=_WIDGET_KEY,  # Streamlit widget key (페이지 이동 시 destroy 가능)
         help="데모 모드는 사전 캐싱된 샘플로 결정론적 결과를 보장합니다.",
     )
 
     is_demo = selected.startswith("데모")
     source = "dummy" if is_demo else "real"
+
+    # PR-27: 사용자 선택 → persistent backup + URL query param 즉시 동기
+    st.session_state[_PERSISTENT_KEY] = selected
+    _sync_to_query_params(source)
 
     # 외부 코드(data_loader, pages)에서 읽기 쉬운 미러 키
     st.session_state["_demo_mode"] = is_demo

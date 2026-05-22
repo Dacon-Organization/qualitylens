@@ -81,17 +81,32 @@ if mode.startswith("📌"):
         sample_id = str(demo_sample.index[sel])
         scenario_label = "단일 샘플"
     else:
-        st.info("💡 실데이터 모드 — test set 샘플 선택")
-        X_test, _ = load_test_set(source=source)
-        idx = st.selectbox(
-            "샘플 ID",
-            options=X_test.index.tolist(),
-            format_func=lambda i: f"sample #{i}",
-        )
-        sample = X_test.loc[[idx]]
-        proba = float(model.predict_proba(sample)[0, 1])
-        sample_id = str(idx)
-        scenario_label = "단일 샘플"
+        # PR-27: 실데이터 산출물 부재 시 데모로 graceful fallback
+        try:
+            st.info("💡 실데이터 모드 — test set 샘플 선택")
+            X_test, _ = load_test_set(source=source)
+            idx = st.selectbox(
+                "샘플 ID",
+                options=X_test.index.tolist(),
+                format_func=lambda i: f"sample #{i}",
+            )
+            sample = X_test.loc[[idx]]
+            proba = float(model.predict_proba(sample)[0, 1])
+            sample_id = str(idx)
+            scenario_label = "단일 샘플"
+        except FileNotFoundError:
+            st.info("💡 실데이터 산출물 부재 — 데모 샘플로 폴백 (Cloud 환경 제약).")
+            demo_sample = load_demo_sample(source=source)
+            demo_result = load_demo_result(source=source)
+            sel = st.selectbox(
+                "데모 샘플 선택 (폴백)",
+                options=range(len(demo_sample)),
+                format_func=lambda i: f"샘플 #{demo_sample.index[i]}",
+                key="p1_fallback_sample",
+            )
+            proba = float(demo_result.iloc[sel]["pred_proba"])
+            sample_id = str(demo_sample.index[sel])
+            scenario_label = "단일 샘플 (실데이터 폴백)"
 
 # -----------------------------------------------------------------------------
 # 스트리밍 모드 (S-4) — 페르소나 시나리오 자동 재생

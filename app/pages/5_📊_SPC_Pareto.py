@@ -163,6 +163,7 @@ selected_sensor = st.selectbox(
 )
 
 try:
+    # PR-27: 실데이터 산출물 부재 시 graceful info (에러 메시지 깔끔하게)
     X_test, _ = load_test_set(source=source)
     if selected_sensor in X_test.columns:
         sensor_values = X_test[selected_sensor]
@@ -187,7 +188,7 @@ try:
         )
     else:
         st.info(f"{selected_sensor} 데이터 부재.")
-except FileNotFoundError as exc:
-    st.warning(f"테스트셋 부재 — 히스토그램 생략: {exc}")
+except FileNotFoundError:
+    st.info("💡 실데이터 테스트셋 부재 — 센서 분포 히스토그램은 데모 모드에서만 가능 (Cloud 환경).")
 
 st.caption("📋 다음 단계: 위 임계값 위반 샘플을 P3 조치 가이드에서 원클릭 수용.")

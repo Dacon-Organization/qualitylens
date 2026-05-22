@@ -663,111 +663,82 @@
 </section>
 
 <!-- ============================================================
-     슬라이드 15 — 🎬 시연 5단계 캡처 (PR-E5)
+     슬라이드 15 — 🎬 시연 5단계 캡처 (PR-E5 + PR-27 컴팩트)
 ============================================================ -->
 <section class="slide">
   <div class="slide-header">
     <h1>🎬 MVP 시연 5단계 흐름</h1>
     <span class="badge">15/16</span>
   </div>
-  <div class="slide-body">
-    <p style="text-align: center; font-size: 13pt; margin-bottom: 6mm;">
-      <b>정상</b> → <b>이상 감지</b> → <b>SHAP 원인</b> → <b>조치</b> → <b>복귀</b> &nbsp;
-      (총 5분 30초 시연 — QR 코드로 영상 시청)
+  <div class="slide-body" style="font-size: 13pt;">
+    <p style="text-align: center; font-size: 12pt; margin-bottom: 4mm;">
+      <b>정상 → 이상 감지 → SHAP 원인 → 조치 → 복귀</b> (총 5분 30초)
     </p>
-
     <div class="pillar-grid">
       <div class="pillar quality">
-        <h4>1. 정상</h4>
-        <p style="margin: 4mm 0;"><b>🟢</b><br>샘플 #225<br>이상 확률 <b>16.1%</b><br>(평균 범위)</p>
+        <h4 style="font-size:13pt;">1. 정상</h4>
+        <p style="margin:2mm 0;font-size:10pt;"><b>🟢</b><br>#225<br><b>16.1%</b></p>
       </div>
       <div class="pillar safety">
-        <h4>2. 이상 감지</h4>
-        <p style="margin: 4mm 0;"><b>🔴</b><br>샘플 #1305<br>이상 확률 <b>81.2%</b><br>(P1 알림)</p>
+        <h4 style="font-size:13pt;">2. 감지</h4>
+        <p style="margin:2mm 0;font-size:10pt;"><b>🔴</b><br>#1305<br><b>81.2%</b></p>
       </div>
       <div class="pillar equipment">
-        <h4>3. SHAP 원인</h4>
-        <p style="margin: 4mm 0;"><b>🔍</b><br>Feature_59<br><b>78%</b> 기여<br>(P2 Waterfall)</p>
+        <h4 style="font-size:13pt;">3. SHAP</h4>
+        <p style="margin:2mm 0;font-size:10pt;"><b>🔍</b><br>Feature_59<br><b>78% 기여</b></p>
       </div>
       <div class="pillar production">
-        <h4>4. 조치</h4>
-        <p style="margin: 4mm 0;"><b>🛠</b><br>"챔버 냉각 밸브 5% 개방"<br>1-Click 수용<br>(P3 룰베이스)</p>
+        <h4 style="font-size:13pt;">4. 조치</h4>
+        <p style="margin:2mm 0;font-size:10pt;"><b>🛠</b><br>냉각 밸브<br>5% 개방</p>
       </div>
       <div class="pillar quality">
-        <h4>5. 복귀</h4>
-        <p style="margin: 4mm 0;"><b>✅</b><br>81% → <b>12%</b><br>피드백 루프<br>(P1 시뮬)</p>
+        <h4 style="font-size:13pt;">5. 복귀</h4>
+        <p style="margin:2mm 0;font-size:10pt;"><b>✅</b><br>81% → <b>12%</b></p>
       </div>
     </div>
-
-    <h2 style="margin-top: 6mm;">📝 결과 자동 기록</h2>
-    <ul>
-      <li><b>P4 이력 조회</b>: 조치 수용 자동 기록 (발생 원인 + 조치자 + 결과)</li>
-      <li><b>P6 종합 대시보드</b>: 비즈니스 임팩트 KPI 즉시 갱신 (예방 +1건, 절감 +100만원)</li>
-      <li><b>지식 베이스 누적</b>: 신규 작업자 교육 자료 + 차기 AI 재학습 데이터</li>
+    <h2 style="margin-top:4mm;font-size:15pt;">📝 결과 자동 기록</h2>
+    <ul style="font-size:11pt;">
+      <li><b>P4 이력</b>: 조치 수용 자동 기록 (원인 + 조치자 + 결과)</li>
+      <li><b>P6 대시보드</b>: 비즈니스 임팩트 KPI 즉시 갱신 (+1건, +100만원)</li>
+      <li><b>지식 베이스</b>: 신규 작업자 교육 + AI 재학습 데이터</li>
     </ul>
   </div>
   <div class="footer">
-    <span>QualityLens — 시연 흐름 (영상: docs/presentation/demo_video_guide.md)</span>
+    <span>QualityLens — 시연 (docs/presentation/demo_video_guide.md)</span>
     <span>Slide 15/16</span>
   </div>
 </section>
 
 <!-- ============================================================
-     슬라이드 16 — 🏆 평가 항목 매핑 자가 점검 (PR-E5)
+     슬라이드 16 — 🏆 평가 항목 매핑 (PR-E5 + PR-27 컴팩트)
 ============================================================ -->
 <section class="slide">
   <div class="slide-header">
     <h1>🏆 평가 항목 매핑 — 100점 자가 점검</h1>
     <span class="badge">16/16</span>
   </div>
-  <div class="slide-body">
-    <table>
+  <div class="slide-body" style="font-size:12pt;">
+    <table style="font-size:11pt;">
       <thead>
-        <tr><th>평가 항목</th><th>배점</th><th>QualityLens 대응</th><th>구현 상태</th></tr>
+        <tr><th>평가 항목</th><th>배점</th><th>QualityLens 대응</th><th>✓</th></tr>
       </thead>
       <tbody>
-        <tr>
-          <td><b>1. 문제 정의</b></td>
-          <td>20점</td>
-          <td>4 페르소나 + 시장 벤치마크 (마키나락스/Tableau) + 통계 데이터</td>
-          <td class="num">✅</td>
-        </tr>
-        <tr>
-          <td><b>2. AI 활용 (왜)</b></td>
-          <td>25점 ⭐</td>
-          <td>XGBoost (불균형 강건) + SHAP (설명력) + SMOTE (양 보강) + Western Electric Rules (제조 표준)</td>
-          <td class="num">✅</td>
-        </tr>
-        <tr>
-          <td><b>3. 플랫폼 기획 (통합)</b></td>
-          <td>20점</td>
-          <td>4영역 (품질/안전/설비/생산) 통합 — P1~P6 7페이지 흐름</td>
-          <td class="num">✅</td>
-        </tr>
-        <tr>
-          <td><b>4. MVP 구현 완성도</b></td>
-          <td>25점 ⭐</td>
-          <td>Mode 안정성 (PR-21) + CSV 업로드 (PR-19) + onboarding 7슬라이드 (PR-23) + 시연 무중단</td>
-          <td class="num">✅</td>
-        </tr>
-        <tr>
-          <td><b>5. 발표/전달력</b></td>
-          <td>10점</td>
-          <td>16:9 슬라이드 16장 + 자유양식 HTML + 시연 영상 가이드</td>
-          <td class="num">✅</td>
-        </tr>
+        <tr><td><b>1. 문제 정의</b></td><td>20</td><td>4 페르소나 + 시장 벤치마크 + 통계</td><td class="num">✅</td></tr>
+        <tr><td><b>2. AI 활용</b></td><td>25 ⭐</td><td>XGBoost (불균형) + SHAP + SMOTE + WER</td><td class="num">✅</td></tr>
+        <tr><td><b>3. 플랫폼</b></td><td>20</td><td>4영역 (품질·안전·설비·생산) 통합</td><td class="num">✅</td></tr>
+        <tr><td><b>4. MVP 구현</b></td><td>25 ⭐</td><td>Mode + CSV 업로드 + onboarding 7장 + 시연 무중단</td><td class="num">✅</td></tr>
+        <tr><td><b>5. 발표</b></td><td>10</td><td>16:9 슬라이드 16장 + 자유양식 + 시연 영상</td><td class="num">✅</td></tr>
       </tbody>
     </table>
-
-    <h2 style="margin-top: 6mm;">🎯 Q&A 대비 핵심 답변</h2>
-    <ul>
-      <li><b>"왜 XGBoost?"</b> → SECOM 불균형(6.6%) 데이터에 강건 + SHAP 호환 (TreeExplainer 빠름)</li>
-      <li><b>"왜 Streamlit?"</b> → 1-Click 무료 배포, 중소 제조 진입 장벽 0, Python 단일 스택</li>
-      <li><b>"확장 가능?"</b> → 591센서 추상화 유지 → 반도체 식각 → 자동차 도장 → 식품 공정 모두 적용</li>
+    <h2 style="margin-top:4mm;font-size:14pt;">🎯 Q&A 핵심 답변</h2>
+    <ul style="font-size:11pt;">
+      <li><b>왜 XGBoost?</b> 불균형(6.6%) 강건 + SHAP TreeExplainer 빠름</li>
+      <li><b>왜 Streamlit?</b> 1-Click 무료, 중소 제조 진입 장벽 0</li>
+      <li><b>확장?</b> 591센서 추상화 → 반도체 → 자동차 도장 → 식품</li>
     </ul>
   </div>
   <div class="footer">
-    <span>QualityLens — 본선 발표 자료 (PT 15분 + Q&A 5분)</span>
+    <span>QualityLens — 본선 발표 (PT 15분 + Q&A 5분)</span>
     <span>Slide 16/16</span>
   </div>
 </section>

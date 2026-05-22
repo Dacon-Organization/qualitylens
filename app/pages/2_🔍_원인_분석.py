@@ -138,13 +138,18 @@ st.caption(
     "예: 식각 온도가 180°C 이상에서 빨갛게(SHAP 양수) → 이상 확률 급등"
 )
 
-X_test, _ = load_test_set(source=source)
-shap_values_test = load_shap_values_test(source=source)
+# PR-27: Cloud에서 _real 산출물 부재 시 graceful — try/except로 보호
+try:
+    X_test, _ = load_test_set(source=source)
+    shap_values_test = load_shap_values_test(source=source)
+except FileNotFoundError as _exc:
+    st.info(f"💡 테스트셋 부재 — Dependence Plot 생략 (자동 폴백): {_exc}")
+    X_test, shap_values_test = None, None
 
-if shap_values_test is None:
+if shap_values_test is None or X_test is None:
     st.info(
-        "Dependence Plot은 `scripts/03_shap.py` 실행 후 표시됩니다. "
-        "현재는 글로벌 Top 1 센서만 더미로 안내."
+        "Dependence Plot은 실데이터 산출물(`shap_values_test_real.pkl`)이 있을 때 표시됩니다. "
+        "Cloud 환경에서는 데모 모드로 분석 가능."
     )
 else:
     top_sensors = top20["sensor"].head(5).tolist()
@@ -182,12 +187,13 @@ st.caption(
     "+ \"이 센서와 함께 튀는 다른 센서는?\""
 )
 
-if shap_values_test is not None and len(top20) >= 5:
+if len(top20) >= 5:
     tab_adv1, tab_adv2 = st.tabs(["📊 정상/이상 분포 (Violin)", "🔗 상위 5 센서 상관 행렬"])
 
     top5_sensors = top20["sensor"].head(5).tolist()
 
     with tab_adv1:
+        # PR-27: 실데이터 부재 시 demo_sample로 폴백
         try:
             X_t, y_t = load_test_set(source=source)
             sel_sensor = st.selectbox(
@@ -196,8 +202,6 @@ if shap_values_test is not None and len(top20) >= 5:
                 key="violin_sensor_select",
             )
             if sel_sensor in X_t.columns:
-                proba_test = shap_values_test.sum(axis=1) if hasattr(shap_values_test, "sum") else None
-                # y_test 라벨 기반 분리
                 normal_vals = X_t.loc[y_t == 0, sel_sensor]
                 anomaly_vals = X_t.loc[y_t == 1, sel_sensor]
                 if len(normal_vals) > 0 and len(anomaly_vals) > 0:
@@ -207,8 +211,10 @@ if shap_values_test is not None and len(top20) >= 5:
                     )
                 else:
                     st.info("정상/이상 샘플 분리 부족 — Violin 생략")
+            else:
+                st.info(f"센서 {sel_sensor} 데이터 부재 — Violin 생략")
         except FileNotFoundError:
-            st.info("실데이터 부재 — Violin 생략. 사이드바에서 실데이터 모드 전환 시 표시됩니다.")
+            st.info("💡 실데이터 산출물 부재 — Cloud 환경 graceful 폴백. 로컬에서 real 모드로 시연 가능.")
 
     with tab_adv2:
         try:
@@ -226,7 +232,7 @@ if shap_values_test is not None and len(top20) >= 5:
             else:
                 st.info("센서 수 부족 — 상관 행렬 생략")
         except FileNotFoundError:
-            st.info("실데이터 부재 — 상관 행렬 생략")
+            st.info("💡 실데이터 부재 — 상관 행렬 생략 (graceful)")
 
 st.divider()
 
