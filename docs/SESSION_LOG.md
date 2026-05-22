@@ -5,6 +5,17 @@
 
 ---
 
+## 2026-05-22 14:15 KST [Claude Opus 4.7] — PR-26 인앱 UX (Step 8/9/13/14/15)
+
+- **Step 8 데이터 딕셔너리**: `data/sensor_dictionary.csv` 15센서 한글 매핑 (sensor_003→식각 챔버 온도, sensor_017→증착 두께 등). `app/lib/sensor_names.py` neutral fallback (매핑 없으면 원본 ID).
+- **Step 9 액션 룰베이스**: `app/lib/action_rules.py` 10센서 구체 권고 (priority/estimated_minutes/category). P3에 "AI 우선 권고" 섹션 신규 — SHAP top 3 자동 매칭 + `priority_badge()`.
+- **Step 13 인앱 도움말**: P3에 `st.popover("💡 이 페이지 사용법")` — 4단계 설명 (샘플 선택→위반 목록→권고→수용).
+- **Step 14 탭 간 CTA**: P0/P1/P2/P3 각 페이지 끝에 `st.switch_page()` 버튼 — P0 → P1/P2/P3/P5 4분할, P1 → P2/P3 (tier에 따라), P2 → P1/P3, P3 → P2/P4.
+- **Step 7 SHAP 실시간 연결**: P1에서 `tier != normal` 시 `st.session_state["last_alert_sample"]` 저장 → P2 진입 시 활용 (다음 PR에서 자동 입력).
+- **검증**: import 정상 (sensor_names + action_rules), graceful (sensor_999 → "sensor_999"), 회귀 20/20 PASS.
+
+---
+
 ## 2026-05-22 13:45 KST [Claude Opus 4.7] — PR-22 시각화 풀 확장 (Step 4~7)
 
 - **신규 모듈** `app/lib/viz_advanced.py`: 9함수 — violin_normal_anomaly / correlation_heatmap / boxplot_violations / roi_bar / cumulative_trend / confusion_matrix / pareto_cumulative / top_violations_bar / kpi_card_html.

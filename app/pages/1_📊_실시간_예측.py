@@ -193,4 +193,25 @@ if mode.startswith("🎬") and stream.is_running():
         st.success("🎬 시뮬레이션 완료 — 리셋으로 다시 재생할 수 있습니다.")
 
 st.divider()
-st.caption("다음 단계 → P3 원인 분석에서 어느 센서가 기여했는지 확인")
+
+# PR-26 Step 7 — 이상 시점 샘플을 P2 SHAP에 자동 전달
+if tier.code != "normal":
+    st.session_state["last_alert_sample"] = {
+        "sample_id": sample_id,
+        "proba": proba,
+        "scenario": scenario_label,
+    }
+
+# PR-26 Step 14 — 탭 간 유기적 이동 (CTA)
+cta1, cta2, cta3 = st.columns([1, 1, 2])
+with cta1:
+    if st.button("🔍 P2 원인 분석", use_container_width=True, key="cta_p2"):
+        st.switch_page("pages/2_🔍_원인_분석.py")
+with cta2:
+    if tier.code != "normal":
+        if st.button("🛠 P3 조치 가이드", use_container_width=True, type="primary", key="cta_p3"):
+            st.switch_page("pages/3_🛠_조치_가이드.py")
+with cta3:
+    st.caption(
+        f"💡 {'위험 감지 시 P2에서 SHAP 원인 → P3 조치 흐름' if tier.code != 'normal' else '정상 운영 — P5에서 추세 모니터링 권장'}"
+    )

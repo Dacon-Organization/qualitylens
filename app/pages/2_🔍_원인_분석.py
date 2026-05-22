@@ -246,3 +246,15 @@ if backup_img.exists():
     st.image(str(backup_img), use_column_width=True)
 else:
     st.caption("백업 이미지 없음 — `scripts/03_shap.py` 실행 필요")
+
+# PR-26 Step 14 — 탭 간 유기적 이동 (CTA)
+st.divider()
+cta_a, cta_b, cta_c = st.columns([1, 1, 2])
+with cta_a:
+    if st.button("📊 P1 실시간 예측", use_container_width=True, key="p2_cta_p1"):
+        st.switch_page("pages/1_📊_실시간_예측.py")
+with cta_b:
+    if st.button("🛠 P3 조치 가이드", use_container_width=True, type="primary", key="p2_cta_p3"):
+        st.switch_page("pages/3_🛠_조치_가이드.py")
+with cta_c:
+    st.caption("💡 SHAP 분석 완료 → P3에서 상위 센서별 구체적 조치 권고 확인")

@@ -14,13 +14,16 @@ import pandas as pd  # noqa: E402
 import streamlit as st  # noqa: E402
 
 from lib import action_log  # noqa: E402
+from lib.action_rules import get_action, priority_badge  # noqa: E402
 from lib.data_loader import sidebar_badge  # noqa: E402
 from lib.demo import demo_sidebar, get_source  # noqa: E402
 from lib.load import (  # noqa: E402
     load_demo_sample,
+    load_shap_top20,
     load_test_set,
     load_thresholds,
 )
+from lib.sensor_names import get_display_name, get_full_label, get_process  # noqa: E402
 from lib.viz_advanced import boxplot_violations, roi_bar  # noqa: E402
 
 st.set_page_config(page_title="P4 — 조치 가이드", page_icon="🛠", layout="wide")
@@ -37,7 +40,38 @@ st.caption(
     "✅ 수용 버튼으로 조치 이력이 P5에 자동 기록"
 )
 
+# PR-26 Step 13 — 인앱 도움말
+with st.popover("💡 이 페이지 사용법", use_container_width=False):
+    st.markdown(
+        "1. **샘플 선택**: 데모/실데이터 모드에서 분석할 샘플 ID 선택\n"
+        "2. **위반 센서 목록**: 임계값 초과/미달 센서가 σ 편차 큰 순으로 정렬\n"
+        "3. **권고 조치**: 룰베이스 매핑된 한글 권고 (예: \"챔버 냉각 밸브 5% 개방\")\n"
+        "4. **✅ 수용**: 원클릭으로 P5 이력에 자동 기록 + 설비팀 전달\n\n"
+        "*P-F PR-26: 한글 센서명 + 구체적 조치 권고로 비전문가 작업자도 즉시 실행 가능.*"
+    )
+
 thresholds = load_thresholds(source=source)
+
+# PR-26 — SHAP top 3 + action_rules 자동 매칭 (페이지 상단 우선 표시)
+st.divider()
+st.subheader("🤖 AI 우선 권고 — SHAP 상위 3 센서 → 구체적 조치")
+try:
+    top20_for_action = load_shap_top20(source=source)
+    top3_sensors = top20_for_action["sensor"].head(3).tolist()
+    for i, sid in enumerate(top3_sensors, 1):
+        action_info = get_action(sid)
+        display = get_display_name(sid)
+        process = get_process(sid)
+        proc_tag = f" · {process}" if process else ""
+        st.markdown(
+            f"**{i}. {priority_badge(action_info['priority'])} {display}** "
+            f"(`{sid}`{proc_tag}) — 예상 소요 {action_info['estimated_minutes']}분\n\n"
+            f"→ **권고**: {action_info['action']}"
+        )
+except FileNotFoundError:
+    st.info("SHAP top20 산출물 부재 — AI 우선 권고 생략")
+
+st.divider()
 
 if demo_mode:
     samples = load_demo_sample(source=source)
@@ -194,6 +228,18 @@ with tab_roi:
         st.info("✅ 위반 센서 없음 — ROI 차트 생략")
 
 st.divider()
+
+# PR-26 Step 14 — 탭 간 유기적 이동 (CTA)
+cta_a, cta_b, cta_c = st.columns([1, 1, 2])
+with cta_a:
+    if st.button("🔍 P2 원인 분석", use_container_width=True, key="p3_cta_p2"):
+        st.switch_page("pages/2_🔍_원인_분석.py")
+with cta_b:
+    if st.button("📜 P4 이력 조회", use_container_width=True, type="primary", key="p3_cta_p4"):
+        st.switch_page("pages/4_📜_이력_조회.py")
+with cta_c:
+    st.caption("💡 조치 수용 완료 → P4에서 누적 이력 + 비즈니스 임팩트 확인")
+
 st.caption(
     "권고 텍스트는 일반화된 가이드. 실제 운영 시 도메인 전문가 검토 필수 · "
     "관련 스킬 → `skills/xai/action-guide.md`"

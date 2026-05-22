@@ -205,10 +205,28 @@ st.download_button(
 # -----------------------------------------------------------------------------
 
 st.divider()
-st.markdown(
-    "**다음 단계**:\n"
-    "- 🔍 **P2 원인 분석**: 위험 등급 샘플의 SHAP 기여 센서 확인\n"
-    "- 🛠 **P3 조치 가이드**: 임계값 위반 센서에 원클릭 수용\n"
-    "- 📜 **P4 이력 조회**: 누적 추론 + 조치 기록\n\n"
-    "*업로드 결과는 세션 메모리에만 보관됩니다. 영구 저장은 다운로드 CSV로.*"
+st.success(
+    f"🎉 **데이터 프로파일링 완료** — 총 {total:,}건 분석. "
+    f"불량률 {fail_rate:.1f}% (평소 대비 {fail_rate-6.6:+.1f}%p), 🔴 위험 {high_risk}건. "
+    "다음 단계로 진행하세요!"
+)
+
+# PR-26 Step 14 — 페이지 간 CTA (st.switch_page)
+cta_a, cta_b, cta_c, cta_d = st.columns(4)
+with cta_a:
+    if st.button("📊 P1 실시간 예측", use_container_width=True, type="primary", key="p0_cta_p1"):
+        st.switch_page("pages/1_📊_실시간_예측.py")
+with cta_b:
+    if st.button("🔍 P2 원인 분석", use_container_width=True, key="p0_cta_p2"):
+        st.switch_page("pages/2_🔍_원인_분석.py")
+with cta_c:
+    if st.button("🛠 P3 조치", use_container_width=True, key="p0_cta_p3"):
+        st.switch_page("pages/3_🛠_조치_가이드.py")
+with cta_d:
+    if st.button("📊 P5 SPC/Pareto", use_container_width=True, key="p0_cta_p5"):
+        st.switch_page("pages/5_📊_SPC_Pareto.py")
+
+st.caption(
+    "*업로드 결과는 세션 메모리에만 보관됩니다 (개인정보·영업비밀 보호). "
+    "영구 저장은 위 CSV 다운로드.*"
 )
