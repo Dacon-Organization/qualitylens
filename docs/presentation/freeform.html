@@ -263,6 +263,7 @@
       <tr><td><b>Okabe-Ito 팔레트</b></td><td>WCAG 1.4.1 + 색맹(8%) 친화 + 흑백 인쇄 호환</td><td>기존 #3fb950/#f85149 (색맹 구분 약함)</td><td><b>PR-18</b> (viz.py +symbol/plotly_marker)</td></tr>
       <tr><td><b>시나리오 토글 (NORMAL/WARN/ANOMALY)</b></td><td>session_state 우회 — 호출처 5곳 무변경</td><td>tuple 반환 변경 (Pitfall C-1)</td><td><b>PR-9F</b> (demo.py _scenario)</td></tr>
       <tr><td><b>Mode 3중 방어선</b></td><td>widget+persistent sync + URL push + JS interceptor</td><td>widget key 단독 (PR-7 회귀)</td><td><b>PR-28</b> (demo.py 핫픽스)</td></tr>
+      <tr><td><b>Plotly colorscale 호환성</b></td><td>8자리 hex(RGBA) → rgba() 문자열 — 모든 plotly 버전에서 안정</td><td>6자리 hex만 사용 시 그라데이션 alpha 표현 불가</td><td><b>PR-30</b> (viz_advanced.py confusion_matrix)</td></tr>
     </tbody>
   </table>
 

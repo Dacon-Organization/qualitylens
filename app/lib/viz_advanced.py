@@ -276,7 +276,7 @@ def confusion_matrix(
             text=text,
             texttemplate="%{text}",
             textfont={"size": 14},
-            colorscale=[[0, "#1f6feb20"], [1, PALETTE["info"]]],
+            colorscale=[[0, "rgba(0, 114, 178, 0.08)"], [1, PALETTE["info"]]],
             showscale=False,
         )
     )
