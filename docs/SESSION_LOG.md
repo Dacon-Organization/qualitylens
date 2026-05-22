@@ -5,6 +5,19 @@
 
 ---
 
+## 2026-05-22 14:55 KST [Claude Opus 4.7] — PR-E5 발표 16:9 슬라이드 12 → 16장
+
+- **slides.html 4장 추가** (Step 12 비즈니스 임팩트 + 사용자 피드백 #4 결과 시각화 보강):
+  - 13: 📊 종합 작업 대시보드 (KPI 4열 + Verdict warn 박스 + 정적 미러 안내)
+  - 14: 💰 비즈니스 임팩트 ROI (이번달 42건/4,200만원 + 솔루션 비교표 -100%/-99% + 연간 504건/5억400만원)
+  - 15: 🎬 시연 5단계 흐름 (pillar-grid 정상→이상→SHAP→조치→복귀 + 자동 기록 안내)
+  - 16: 🏆 평가 매핑 100점 자가점검 (5항목 표 + Q&A 3핵심 답변)
+- **footer N/12 → N/16 일괄 변경** (11개) + PR-E1R 추가 스타일 (kpi-grid, kpi-card, verdict, pillar-grid) 그대로 활용.
+- **검증**: 한글 인코딩 사고 (PowerShell `Get-Content -Raw` → `Set-Content -Encoding utf8` 사용 시 한글 cp949 깨짐) → `git checkout HEAD` 복구 후 Edit `replace_all` 사용.
+- **다음**: 사용자가 브라우저 열고 Ctrl+P → 16:9 PDF 16장 출력 → 대회 제출.
+
+---
+
 ## 2026-05-22 14:35 KST [Claude Opus 4.7] — PR-24 작업 대시보드 A+B + 비즈니스 임팩트
 
 - **사용자 피드백 #3 직접 반영**: 첨부 참조 `team_comparison_dashboard_v0.1.html` 같은 결과 시각화 필요. 4영역 패턴 적용 (KPI 4열 + Alert gradient + 비교표 색상 코딩 + Numbered + Verdict).

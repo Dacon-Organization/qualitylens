@@ -6,7 +6,7 @@
 ---
 
 ## 0. 한 줄 현황
-**P-F 진행 중** — PR-21/E1R/23/22/26 머지(#90~94). **PR-24 작업 대시보드 A+B 완료** (dashboard_cards + 종합 페이지 + 정적 HTML). 다음 PR-E5 발표 결과 시각화 4장.
+**P-F 본선 핵심 완료!** PR-21/E1R/23/22/26/24 머지(#90~95). **PR-E5 발표 16:9 슬라이드 13~16 추가 완료** (대시보드/임팩트/시연/평가매핑). 다음 통합 검증 + 선택 PR.
 
 ## 1. 환경
 - 원본 디렉토리: `C:\Users\kik32\workspace\Dacon\smart-factory-hackathon` (워크트리 미사용, origin 직접 작업)
@@ -15,7 +15,8 @@
 - Plan: `~/.claude/plans/qualitylens-gentle-panda.md` (P-F 섹션 11건)
 
 ## 2. 마지막 결정 사항 (최근 5건, 신규 → 과거)
-- 2026-05-22 14:35: **PR-24** — `app/lib/dashboard_cards.py` (kpi_card / verdict_box / numbered_step / comparison_table / alert_gradient_card / render_kpi_grid). `app/pages/6_📋_종합_대시보드.py` 신규 (Step 11+12 비즈니스 임팩트). `docs/presentation/dashboard_summary.html` 정적 미러 (발표 슬라이드 임베드용 보험).
+- 2026-05-22 14:55: **PR-E5** — slides.html 12 → 16장 (footer N/12→N/16 일괄). 슬라이드 13(대시보드 KPI+Verdict)/14(비즈 임팩트 ROI 표)/15(시연 5단계 pillar-grid)/16(평가 매핑 100점 자가점검+Q&A 답변). PR-E1R KPI/Verdict 스타일 활용.
+- 2026-05-22 14:35: **PR-24** 머지(#95) — dashboard_cards 6컴포넌트 + 종합 대시보드 P6 + 정적 HTML 미러.
 - 2026-05-22 14:15: **PR-26** 머지(#94) — sensor_dictionary (15센서) + sensor_names + action_rules (10센서) + P3 AI 우선 권고 + popover + st.switch_page CTA.
 - 2026-05-22 13:45: **PR-22** 머지(#93) — viz_advanced.py 9함수. P2/P3/P4/P5 통합. st.tabs lazy 렌더.
 - 2026-05-22 13:15: **PR-23** 머지(#92) — onboarding.py 4→7슬라이드. SVG inline 시각화 3장 (demo flow / SHAP example / action flow). 비전문가용 자세한 해설.
@@ -27,9 +28,9 @@
 - 2026-05-22 11:18: 평가 배점 PT 15분+Q&A 5분, 5항목 100점 (AI 25, MVP 25 최대)
 
 ## 3. 다음 액션 (TOP 3, 우선순위 순)
-1. **PR-26 commit + push + PR + auto merge** (브랜치 `claude/p-f-pr26-inapp-ux`)
-2. **PR-24 작업 대시보드 A+B** — `pages/6_📋_종합_대시보드.py` 신규 + `docs/presentation/dashboard_summary.html`
-3. **PR-E5 발표 결과 시각화 4장** — slides.html 13~16 추가 (대시보드 캡처 + 비즈 임팩트 + 시연 5단계 + 평가 매핑)
+1. **PR-E5 commit + push + PR + auto merge** (브랜치 `claude/p-f-pr-e5-slides-4more`)
+2. **통합 검증** — Streamlit Cloud 배포 reboot 후 5분 시연 무중단 검증 (사용자 직접) + PDF 16장 출력
+3. **선택 PR-17/18/9F** — 시간 여유 시 Cpk 게이지 / 색맹 UI / 시나리오 토글
 
 ## 4. 차단 요소 / 사용자 확인 대기
 - 없음. Auto mode 진행 자율 위임.
@@ -46,8 +47,9 @@
 | PR-23 | Onboarding 7슬라이드 + SVG 3장 | ✅ 머지(#92) |
 | PR-22 | 시각화 풀 확장 (viz_advanced 9함수) | ✅ 머지(#93) |
 | PR-26 | 인앱 UX (sensor_dictionary + action_rules + CTA) | ✅ 머지(#94) |
-| **PR-24** | 작업 대시보드 A+B (dashboard_cards + P6 신규 + 정적 HTML) | ✅ 로컬 완료, commit/push 대기 |
-| PR-E5 | 발표 결과 시각화 4장 (slides 13~16) | 🚧 다음 |
+| PR-24 | 작업 대시보드 A+B + 비즈니스 임팩트 | ✅ 머지(#95) |
+| **PR-E5** | 발표 16:9 슬라이드 12 → 16장 (대시보드/임팩트/시연/평가) | ✅ 로컬 완료, commit/push 대기 |
+| 통합 검증 | reboot 시나리오 + PDF 16장 출력 (사용자 직접) | 🚧 다음 |
 | PR-22 | 시각화 풀 확장 (Step 4~7) | ⏳ |
 | PR-26 | 인앱 UX (Step 8/9/13/14/15) — 데이터 딕셔너리 + CTA | ⏳ |
 | PR-24 | 작업 대시보드 A+B + 비즈니스 임팩트 | ⏳ |
