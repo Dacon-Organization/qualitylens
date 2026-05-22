@@ -12,13 +12,14 @@ from __future__ import annotations
 import pandas as pd
 import streamlit as st
 
+from lib.cpk import compute_cpk
 from lib.data_loader import load_shap_top20, sidebar_badge
 from lib.demo import demo_sidebar, get_source
 from lib.load import load_demo_result, load_test_set
 from lib.onboarding import reopen_button_sidebar
 from lib.spc import compute_limits, detect_western_electric, violation_summary
 from lib.viz import pareto_chart, sensor_histogram, spc_chart
-from lib.viz_advanced import pareto_cumulative
+from lib.viz_advanced import cpk_card_html, cpk_gauge, pareto_cumulative
 
 st.set_page_config(
     page_title="QualityLens — SPC & Pareto",
@@ -185,6 +186,74 @@ try:
         c_h3.metric(
             "이상치 (|z|>2)",
             f"{int((sensor_values.sub(mu).abs() > 2 * sigma).sum())}",
+        )
+
+        # -----------------------------------------------------------------------------
+        # PR-17 — Cpk 공정 능력 지수
+        # -----------------------------------------------------------------------------
+        st.divider()
+        st.header("④ 공정 능력 지수 (Cp / Cpk) — AIAG SPC 표준")
+
+        with st.expander("💡 Cpk란? 왜 1.33이 표준?", expanded=False):
+            st.markdown(
+                """
+                **Cp / Cpk** — 공정이 규격 한계(USL/LSL) 안에 얼마나 안정적으로 들어가는지 정량화.
+
+                - **Cp** = (USL − LSL) / 6σ — 잠재 능력 (편향 무시)
+                - **Cpk** = min[(USL − μ)/3σ, (μ − LSL)/3σ] — 실제 능력 (편향 반영)
+
+                **해석 (자동차 업계 AIAG SPC 매뉴얼)**:
+                - 🔴 Cpk < 1.00 → 부적합 (즉각 개선)
+                - 🟡 1.00 ≤ Cpk < 1.33 → 개선 필요 (불량률 0.3% 이하 목표)
+                - 🟢 1.33 ≤ Cpk < 1.67 → **양호 (표준)**
+                - 🌟 Cpk ≥ 1.67 → 우수 (Six Sigma)
+
+                → **공정 안정성을 한 숫자로 의사결정에 활용**.
+                현장 작업자도 "Cpk 1.33 이상 유지" 한 가지만 기억하면 됨.
+                """
+            )
+
+        # USL/LSL 자동 추정 (mean ± 3σ) — 사용자가 별도 입력 가능
+        cpk_col1, cpk_col2 = st.columns([1, 1])
+        with cpk_col1:
+            spec_k = st.slider(
+                "USL/LSL 자동 추정 σ 배수",
+                min_value=2.0, max_value=4.0, value=3.0, step=0.5,
+                help="규격 한계를 mean ± k·σ로 자동 추정. 실제 운영 시 도면 규격 입력 권장.",
+            )
+
+        cpk_result = compute_cpk(sensor_values, auto_spec_k=spec_k)
+
+        with cpk_col2:
+            st.markdown(
+                cpk_card_html(
+                    cpk=cpk_result.cpk,
+                    cp=cpk_result.cp,
+                    tier_label=cpk_result.interpretation.split(" — ")[0],
+                    interpretation=cpk_result.interpretation.split(" — ", 1)[1] if " — " in cpk_result.interpretation else cpk_result.interpretation,
+                    color=cpk_result.color,
+                ),
+                unsafe_allow_html=True,
+            )
+
+        st.plotly_chart(
+            cpk_gauge(
+                cpk=cpk_result.cpk,
+                cp=cpk_result.cp,
+                title=f"{selected_sensor} 공정 능력",
+            ),
+            use_container_width=True,
+        )
+
+        cpk_m1, cpk_m2, cpk_m3, cpk_m4 = st.columns(4)
+        cpk_m1.metric("USL (상한)", f"{cpk_result.usl:.3f}")
+        cpk_m2.metric("LSL (하한)", f"{cpk_result.lsl:.3f}")
+        cpk_m3.metric("Cp (잠재)", f"{cpk_result.cp:.2f}")
+        cpk_m4.metric(
+            "Cpk (실제)",
+            f"{cpk_result.cpk:.2f}",
+            delta=f"기준 1.33 대비 {cpk_result.cpk - 1.33:+.2f}",
+            delta_color="normal" if cpk_result.cpk >= 1.33 else "inverse",
         )
     else:
         st.info(f"{selected_sensor} 데이터 부재.")

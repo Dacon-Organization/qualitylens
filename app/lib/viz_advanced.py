@@ -397,6 +397,102 @@ def top_violations_bar(
     return fig
 
 
+# === PR-17 — Cpk 공정 능력 게이지 ==========================================
+def cpk_gauge(
+    cpk: float,
+    cp: float | None = None,
+    title: str = "공정 능력 지수 (Cpk)",
+) -> go.Figure:
+    """Cpk 게이지 — 4단계 컬러 구간 (부적합 / 개선 / 양호 / 우수).
+
+    Parameters
+    ----------
+    cpk : 실제 공정 능력 (편향 반영)
+    cp : 잠재 능력 (옵션, 부제목에 표시)
+    """
+    # 색상 (Okabe-Ito 호환)
+    if cpk < 1.0:
+        bar_color = PALETTE["danger"]
+        tier = "🔴 부적합"
+    elif cpk < 1.33:
+        bar_color = PALETTE["warn"]
+        tier = "🟡 개선 필요"
+    elif cpk < 1.67:
+        bar_color = PALETTE["normal"]
+        tier = "🟢 양호"
+    else:
+        bar_color = PALETTE["info"]
+        tier = "🌟 우수"
+
+    subtitle = f"<br><span style='font-size:14px;color:#6e7681'>{tier}"
+    if cp is not None:
+        subtitle += f" · Cp={cp:.2f}"
+    subtitle += "</span>"
+
+    # 게이지 범위 0~2.5 (제조 실무 통상 범위)
+    fig = go.Figure(
+        go.Indicator(
+            mode="gauge+number",
+            value=cpk,
+            number={"valueformat": ".2f", "font": {"size": 36}},
+            gauge={
+                "axis": {"range": [0, 2.5], "tickvals": [0, 1.0, 1.33, 1.67, 2.5]},
+                "bar": {"color": bar_color, "thickness": 0.7},
+                "steps": [
+                    {"range": [0, 1.0], "color": "#ffe0e0"},
+                    {"range": [1.0, 1.33], "color": "#fff4d6"},
+                    {"range": [1.33, 1.67], "color": "#dfffdb"},
+                    {"range": [1.67, 2.5], "color": "#d6e8ff"},
+                ],
+                "threshold": {
+                    "line": {"color": PALETTE["danger"], "width": 3},
+                    "thickness": 0.75,
+                    "value": 1.33,  # AIAG SPC 표준 기준선
+                },
+            },
+            title={"text": title + subtitle, "font": {"size": 16}},
+        )
+    )
+    fig.update_layout(
+        height=320,
+        margin=dict(l=20, r=20, t=80, b=20),
+        paper_bgcolor="white",
+    )
+    return fig
+
+
+def cpk_card_html(
+    cpk: float,
+    cp: float,
+    tier_label: str,
+    interpretation: str,
+    color: str = "#3fb950",
+) -> str:
+    """Cpk 결과를 HTML 카드로 — st.markdown(html, unsafe_allow_html=True)."""
+    return f"""
+    <div style="
+        background:#ffffff;
+        border:1px solid #d0d7de;
+        border-left: 5px solid {color};
+        padding: 16px 20px;
+        border-radius: 8px;
+        color:#0d1117;
+    ">
+        <div style="font-size:12px;color:#6e7681;margin-bottom:6px;">공정 능력 평가</div>
+        <div style="font-size:28px;font-weight:800;color:#0d1117;">
+            Cpk = {cpk:.2f}
+            <span style="font-size:14px;color:#6e7681;font-weight:400;"> · Cp = {cp:.2f}</span>
+        </div>
+        <div style="font-size:14px;color:{color};font-weight:700;margin-top:6px;">
+            {tier_label}
+        </div>
+        <div style="font-size:13px;color:#0d1117;margin-top:8px;line-height:1.5;">
+            {interpretation}
+        </div>
+    </div>
+    """
+
+
 # === KPI 카드 HTML (메인 + 종합 대시보드 공용) =============================
 def kpi_card_html(
     label: str,
