@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>QualityLens — 2026 스마트 공장 운영 시스템 MVP 해커톤 본선 발표</title>
+<style>
+  /* PR-E1: 발표 PDF용 HTML — 가로 A4, 페이지 분할 강제, 한글 폰트 안전 */
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800&display=swap');
+
+  @page {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: 'Noto Sans KR', -apple-system, 'Segoe UI', sans-serif;
+    color: #0d1117;
+    background: #f6f8fa;
+    line-height: 1.45;
+  }
+
+  .slide {
+    width: 273mm;            /* A4 landscape - margin */
+    height: 186mm;
+    max-height: 186mm;
+    padding: 14mm 18mm;
+    background: #ffffff;
+    page-break-after: always;
+    page-break-inside: avoid;
+    overflow: hidden;
+    position: relative;
+    margin: 8mm auto;        /* 화면 미리보기용 */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-radius: 6px;
+  }
+  .slide:last-child { page-break-after: auto; }
+
+  @media print {
+    html, body { background: #ffffff; }
+    .slide {
+      margin: 0;
+      box-shadow: none;
+      border-radius: 0;
+    }
+  }
+
+  .slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 2px solid #1f6feb;
+    padding-bottom: 6mm;
+    margin-bottom: 8mm;
+  }
+  .slide-header h1 { font-size: 22pt; font-weight: 800; color: #0d1117; }
+  .slide-header .meta { font-size: 9pt; color: #6e7681; }
+  .slide-header .badge {
+    background: #1f6feb; color: #fff; padding: 2px 10px;
+    border-radius: 10px; font-size: 9pt;
+  }
+
+  .slide-body { font-size: 12pt; }
+  .slide-body h2 { font-size: 14pt; margin-bottom: 4mm; color: #1f6feb; }
+  .slide-body p { margin-bottom: 4mm; }
+  .slide-body ul { margin-left: 6mm; margin-bottom: 4mm; }
+  .slide-body li { margin-bottom: 2mm; }
+  .slide-body table {
+    width: 100%; border-collapse: collapse; margin-bottom: 4mm; font-size: 10.5pt;
+  }
+  .slide-body th, .slide-body td {
+    border: 1px solid #d0d7de; padding: 4px 8px; text-align: left;
+  }
+  .slide-body th { background: #1f6feb; color: #fff; font-weight: 600; }
+  .slide-body tr:nth-child(even) td { background: #f6f8fa; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6mm; }
+
+  .card {
+    background: #f6f8fa; padding: 6mm; border-radius: 6px;
+    border-left: 4px solid #1f6feb;
+  }
+  .card h3 { font-size: 11pt; margin-bottom: 2mm; color: #1f6feb; }
+  .card p { font-size: 10pt; }
+
+  .footer {
+    position: absolute; bottom: 8mm; left: 18mm; right: 18mm;
+    font-size: 8.5pt; color: #6e7681;
+    border-top: 1px solid #d0d7de; padding-top: 3mm;
+    display: flex; justify-content: space-between;
+  }
+
+  /* 표지 전용 */
+  .cover { display: flex; flex-direction: column; justify-content: center;
+           align-items: center; text-align: center; height: 186mm; }
+  .cover .logo { font-size: 56pt; margin-bottom: 8mm; }
+  .cover h1 { font-size: 44pt; font-weight: 800; margin-bottom: 4mm; color: #0d1117; }
+  .cover .tagline { font-size: 16pt; color: #1f6feb; margin-bottom: 12mm; }
+  .cover .sub { font-size: 12pt; color: #6e7681; margin-bottom: 4mm; }
+
+  .highlight { color: #f85149; font-weight: 700; }
+  .num { color: #1f6feb; font-weight: 700; }
+
+  .pillar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5mm; }
+  .pillar {
+    padding: 5mm; border-radius: 6px; text-align: center; color: #fff;
+  }
+  .pillar.quality { background: #3fb950; }
+  .pillar.safety { background: #d29922; }
+  .pillar.equipment { background: #1f6feb; }
+  .pillar.production { background: #8957e5; }
+  .pillar h4 { font-size: 13pt; margin-bottom: 2mm; }
+  .pillar p { font-size: 9.5pt; opacity: 0.95; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     슬라이드 1 — 표지
+============================================================ -->
+<section class="slide cover">
+  <div class="logo">🏭</div>
+  <h1>QualityLens</h1>
+  <div class="tagline">품질을 렌즈로 들여다보다 — Quality, through a Lens</div>
+  <p class="sub">2026 스마트 공장 운영 시스템 MVP 해커톤 본선 발표</p>
+  <p class="sub">중소 제조를 위한 설명 가능한 AI 플랫폼 MVP</p>
+  <div class="footer">
+    <span>이동원 (kik328288@gmail.com)</span>
+    <span>2026-05-22 KST</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     슬라이드 2 — 문제 정의 (1)
+============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <h1>1. 문제 정의 — 중소 제조 현장의 페인포인트</h1>
+    <span class="badge">2/12</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div class="card">
+        <h3>🔴 현장 작업자</h3>
+        <p>"이상 알람이 떴는데 <span class="highlight">왜 불량인지 모른다</span>.<br>
+        원인을 찾는 데 평균 <span class="highlight">6시간</span>이 걸린다."</p>
+      </div>
+      <div class="card">
+        <h3>🟡 공정팀 / QC</h3>
+        <p>"통계 전문가가 없어<br>
+        <span class="highlight">SPC 관리도</span>를 직접 만들지 못한다."</p>
+      </div>
+      <div class="card">
+        <h3>🟠 생산관리자</h3>
+        <p>"Tableau/PowerBI로는<br>
+        <span class="highlight">실시간 이상 감지</span>가 불가능하다."</p>
+      </div>
+      <div class="card">
+        <h3>🔵 경영진</h3>
+        <p>"마키나락스·DELMIA는<br>
+        <span class="highlight">수억 원</span> 도입 비용으로 부담."</p>
+      </div>
+    </div>
+    <h2 style="margin-top: 6mm;">📌 핵심 미해결</h2>
+    <p><span class="highlight">기존 제조 AI는 결과만 뱉어내는 블랙박스</span> — 작업자는 "왜?"를 모른다.<br>
+       대기업은 마키나락스급 솔루션을 쓰지만, <span class="highlight">중소 제조는 진입 장벽이 높다</span>.</p>
+  </div>
+  <div class="footer">
+    <span>QualityLens — 2026 스마트 공장 MVP 해커톤</span>
+    <span>Slide 2/12</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     슬라이드 3 — 문제 정의 (2): 시장 데이터
+============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <h1>1. 문제 정의 — 시장 데이터 (벤치마킹)</h1>
+    <span class="badge">3/12</span>
+  </div>
+  <div class="slide-body">
+    <table>
+      <thead><tr><th>구분</th><th>마키나락스 / DELMIA</th><th>Tableau / PowerBI</th><th>QualityLens (본 팀)</th></tr></thead>
+      <tbody>
+        <tr><td><b>타겟</b></td><td>대기업, 전문 사이언티스트</td><td>IT/기획, 경영진</td><td><b>중소 제조 현장 + QC</b></td></tr>
+        <tr><td><b>도입 비용</b></td><td><span class="highlight">수억~수십억 원</span></td><td>수백만 원 라이선스</td><td><b>Streamlit Cloud 무료 배포</b></td></tr>
+        <tr><td><b>실시간 이상 감지</b></td><td>✅ MES 통합</td><td>❌ 통계적 이상치만</td><td>✅ XGBoost + Western Electric Rules</td></tr>
+        <tr><td><b>설명력 (XAI)</b></td><td>일부 지원</td><td>❌ 없음</td><td><b>✅ SHAP 자동 텍스트 + Waterfall</b></td></tr>
+        <tr><td><b>현장 작업자 사용</b></td><td>❌ 전문 교육 필요</td><td>❌ BI 학습 필요</td><td><b>✅ 첫날부터 사용</b></td></tr>
+      </tbody>
+    </table>
+    <h2 style="margin-top: 4mm;">🎯 시장 갭</h2>
+    <p>대기업용 ↔ BI 도구 사이에 <span class="highlight">"중소 제조 + 설명력 있는 AI"</span> 공백.</p>
+  </div>
+  <div class="footer">
+    <span>출처: machinemetrics, tulip, gooddata.ai 벤치마킹 (2026-05)</span>
+    <span>Slide 3/12</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     슬라이드 4 — 문제 정의 (3): 페르소나
+============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <h1>1. 문제 정의 — 3대 페르소나 (사용자 정의)</h1>
+    <span class="badge">4/12</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid-3">
+      <div class="card">
+        <h3>👷 현장 작업자</h3>
+        <p><b>시점</b>: 매 시프트 시작·종료<br>
+        <b>고민</b>: "지금 라인이 안전한가?"<br>
+        <b>가치</b>: 3단계 신호등 + 원클릭 조치</p>
+      </div>
+      <div class="card">
+        <h3>🔬 공정팀 / QC</h3>
+        <p><b>시점</b>: 이상 감지 직후<br>
+        <b>고민</b>: "어느 센서가 원인인가?"<br>
+        <b>가치</b>: SHAP brief + SPC 관리도 + Pareto</p>
+      </div>
+      <div class="card">
+        <h3>📊 생산관리자</h3>
+        <p><b>시점</b>: 일/주간 회의<br>
+        <b>고민</b>: "이번 주 공정 건강도는?"<br>
+        <b>가치</b>: 누적 이력 + Cpk + 4영역 통합</p>
+      </div>
+    </div>
+    <h2 style="margin-top: 6mm;">📌 통합 가치</h2>
+    <p>3명 모두 <span class="num">하나의 대시보드</span>에서 자기 역할을 끝낸다 —
+       데이터 소스(timestamp + state)도 일관.</p>
+  </div>
+  <div class="footer">
+    <span>페르소나 정의: 사용자 + 외부 검토자 피드백 통합</span>
+    <span>Slide 4/12</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     슬라이드 5 — AI 활용 (1): 왜 XGBoost + SHAP
+============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <h1>2. AI 활용 — 왜 XGBoost + SHAP?</h1>
+    <span class="badge">5/12</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div>
+        <h2>🔧 XGBoost 선정 이유</h2>
+        <ul>
+          <li><b>제조 데이터 특성</b>: 591개 센서 표 형식 + 6.6% 극심한 불균형</li>
+          <li><b>해석성</b>: 트리 모델 → SHAP 자연 결합</li>
+          <li><b>학습 속도</b>: 본선장 5분 내 재학습 가능 (필요 시)</li>
+          <li><b>검증 결과</b>: 5-Fold CV MCC = <span class="num">0.98 ± 0.01</span></li>
+        </ul>
+        <h2 style="margin-top: 6mm;">⚖️ 불균형 처리</h2>
+        <p>SMOTE 오버샘플링으로 train 6.6% → 50%.<br>
+        scale_pos_weight 동적 조정.</p>
+      </div>
+      <div>
+        <h2>🔍 SHAP 선정 이유</h2>
+        <ul>
+          <li><b>게임이론 기반</b>: 각 센서 기여도 공정 분해</li>
+          <li><b>Top-K 텍스트화</b>: "센서_003이 45% 영향" 자동 한국어 변환</li>
+          <li><b>Waterfall</b>: base → 누적 → 최종 logit 시각화</li>
+          <li><b>본선 호환</b>: 사전 계산 후 캐싱 → 시연 시 재계산 X</li>
+        </ul>
+        <h2 style="margin-top: 6mm;">🚫 회피한 것</h2>
+        <p>UMAP/t-SNE 임베딩, 딥러닝, 5Why NLP —
+        모두 "이름만 모름" 패턴으로 작업자 신뢰 떨어짐.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>모델 카드: models/model_card_dummy.md</span>
+    <span>Slide 5/12</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     슬라이드 6 — AI 활용 (2): Threshold Engine + WER
+============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <h1>2. AI 활용 — Threshold Engine + Western Electric Rules</h1>
+    <span class="badge">6/12</span>
+  </div>
+  <div class="slide-body">
+    <h2>🎚️ Threshold Engine</h2>
+    <ul>
+      <li><b>운영 임계값</b>: Youden's J 기반 자동 산출 (model_card 명시)</li>
+      <li><b>센서별 정상 범위</b>: PASS 데이터의 mean ± 2σ → threshold_table.csv (591 센서)</li>
+      <li><b>3단계 신호등</b>: 0.30/0.50 임계값 → 🟢 정상 / 🟡 주의 / 🔴 위험</li>
+    </ul>
+
+    <h2 style="margin-top: 6mm;">📊 Western Electric Rules — 패턴 기반 이상 감지</h2>
+    <table>
+      <thead><tr><th>Rule</th><th>조건</th><th>감지 대상</th></tr></thead>
+      <tbody>
+        <tr><td>Rule 1</td><td>1점이 ±3σ 초과</td><td>명백한 이상 (즉시)</td></tr>
+        <tr><td>Rule 2</td><td>연속 3점 중 2점이 ±2σ 초과</td><td>시프트 시작 (조기 감지)</td></tr>
+        <tr><td>Rule 3</td><td>연속 5점 중 4점이 ±1σ 초과</td><td>점진적 변화 (트렌드)</td></tr>
+        <tr><td>Rule 4</td><td>연속 8점이 중심선 한 쪽</td><td>평균 이동 (구조 변화)</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top: 4mm;">→ Shewhart 단일 차트보다 <span class="num">5~10배 빨리 작은 시프트 감지</span>.
+       <span class="highlight">숙련도 낮은 작업자도 패턴을 놓치지 않음.</span></p>
+  </div>
+  <div class="footer">
+    <span>출처: lab-wizard SPC 가이드, jmp.com CUSUM 비교</span>
+    <span>Slide 6/12</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     슬라이드 7 — AI 활용 (3): 평가 결과
+============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <h1>2. AI 활용 — 모델 성능 + 검증</h1>
+    <span class="badge">7/12</span>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div>
+        <h2>📈 5-Fold CV 결과 (dummy)</h2>
+        <table>
+          <thead><tr><th>Fold</th><th>MCC</th><th>PR-AUC</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>0.979</td><td>0.9999</td></tr>
+            <tr><td>2</td><td>0.983</td><td>1.000</td></tr>
+            <tr><td>3</td><td>0.987</td><td>0.9999</td></tr>
+            <tr><td>4</td><td>0.983</td><td>0.9998</td></tr>
+            <tr><td>5</td><td>1.000</td><td>1.000</td></tr>
+            <tr><td><b>평균</b></td><td><b>0.986 ± 0.007</b></td><td><b>0.9999</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h2>🎯 운영 단계 메트릭</h2>
+        <ul>
+          <li><b>Test MCC</b> = 0.68 (실 운영 임계값 = Youden's J)</li>
+          <li><b>응답 시간</b>: 단일 샘플 추론 &lt; 10ms</li>
+          <li><b>SHAP 계산</b>: 사전 직렬화 → 본선 0초</li>
+          <li><b>모델 크기</b>: dummy 543KB / git LFS 불필요</li>
+        </ul>
+        <h2 style="margin-top: 4mm;">🛡️ 결정성 (Reproducibility)</h2>
+        <p>RANDOM_STATE=42 고정 → Codex GPT 이관해도 같은 결과.<br>
+        scripts/01~03 + build_demo_result.py 모두 재현 가능.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>MCC = Matthews Correlation Coefficient (불균형 강건)</span>
+    <span>Slide 7/12</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     슬라이드 8 — 플랫폼 기획 (1): 4영역 통합
+============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <h1>3. 플랫폼 기획 — 4영역 통합 (대회 핵심)</h1>
+    <span class="badge">8/12</span>
+  </div>
+  <div class="slide-body">
+    <div class="pillar-grid">
+      <div class="pillar quality">
+        <h4>🛡️ 품질</h4>
+        <p>P1~P3 SHAP + 이상 확률 + Top 기여 센서</p>
+      </div>
+      <div class="pillar safety">
+        <h4>🚨 안전</h4>
+        <p>메인 3단계 알림 배너 + WER 자동 감지 + 임계값 위반</p>
+      </div>
+      <div class="pillar equipment">
+        <h4>⚙️ 설비</h4>
+        <p>P5 SPC 관리도 + UCL/LCL + 센서 분포 임계 마킹</p>
+      </div>
+      <div class="pillar production">
+        <h4>📈 생산</h4>
+        <p>P4 누적 이력 + 조치 효과 추적 + Pareto 80/20</p>
+      </div>
+    </div>
+    <h2 style="margin-top: 8mm;">🔄 사이클 — Predict → Explain → Act → Trace</h2>
+    <p>4개 영역이 <span class="num">하나의 데이터 소스</span>(timestamp + state 컬럼)로 연결되어<br>
+       단일 사이드바에서 자유 이동 + 컨텍스트 보존 (PR-7 session_state fix).</p>
+    <h2 style="margin-top: 4mm;">📤 자기 공장 데이터 즉시 활용</h2>
+    <p>📤 데이터 업로드 페이지 → CSV 한 번 → 30초 내 첫 인사이트.
+       <span class="highlight">591개 컬럼 전부 없어도 자동 정렬.</span></p>
+  </div>
+  <div class="footer">
+    <span>대회 핵심 방향: 품질/안전/설비/생산 통합 운영 MVP</span>
+    <span>Slide 8/12</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     슬라이드 9 — 플랫폼 기획 (2): 5페이지 + 데이터 흐름
+============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <h1>3. 플랫폼 기획 — 5페이지 흐름</h1>
+    <span class="badge">9/12</span>
+  </div>
+  <div class="slide-body">
+    <table>
+      <thead><tr><th>페이지</th><th>역할</th><th>4영역 매핑</th><th>핵심 위젯</th></tr></thead>
+      <tbody>
+        <tr><td><b>📤 데이터 업로드</b></td><td>자기 공장 CSV 즉시 추론</td><td>전체 입력</td><td>file_uploader + ProgressColumn</td></tr>
+        <tr><td><b>🏭 메인</b></td><td>통합 KPI + 시계열</td><td>품질 + 안전</td><td>metric delta + 3단계 배지 + plotly</td></tr>
+        <tr><td><b>📊 P1 실시간 예측</b></td><td>스트리밍 시뮬 + 게이지</td><td>품질</td><td>gauge_proba + 자동 재생</td></tr>
+        <tr><td><b>🔍 P2 원인 분석</b></td><td>SHAP 3계층 (글로벌/Waterfall/Dependence)</td><td>품질</td><td>shap_top_bar + waterfall + AI brief</td></tr>
+        <tr><td><b>🛠 P3 조치 가이드</b></td><td>원클릭 수용 + toast</td><td>안전</td><td>button + action_log + balloons</td></tr>
+        <tr><td><b>📜 P4 이력</b></td><td>예측 + 조치 누적</td><td>생산</td><td>filter + CSV 다운로드</td></tr>
+        <tr><td><b>📊 P5 SPC + Pareto</b></td><td>WER 자동 감지 + 80/20</td><td>설비</td><td>spc_chart + pareto_chart + histogram</td></tr>
+      </tbody>
+    </table>
+    <h2 style="margin-top: 4mm;">🔧 데이터 일관성 (PR-10)</h2>
+    <p>demo_result.csv 5컬럼 (sample_id + timestamp + pred_proba + pred_label + state) —
+       전 페이지 동일 소스. <span class="num">결정성 보장 (RANDOM_STATE=42)</span>.</p>
+  </div>
+  <div class="footer">
+    <span>총 7페이지 (데이터 업로드 + 메인 + 5 서브)</span>
+    <span>Slide 9/12</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     슬라이드 10 — MVP 시연
+============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <h1>4. MVP 시연 — 5분 안에 정상→이상→조치→복귀</h1>
+    <span class="badge">10/12</span>
+  </div>
+  <div class="slide-body">
+    <h2>🎬 시연 시나리오 (PT 4분)</h2>
+    <ol style="margin-left: 6mm; font-size: 11pt;">
+      <li style="margin-bottom: 3mm;"><b>[0:00] 첫 접속</b> — onboarding 모달 4슬라이드 자동 표시 (Quality+Lens 정체성 → CSV 가이드 → 4영역 → 사이클)</li>
+      <li style="margin-bottom: 3mm;"><b>[0:30] 📤 데이터 업로드</b> — 샘플 CSV 다운로드 → 그대로 재업로드 → 591컬럼 자동 매칭 → 결과 51행 즉시 표시</li>
+      <li style="margin-bottom: 3mm;"><b>[1:00] 메인</b> — 🟡 dummy 배지 + KPI 4종 (delta 색상 강조) + 시계열 51샘플</li>
+      <li style="margin-bottom: 3mm;"><b>[1:30] P1 실시간 예측</b> — 스트리밍 ▶ 시작 → 정상 4틱 → 이상 2틱 → 복귀 4틱</li>
+      <li style="margin-bottom: 3mm;"><b>[2:00] P2 원인 분석</b> — Waterfall + <span class="highlight">"🚨 AI 분석: 센서_003이 45% 영향"</span> 자동 텍스트</li>
+      <li style="margin-bottom: 3mm;"><b>[2:30] P3 조치 가이드</b> — ✅ 수용 버튼 클릭 → 🎈 balloons + toast 알림</li>
+      <li style="margin-bottom: 3mm;"><b>[3:00] P5 SPC + Pareto</b> — Western Electric Rules 위반 ×표시 + Pareto 80% 기준선</li>
+      <li style="margin-bottom: 3mm;"><b>[3:30] P4 이력</b> — 누적 예측·조치 + CSV 다운로드</li>
+    </ol>
+    <p style="margin-top: 4mm;">🎥 시연 영상 URL: <i>(YouTube 링크 — PR-E3 가이드 기반 사용자 녹화)</i></p>
+  </div>
+  <div class="footer">
+    <span>배포 URL: Streamlit Cloud (자동 재배포 확인)</span>
+    <span>Slide 10/12</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     슬라이드 11 — 차별화 + Q&A 대비
+============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <h1>5. 차별화 + Q&A 핵심 답변</h1>
+    <span class="badge">11/12</span>
+  </div>
+  <div class="slide-body">
+    <h2>🎯 차별화 3가지</h2>
+    <div class="grid-3">
+      <div class="card">
+        <h3>1/100 가격</h3>
+        <p>마키나락스·DELMIA 수억 vs <b>무료 Streamlit Cloud</b></p>
+      </div>
+      <div class="card">
+        <h3>SHAP + SPC + Pareto + Cpk</h3>
+        <p>BI 도구가 못하는 <b>설명력 × 제조 표준</b> 통합</p>
+      </div>
+      <div class="card">
+        <h3>첫날부터 사용</h3>
+        <p>CSV 한 번 업로드 → <b>30초 내</b> 첫 인사이트</p>
+      </div>
+    </div>
+
+    <h2 style="margin-top: 6mm;">❓ 예상 Q&A 5종</h2>
+    <ul style="font-size: 10.5pt;">
+      <li><b>Q1 왜 SHAP?</b> — 게임이론 기반 공정 분해, "센서_003 45% 영향" 자동 한국어 변환</li>
+      <li><b>Q2 왜 XGBoost?</b> — 591센서×6.6%불균형에 강건, MCC 0.98±0.01</li>
+      <li><b>Q3 WER 추가 이유?</b> — Shewhart 단일점보다 5~10배 빠른 패턴 감지</li>
+      <li><b>Q4 4영역 통합?</b> — 단일 데이터 소스(timestamp+state)로 7페이지 일관</li>
+      <li><b>Q5 중소공장이 쓸 수 있나?</b> — 📤 CSV 업로드 → 자동 정렬, Streamlit 1-Click 배포</li>
+    </ul>
+  </div>
+  <div class="footer">
+    <span>전체 Q&A 스크립트: docs/pitch_30s.md</span>
+    <span>Slide 11/12</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     슬라이드 12 — 마무리 + 로드맵
+============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <h1>6. 마무리 — 향후 로드맵</h1>
+    <span class="badge">12/12</span>
+  </div>
+  <div class="slide-body">
+    <h2>📅 본선 후 (P-D, P-E)</h2>
+    <ul>
+      <li><b>real 산출물 배포</b> — quantization·LFS·외부 호스팅 4안 비교 보고서 (PR-5)</li>
+      <li><b>SECOM 원본 1,567행</b> 시나리오 확장 (시간축 + 라인별 비교)</li>
+      <li><b>OEE 3각형 분해</b>, <b>Cpk/Cp 게이지</b> (시각화 5종 중 잔여 2종)</li>
+      <li><b>한글 폰트 전수 점검</b> (P-C 별도 spec)</li>
+    </ul>
+
+    <h2 style="margin-top: 6mm;">🚀 확장 비전</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>🏭 산업 확장</h3>
+        <p>반도체 식각 → 자동차 도장 → 식품 공정 등 591센서 추상화 유지</p>
+      </div>
+      <div class="card">
+        <h3>🤝 협업 인프라</h3>
+        <p>Claude ↔ Codex 하이브리드 (HANDOVER.md 50줄 인계) — 본 프로젝트 자체가 검증</p>
+      </div>
+    </div>
+
+    <p style="margin-top: 8mm; text-align: center; font-size: 14pt;">
+      <span class="num">QualityLens</span> — 품질을 렌즈로 들여다보다.<br>
+      <span style="color: #6e7681; font-size: 11pt;">중소 제조의 AI 도입 장벽을 1/100로.</span>
+    </p>
+  </div>
+  <div class="footer">
+    <span>코드: github.com/mygithub05253/Dacon/smart-factory-hackathon</span>
+    <span>Slide 12/12</span>
+  </div>
+</section>
+
+</body>
+</html>

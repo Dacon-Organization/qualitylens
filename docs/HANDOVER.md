@@ -6,7 +6,7 @@
 ---
 
 ## 0. 한 줄 현황
-P-B 확장 진행 중 — PR-1/3/2/7/19+20/10/14+15 ✅ (8/11), **PR-8+11(UI 디테일 + 브랜딩) commit 대기** → PR-E1/E2/E3.
+P-B + P-E 완성 단계 — PR-1/3/2/7/19+20/10/14+15/8+11 ✅ (10/11), **PR-E1+E2+E3 (발표 산출물 3종) commit 대기** → 본선 발표 준비 완료.
 
 ## 1. 환경
 - 워크트리: `C:\Users\kik32\workspace\Dacon\.claude\worktrees\confident-allen-747529\smart-factory-hackathon`
@@ -21,9 +21,9 @@ P-B 확장 진행 중 — PR-1/3/2/7/19+20/10/14+15 ✅ (8/11), **PR-8+11(UI 디
 - 2026-05-22 11:18: 평가 배점 — PT 15분+Q&A 5분, 5항목 100점 (AI 25, MVP 25 최대)
 
 ## 3. 다음 액션 (TOP 3, 우선순위 순)
-1. **PR-8+11 마무리** — commit + push + PR + squash merge
-2. **PR-E1 착수** — `docs/presentation/slides.html` 가로 PDF용 12~15장 HTML/CSS (@media print) (120분)
-3. **PR-E2+E3 묶음** — 자유 양식 HTML + 시연 가이드 (105분)
+1. **PR-E1+E2+E3 마무리** — commit + push + PR + squash merge
+2. **사용자 직접 실행** — `slides.html`을 브라우저에서 열고 Ctrl+P → PDF 인쇄(A4 가로) → 대회 제출
+3. **사용자 직접 실행** — `demo_video_guide.md` 시나리오대로 OBS 녹화 → YouTube Unlisted 업로드 → URL 확보
 
 ## 4. 차단 요소 / 사용자 확인 대기
 - 없음. Auto mode 진행 자율 위임.
@@ -35,8 +35,9 @@ P-B 확장 진행 중 — PR-1/3/2/7/19+20/10/14+15 ✅ (8/11), **PR-8+11(UI 디
 ## 6. 진행 중 sub-PR 상태판 (필수 11개)
 | PR | 제목 | 상태 |
 |---|---|---|
-| PR-1/3/2/7/19+20/10/14+15 | hotfix·메모리·캡처·mode·CSV+모달·데이터·SPC+Pareto | ✅ #81~87 |
-| **PR-8+11** | UI 디테일 + 브랜딩 + README | 🚧 commit 대기 |
+| PR-1~PR-8+11 (10건) | 모든 코드 + 브랜딩 완료 | ✅ #81~88 |
+| **PR-E1+E2+E3** | 발표 PDF HTML + 자유양식 HTML + 시연 가이드 | 🚧 commit 대기 — 마지막 |
+| 사용자 작업 | slides.html → PDF 인쇄 / 시연 영상 녹화·업로드 | ⏳ |
 | PR-E1/E2/E3 | 발표 PDF + 자유양식 + 시연 가이드 | ⏳ 대회 제출 필수 |
 
 ---

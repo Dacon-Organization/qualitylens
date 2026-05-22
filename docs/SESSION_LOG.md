@@ -5,6 +5,14 @@
 
 ---
 
+## 2026-05-22 14:35 KST [Claude Opus 4.7] — P-E 발표 산출물 3종 (PR-E1+E2+E3 묶음)
+
+- **PR-E1 slides.html**: 가로 A4 12장 HTML/CSS @media print + Noto Sans KR. MVP 4단계 흐름 (표지→문제정의 3→AI 활용 3→플랫폼 2→시연→Q&A→로드맵). 사용자가 Ctrl+P → PDF 출력.
+- **PR-E2 freeform.html**: 단일 페이지 스크롤 보조 자료 (10섹션) — About, 문제, AI, 플랫폼, MVP, 벤치마크, Q&A 10답변, 의사결정 로그(11건), 기술 스택, 로드맵.
+- **PR-E3 demo_video_guide.md**: 5분30초 시나리오 + 자막 SRT + 녹화 체크리스트 + 비상 시나리오 + YouTube 업로드 매뉴얼. 사용자가 OBS 녹화·업로드.
+- **평가 매핑**: 문제정의 20점 + AI 25점 + 플랫폼 20점 + MVP 25점 + 발표 10점 = 100점 전 항목 직접 기여.
+- **다음**: commit + PR + merge → **P-B + P-E 완성** → 사용자가 PDF 출력 + 영상 녹화 + 대회 제출.
+
 ## 2026-05-22 13:55 KST [Claude Opus 4.7] — P-B 확장 PR-8+11 묶음 (UI 디테일 + 브랜딩)
 
 - **PR-8 KPI delta**: `app/app.py:94-102` col2 이상 판정 → `delta=+/-Xp.p (평소 6.6% 대비)` `delta_color="inverse"`
