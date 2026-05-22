@@ -41,22 +41,37 @@ status_banner()
 # -----------------------------------------------------------------------------
 
 model = load_model()
-X_test, y_test = load_test_set()
 thresholds = load_thresholds()
 top20 = load_shap_top20()
 demo_result = load_demo_result()
 
+
+def _demo_metrics() -> tuple[int, int, float]:
+    n = len(demo_result)
+    failed = int(demo_result["pred_label"].sum())
+    rate = failed / n * 100 if n else 0.0
+    return n, failed, rate
+
+
 if demo_mode or model is None:
-    # 데모 모드: 사전 결과만 표시 (모델 호출 X)
-    sample_size = len(demo_result)
-    fail_count = int(demo_result["pred_label"].sum())
-    fail_rate = fail_count / sample_size * 100 if sample_size else 0.0
+    # 데모 모드: 사전 결과만 표시 (모델·테스트셋 로드 X)
+    sample_size, fail_count, fail_rate = _demo_metrics()
+    proba_series = demo_result["pred_proba"]
 else:
-    # 실데이터 모드 — 사전 직렬화 결과만 사용 (재학습 X)
-    proba = model.predict_proba(X_test)[:, 1]
-    sample_size = len(X_test)
-    fail_count = int((proba >= 0.5).sum())
-    fail_rate = fail_count / sample_size * 100
+    # 실데이터 모드 — test set 로드 실패 시 데모 결과로 자동 폴백 (graceful degradation)
+    try:
+        X_test, y_test = load_test_set()
+        proba = model.predict_proba(X_test)[:, 1]
+        sample_size = len(X_test)
+        fail_count = int((proba >= 0.5).sum())
+        fail_rate = fail_count / sample_size * 100
+        import pandas as pd
+
+        proba_series = pd.Series(proba[:100])
+    except FileNotFoundError as exc:
+        st.warning(f"⚠️ 테스트셋 부재 — 데모 결과로 폴백: {exc}")
+        sample_size, fail_count, fail_rate = _demo_metrics()
+        proba_series = demo_result["pred_proba"]
 
 # -----------------------------------------------------------------------------
 # 라인 상태 — 3단계 컬러 배지 (S-1)
@@ -96,12 +111,6 @@ left, right = st.columns([2, 1])
 
 with left:
     st.subheader("📈 시간대별 이상 확률")
-    if demo_mode or model is None:
-        proba_series = demo_result["pred_proba"]
-    else:
-        import pandas as pd
-
-        proba_series = pd.Series(proba[:100])
     st.plotly_chart(proba_timeline(proba_series), use_container_width=True)
 
 with right:

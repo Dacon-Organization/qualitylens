@@ -13,6 +13,9 @@ data/processed/*
 !data/processed/demo_result_dummy.csv
 !data/processed/shap_demo_real.png
 !data/processed/shap_demo_dummy.png
+# P-B/PR-1 hotfix — Streamlit Cloud 배포에서 폴백 보장 (dummy runtime test set)
+!data/processed/secom_X_test_dummy.pkl
+!data/processed/secom_y_test_dummy.pkl
 
 # Models — 직렬화 모델은 별도 관리
 models/*.joblib
@@ -27,6 +30,12 @@ models/*.pkl
 !models/shap_group_dummy.csv
 !models/model_card_real.md
 !models/model_card_dummy.md
+# P-B/PR-1 hotfix — Streamlit Cloud 배포에서 dummy 폴백 보장
+!models/xgb_secom_dummy.joblib
+!models/shap_explainer_dummy.pkl
+!models/shap_values_test_dummy.pkl
+!models/shap_per_sample_dummy.pkl
+!models/shap_waterfall_demo_dummy.pkl
 
 # Python
 __pycache__/
