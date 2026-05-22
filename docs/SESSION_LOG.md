@@ -5,6 +5,21 @@
 
 ---
 
+## 2026-05-22 13:15 KST [Claude Opus 4.7] — P-B 확장 PR-14+15 묶음 (SPC + Pareto)
+
+- **PR-14 (SPC)**: `app/lib/spc.py` 신규. Western Electric Rules 4종(3σ/2σ/1σ/연속 8점) 자동 검출. `compute_limits`/`detect_western_electric`/`violation_summary`.
+- **PR-15 (Pareto + 히스토그램)**: `app/lib/viz.py` 확장 (`spc_chart`, `pareto_chart`, `sensor_histogram` 3종). 80/20 누적% 라인 + 임계선 마킹.
+- **신규 페이지**: `app/pages/5_📊_SPC_Pareto.py` — SPC 관리도 + Pareto + 센서 분포 3섹션. PR-10 timestamp 시계열 X축 활용.
+- **단위 검증**: 명백한 이상점(>3σ) 1개 삽입 → Rule 1 검출 ✅. viz/spc.py 모두 ast.parse OK.
+- **다음**: commit + PR + merge → PR-8 (UI 디테일, 45분)
+
+## 2026-05-22 12:50 KST [Claude Opus 4.7] — P-B 확장 PR-10 머지 (#86)
+
+- **scripts/build_demo_result.py 신규** — RANDOM_STATE=42 결정성 보장
+- **51 샘플 / 5분 간격 / 5컬럼** (sample_id + timestamp + pred_proba + pred_label + state)
+- **스토리텔링**: 정상 36 → 경고 6 → 위험 9 → 복귀 (시연 임팩트)
+- **다음**: PR-14+15 (SPC + Pareto) 묶음 진행
+
 ## 2026-05-22 12:30 KST [Claude Opus 4.7] — P-B 확장 PR-19+20 묶음 (MVP 핵심)
 
 - **PR-19 (CSV 업로드)**: `app/pages/0_📤_데이터_업로드.py` + `app/lib/upload.py` 신규. 591 sensor_NNN 컬럼 검증·정렬·예측. 누락 자동 0 채움. utf-8/utf-8-sig/cp949 자동 감지. 결과 CSV 다운로드.

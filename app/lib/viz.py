@@ -244,3 +244,173 @@ def proba_timeline(proba_series: pd.Series) -> go.Figure:
     )
     fig.update_layout(height=320, margin=dict(l=20, r=20, t=40, b=20))
     return fig
+
+
+# === PR-14: SPC 관리도 (Western Electric Rules) ============================
+
+
+def spc_chart(
+    series: "pd.Series",
+    limits,
+    violations: "pd.DataFrame | None" = None,
+    title: str = "SPC 관리도 (X 차트)",
+) -> "go.Figure":
+    """X 관리도 — 시계열 + 중심선(CL) + 관리한계(UCL/LCL) + WER 위반 마킹.
+
+    Parameters
+    ----------
+    series : pd.Series
+        관리 대상 값 (예: 시간대별 이상 확률 또는 센서값)
+    limits : SPCLimits
+        compute_limits() 결과
+    violations : pd.DataFrame | None
+        detect_western_electric() 결과. None이면 위반 마킹 생략.
+    """
+    fig = go.Figure()
+    x_idx = list(range(len(series)))
+
+    # 본 시계열
+    fig.add_trace(
+        go.Scatter(
+            x=x_idx, y=series.values, mode="lines+markers", name="값",
+            line=dict(color="#1f6feb", width=2),
+            marker=dict(size=6),
+        )
+    )
+
+    # 중심선 + 관리한계
+    fig.add_hline(y=limits.center, line_dash="solid", line_color="#8b949e",
+                  annotation_text=f"CL={limits.center:.3f}", annotation_position="left")
+    fig.add_hline(y=limits.ucl, line_dash="dash", line_color="#f85149",
+                  annotation_text=f"UCL={limits.ucl:.3f}", annotation_position="left")
+    fig.add_hline(y=limits.lcl, line_dash="dash", line_color="#f85149",
+                  annotation_text=f"LCL={limits.lcl:.3f}", annotation_position="left")
+
+    # ±1σ, ±2σ 보조선 (보일 듯 말 듯 옅게)
+    for k, alpha in [(1, 0.15), (2, 0.25)]:
+        fig.add_hline(y=limits.center + k * limits.sigma,
+                      line_dash="dot", line_color="#8b949e", opacity=alpha)
+        fig.add_hline(y=limits.center - k * limits.sigma,
+                      line_dash="dot", line_color="#8b949e", opacity=alpha)
+
+    # Western Electric Rules 위반 마킹
+    if violations is not None and "any_violation" in violations.columns:
+        viol_idx = [i for i, v in enumerate(violations["any_violation"].values) if v]
+        if viol_idx:
+            fig.add_trace(
+                go.Scatter(
+                    x=viol_idx,
+                    y=series.iloc[viol_idx].values,
+                    mode="markers",
+                    name="⚠️ WER 위반",
+                    marker=dict(size=14, color="#f85149", symbol="x", line=dict(width=2)),
+                )
+            )
+
+    fig.update_layout(
+        title=title,
+        height=380,
+        margin=dict(l=20, r=20, t=50, b=30),
+        xaxis_title="시간 순서",
+        yaxis_title="값",
+        legend=dict(orientation="h", y=1.12, x=0.5, xanchor="center"),
+    )
+    return fig
+
+
+# === PR-15: Pareto 차트 + 센서 분포 히스토그램 =============================
+
+
+def pareto_chart(
+    df: "pd.DataFrame",
+    category_col: str = "sensor",
+    value_col: str = "mean_abs_shap",
+    top_n: int = 10,
+    title: str = "Pareto — 상위 기여 센서 (80% 누적)",
+) -> "go.Figure":
+    """Pareto 80/20 시각화 — 막대(value) + 누적% 라인.
+
+    상위 n개 센서의 영향도 + 누적 비율 그래프. "어디에 집중할지" 즉시 결정.
+    """
+    work = df.nlargest(top_n, value_col).copy()
+    total = work[value_col].sum()
+    work["pct"] = work[value_col] / max(total, 1e-9) * 100
+    work["cum_pct"] = work["pct"].cumsum()
+
+    fig = go.Figure()
+    fig.add_trace(
+        go.Bar(
+            x=work[category_col],
+            y=work[value_col],
+            name="영향도",
+            marker_color="#1f6feb",
+            yaxis="y",
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=work[category_col],
+            y=work["cum_pct"],
+            name="누적 %",
+            mode="lines+markers",
+            marker=dict(size=8, color="#f85149"),
+            line=dict(width=2, color="#f85149"),
+            yaxis="y2",
+        )
+    )
+    # 80% 기준선
+    fig.add_hline(
+        y=80,
+        line_dash="dash",
+        line_color="#d29922",
+        yref="y2",
+        annotation_text="80% 기준",
+        annotation_position="right",
+    )
+
+    fig.update_layout(
+        title=title,
+        height=380,
+        margin=dict(l=20, r=20, t=50, b=30),
+        xaxis_title=category_col,
+        yaxis=dict(title="영향도", side="left"),
+        yaxis2=dict(title="누적 %", side="right", overlaying="y", range=[0, 105]),
+        legend=dict(orientation="h", y=1.12, x=0.5, xanchor="center"),
+    )
+    return fig
+
+
+def sensor_histogram(
+    values: "pd.Series",
+    threshold_low: float | None = None,
+    threshold_high: float | None = None,
+    title: str = "센서 분포",
+) -> "go.Figure":
+    """센서값 히스토그램 + 정상/이상 임계 영역 마킹."""
+    fig = px.histogram(
+        x=values,
+        nbins=40,
+        title=title,
+        labels={"x": "센서값", "count": "빈도"},
+    )
+    fig.update_traces(marker_color="#1f6feb", opacity=0.85)
+    if threshold_low is not None:
+        fig.add_vline(
+            x=threshold_low,
+            line_dash="dash",
+            line_color="#f85149",
+            annotation_text=f"하한 {threshold_low:.2f}",
+        )
+    if threshold_high is not None:
+        fig.add_vline(
+            x=threshold_high,
+            line_dash="dash",
+            line_color="#f85149",
+            annotation_text=f"상한 {threshold_high:.2f}",
+        )
+    fig.update_layout(
+        height=320,
+        margin=dict(l=20, r=20, t=50, b=30),
+        bargap=0.05,
+    )
+    return fig
