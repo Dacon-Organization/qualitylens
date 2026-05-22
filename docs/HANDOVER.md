@@ -6,7 +6,7 @@
 ---
 
 ## 0. 한 줄 현황
-**P-F 본선 직전 종합 패키지 진행 중** — P-B 11건 머지 완료(#81~#89), 사용자 검증 4피드백 + 15단계 PM 처방 반영 P-F 시작. PR-21 (Mode + 상태 전역화) 완료 → 다음 PR-E1R 16:9.
+**P-F 본선 직전 종합 패키지 진행 중** — P-B 11건 머지 완료, P-F PR-21 머지(#90), **PR-E1R 16:9 발표 자료 변환 완료** → 다음 PR-23 onboarding 7슬라이드.
 
 ## 1. 환경
 - 원본 디렉토리: `C:\Users\kik32\workspace\Dacon\smart-factory-hackathon` (워크트리 미사용, origin 직접 작업)
@@ -15,16 +15,17 @@
 - Plan: `~/.claude/plans/qualitylens-gentle-panda.md` (P-F 섹션 11건)
 
 ## 2. 마지막 결정 사항 (최근 5건, 신규 → 과거)
-- 2026-05-22 12:40: **PR-21** — Mode 진짜 원인=cache 키 source 미명시. data_loader cached 9개 + sidebar_badge/status_banner 모두 source 인자 받도록 변경. Step 3 user_data SSoT 신규.
+- 2026-05-22 12:55: **PR-E1R** — slides.html 16:9 변환 (273×186mm → 320×180mm). @page size 320mm 180mm, 폰트 비례 확대 (헤더 22→28pt, body 12→15pt, cover 44→56pt). KPI 카드 + Verdict 박스 신규 (PR-E5 대비).
+- 2026-05-22 12:40: **PR-21** 머지(#90) — Mode 진짜 원인=cache 키 source 미명시. data_loader cached 9개 + sidebar_badge/status_banner 모두 source 인자 받도록 변경. Step 3 user_data SSoT 신규.
 - 2026-05-22 12:15: **P-F 종합 패키지 plan** 작성 — 사용자 4가지 검증 피드백(Mode 재발/시각화 부족/대시보드/16:9) + 15단계 PM 처방(맥락 단절). 11건 PR (PR-21~26 + E1R + E5 + 선택 3).
 - 2026-05-22 11:50: PR-E1+E2+E3 머지(#89) — 발표 산출물 3종
 - 2026-05-22 13:15: PR-14+15 묶음(#87) — Western Electric Rules 4종 + Pareto + 센서 히스토그램
 - 2026-05-22 11:18: 평가 배점 PT 15분+Q&A 5분, 5항목 100점 (AI 25, MVP 25 최대)
 
 ## 3. 다음 액션 (TOP 3, 우선순위 순)
-1. **PR-21 commit + push + PR + auto merge** (브랜치 `claude/p-f-pr21-mode-global-state`)
-2. **PR-E1R 16:9 재작업** — slides.html CSS @page size 1920×1080, .slide aspect-ratio 16/9
-3. **PR-23 Onboarding 7슬라이드** — onboarding.py 4→7 + scripts/generate_onboarding_assets.py + P0 데이터 프로파일링
+1. **PR-E1R commit + push + PR + auto merge** (브랜치 `claude/p-f-pr-e1r-16-9-slides`)
+2. **PR-23 Onboarding 7슬라이드** — onboarding.py 4→7 + scripts/generate_onboarding_assets.py + P0 데이터 프로파일링
+3. **PR-22 시각화 풀 확장** — viz_advanced.py 신규 모듈, 5페이지 P0/P1 차트 추가
 
 ## 4. 차단 요소 / 사용자 확인 대기
 - 없음. Auto mode 진행 자율 위임.
@@ -36,9 +37,9 @@
 ## 6. P-F 11건 상태판 (사용자 확정 7~8시간)
 | PR | 제목 | 상태 |
 |---|---|---|
-| **PR-21** | Mode deep fix (cache source) + 상태 전역화 (user_data SSoT) | ✅ 로컬 완료, commit/push 대기 |
-| PR-E1R | 발표 16:9 재작업 (1920×1080) | 🚧 다음 |
-| PR-23 | Onboarding 7슬라이드 + 데이터 프로파일링 | ⏳ |
+| PR-21 | Mode deep fix (cache source) + 상태 전역화 (user_data SSoT) | ✅ 머지(#90) |
+| **PR-E1R** | 발표 16:9 재작업 (320×180mm) + KPI/Verdict 패턴 | ✅ 로컬 완료, commit/push 대기 |
+| PR-23 | Onboarding 7슬라이드 + 데이터 프로파일링 | 🚧 다음 |
 | PR-22 | 시각화 풀 확장 (Step 4~7) | ⏳ |
 | PR-26 | 인앱 UX (Step 8/9/13/14/15) — 데이터 딕셔너리 + CTA | ⏳ |
 | PR-24 | 작업 대시보드 A+B + 비즈니스 임팩트 | ⏳ |

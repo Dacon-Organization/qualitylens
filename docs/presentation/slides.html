@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <title>QualityLens — 2026 스마트 공장 운영 시스템 MVP 해커톤 본선 발표</title>
 <style>
-  /* PR-E1: 발표 PDF용 HTML — 가로 A4, 페이지 분할 강제, 한글 폰트 안전 */
+  /* PR-E1R: 발표 PDF용 HTML — **16:9 비율 (320×180mm)**, 페이지 분할 강제, 한글 폰트 안전 */
+  /* 사용자 피드백 반영: 대회 제출 발표 자료는 16:9 무조건 */
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800&display=swap');
 
   @page {
-    size: A4 landscape;
-    margin: 12mm;
+    size: 320mm 180mm;       /* 16:9 비율 — 320 / 16 * 9 = 180 */
+    margin: 0;                /* 슬라이드 자체 padding으로 처리 */
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,18 +23,19 @@
   }
 
   .slide {
-    width: 273mm;            /* A4 landscape - margin */
-    height: 186mm;
-    max-height: 186mm;
-    padding: 14mm 18mm;
+    width: 320mm;             /* 16:9 - 가로 */
+    height: 180mm;            /* 16:9 - 세로 */
+    max-height: 180mm;
+    aspect-ratio: 16 / 9;
+    padding: 14mm 20mm;
     background: #ffffff;
     page-break-after: always;
     page-break-inside: avoid;
     overflow: hidden;
     position: relative;
-    margin: 8mm auto;        /* 화면 미리보기용 */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    border-radius: 6px;
+    margin: 12mm auto;        /* 화면 미리보기용 */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+    border-radius: 8px;
   }
   .slide:last-child { page-break-after: auto; }
 
@@ -46,6 +48,11 @@
     }
   }
 
+  /* 화면 미리보기에서는 살짝 축소 — 16:9 슬라이드 전체가 보이도록 */
+  @media screen {
+    .slide { transform: scale(0.85); transform-origin: top center; }
+  }
+
   .slide-header {
     display: flex;
     justify-content: space-between;
@@ -54,23 +61,23 @@
     padding-bottom: 6mm;
     margin-bottom: 8mm;
   }
-  .slide-header h1 { font-size: 22pt; font-weight: 800; color: #0d1117; }
-  .slide-header .meta { font-size: 9pt; color: #6e7681; }
+  .slide-header h1 { font-size: 28pt; font-weight: 800; color: #0d1117; }
+  .slide-header .meta { font-size: 11pt; color: #6e7681; }
   .slide-header .badge {
-    background: #1f6feb; color: #fff; padding: 2px 10px;
-    border-radius: 10px; font-size: 9pt;
+    background: #1f6feb; color: #fff; padding: 3px 12px;
+    border-radius: 12px; font-size: 11pt;
   }
 
-  .slide-body { font-size: 12pt; }
-  .slide-body h2 { font-size: 14pt; margin-bottom: 4mm; color: #1f6feb; }
+  .slide-body { font-size: 15pt; }
+  .slide-body h2 { font-size: 19pt; margin-bottom: 4mm; color: #1f6feb; }
   .slide-body p { margin-bottom: 4mm; }
-  .slide-body ul { margin-left: 6mm; margin-bottom: 4mm; }
+  .slide-body ul { margin-left: 8mm; margin-bottom: 4mm; }
   .slide-body li { margin-bottom: 2mm; }
   .slide-body table {
-    width: 100%; border-collapse: collapse; margin-bottom: 4mm; font-size: 10.5pt;
+    width: 100%; border-collapse: collapse; margin-bottom: 4mm; font-size: 13pt;
   }
   .slide-body th, .slide-body td {
-    border: 1px solid #d0d7de; padding: 4px 8px; text-align: left;
+    border: 1px solid #d0d7de; padding: 6px 10px; text-align: left;
   }
   .slide-body th { background: #1f6feb; color: #fff; font-weight: 600; }
   .slide-body tr:nth-child(even) td { background: #f6f8fa; }
@@ -82,37 +89,55 @@
     background: #f6f8fa; padding: 6mm; border-radius: 6px;
     border-left: 4px solid #1f6feb;
   }
-  .card h3 { font-size: 11pt; margin-bottom: 2mm; color: #1f6feb; }
-  .card p { font-size: 10pt; }
+  .card h3 { font-size: 14pt; margin-bottom: 2mm; color: #1f6feb; }
+  .card p { font-size: 12pt; }
 
   .footer {
-    position: absolute; bottom: 8mm; left: 18mm; right: 18mm;
-    font-size: 8.5pt; color: #6e7681;
+    position: absolute; bottom: 8mm; left: 20mm; right: 20mm;
+    font-size: 11pt; color: #6e7681;
     border-top: 1px solid #d0d7de; padding-top: 3mm;
     display: flex; justify-content: space-between;
   }
 
-  /* 표지 전용 */
+  /* 표지 전용 — 16:9 비율에 맞춰 중앙 정렬 */
   .cover { display: flex; flex-direction: column; justify-content: center;
-           align-items: center; text-align: center; height: 186mm; }
-  .cover .logo { font-size: 56pt; margin-bottom: 8mm; }
-  .cover h1 { font-size: 44pt; font-weight: 800; margin-bottom: 4mm; color: #0d1117; }
-  .cover .tagline { font-size: 16pt; color: #1f6feb; margin-bottom: 12mm; }
-  .cover .sub { font-size: 12pt; color: #6e7681; margin-bottom: 4mm; }
+           align-items: center; text-align: center; height: 180mm; }
+  .cover .logo { font-size: 72pt; margin-bottom: 8mm; }
+  .cover h1 { font-size: 56pt; font-weight: 800; margin-bottom: 6mm; color: #0d1117; }
+  .cover .tagline { font-size: 22pt; color: #1f6feb; margin-bottom: 14mm; }
+  .cover .sub { font-size: 15pt; color: #6e7681; margin-bottom: 4mm; }
 
   .highlight { color: #f85149; font-weight: 700; }
   .num { color: #1f6feb; font-weight: 700; }
 
   .pillar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5mm; }
   .pillar {
-    padding: 5mm; border-radius: 6px; text-align: center; color: #fff;
+    padding: 6mm; border-radius: 8px; text-align: center; color: #fff;
   }
   .pillar.quality { background: #3fb950; }
   .pillar.safety { background: #d29922; }
   .pillar.equipment { background: #1f6feb; }
   .pillar.production { background: #8957e5; }
-  .pillar h4 { font-size: 13pt; margin-bottom: 2mm; }
-  .pillar p { font-size: 9.5pt; opacity: 0.95; }
+  .pillar h4 { font-size: 16pt; margin-bottom: 3mm; }
+  .pillar p { font-size: 12pt; opacity: 0.95; }
+
+  /* KPI 카드 (P-F.6 PR-24와 일치) — 발표 결과 시각화용 */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6mm; margin: 4mm 0; }
+  .kpi-card {
+    background: linear-gradient(135deg, #1f6feb15, #1f6feb05);
+    border-left: 5px solid #1f6feb;
+    padding: 6mm; border-radius: 6px; text-align: center;
+  }
+  .kpi-card .label { font-size: 11pt; color: #6e7681; margin-bottom: 2mm; }
+  .kpi-card .value { font-size: 26pt; font-weight: 800; color: #0d1117; }
+  .kpi-card .delta { font-size: 12pt; color: #3fb950; margin-top: 1mm; }
+  .kpi-card .delta.bad { color: #f85149; }
+
+  /* Verdict 박스 (PR-24 패턴) */
+  .verdict { padding: 6mm 8mm; border-radius: 8px; margin: 4mm 0; font-size: 14pt; }
+  .verdict.win { background: #3fb95020; border-left: 5px solid #3fb950; }
+  .verdict.warn { background: #d2992220; border-left: 5px solid #d29922; }
+  .verdict.bad { background: #f8514920; border-left: 5px solid #f85149; }
 </style>
 </head>
 <body>

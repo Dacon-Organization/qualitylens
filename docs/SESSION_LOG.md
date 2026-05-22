@@ -5,6 +5,17 @@
 
 ---
 
+## 2026-05-22 12:55 KST [Claude Opus 4.7] — PR-E1R 발표 자료 16:9 변환
+
+- **사용자 피드백 #4**: "발표 자료는 16:9 비율로 무조건 진행해야 된다고 합니다!" 즉시 반영.
+- **CSS 변경** (`docs/presentation/slides.html` 라인 6-116): @page size A4 landscape → 320×180mm, .slide width/height 273×186mm → 320×180mm + aspect-ratio 16/9.
+- **폰트 비례 확대**: 헤더 22→28pt, h2 14→19pt, body 12→15pt, card h3 11→14pt, footer 8.5→11pt, cover h1 44→56pt, logo 56→72pt, tagline 16→22pt.
+- **신규 스타일**: `.kpi-grid`/`.kpi-card` (KPI 4열 그리드, 참조 dashboard 패턴) + `.verdict.win/warn/bad` (PR-24 종합 대시보드와 일관). PR-E5 슬라이드 13~16에서 사용 예정.
+- **화면 미리보기 폴리시**: `@media screen { .slide { transform: scale(0.85); } }` — 16:9 슬라이드 전체가 화면에 들어오도록.
+- **검증**: 사용자가 브라우저에서 열고 Ctrl+P → PDF 저장 (여백 None) → 12장 모두 16:9 한 페이지 확인.
+
+---
+
 ## 2026-05-22 12:40 KST [Claude Opus 4.7] — PR-21 Mode + 상태 전역화 (P-F 첫 PR)
 
 - **진짜 원인 발견**: PR-7 widget key는 radio만 보존, `@st.cache_data` 캐시 키에 source 미포함 → 페이지 이동 시 첫 호출의 자동 감지 source가 영구 캐싱됨. 사용자 검증 후 reboot에서도 재현 확인.
