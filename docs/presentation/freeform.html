@@ -259,6 +259,10 @@
       <tr><td>st.dialog onboarding</td><td>첫 사용자 1분 안내</td><td>—</td><td>PR-20 (app/lib/onboarding.py)</td></tr>
       <tr><td>HANDOVER + SESSION_LOG</td><td>Claude↔Codex 무손실 인계</td><td>—</td><td>PR-3</td></tr>
       <tr><td>dummy 산출물 git 커밋</td><td>Streamlit Cloud 배포 안정성</td><td>Git LFS 셋업 복잡 탈락</td><td>PR-1 (.gitignore)</td></tr>
+      <tr><td><b>Cpk / Cp 공정 능력</b></td><td>AIAG 자동차 SPC 표준 — 1숫자 의사결정</td><td>Process Capability Index (CmK) 단순화</td><td><b>PR-17</b> (app/lib/cpk.py)</td></tr>
+      <tr><td><b>Okabe-Ito 팔레트</b></td><td>WCAG 1.4.1 + 색맹(8%) 친화 + 흑백 인쇄 호환</td><td>기존 #3fb950/#f85149 (색맹 구분 약함)</td><td><b>PR-18</b> (viz.py +symbol/plotly_marker)</td></tr>
+      <tr><td><b>시나리오 토글 (NORMAL/WARN/ANOMALY)</b></td><td>session_state 우회 — 호출처 5곳 무변경</td><td>tuple 반환 변경 (Pitfall C-1)</td><td><b>PR-9F</b> (demo.py _scenario)</td></tr>
+      <tr><td><b>Mode 3중 방어선</b></td><td>widget+persistent sync + URL push + JS interceptor</td><td>widget key 단독 (PR-7 회귀)</td><td><b>PR-28</b> (demo.py 핫픽스)</td></tr>
     </tbody>
   </table>
 
@@ -303,7 +307,8 @@ streamlit==1.39.0</pre>
   <table>
     <thead><tr><th>단계</th><th>제목</th><th>예상 시기</th></tr></thead>
     <tbody>
-      <tr><td>P-B 잔여</td><td>PR-17 Cpk/Cp 게이지, PR-16 OEE 3각형, PR-9 시나리오 토글</td><td>본선 후 1주</td></tr>
+      <tr><td>P-B 잔여</td><td>~~PR-17 Cpk~~ ✅ 머지(#99) · PR-16 OEE 3각형 · ~~PR-9F 시나리오~~ ✅ 머지(#101)</td><td>본선 후 1주</td></tr>
+      <tr><td>P-F 완료</td><td>PR-17/18/9F/28 모두 머지 (#99/100/101/102) — 신뢰성·접근성·UX 4축 강화</td><td>2026-05-22 완료</td></tr>
       <tr><td>P-C</td><td>한글 폰트 전수 점검 (Noto Sans KR 임베드)</td><td>본선 후 1주</td></tr>
       <tr><td>P-D</td><td>real 산출물 배포 연구 (quantization·LFS·외부 호스팅 4안)</td><td>본선 후 2주</td></tr>
       <tr><td>P-E 잔여</td><td>PR-E4 의사결정 근거 대시보드 (Q&A 면접 대비)</td><td>본선 후 2주</td></tr>

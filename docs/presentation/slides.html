@@ -57,19 +57,19 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    border-bottom: 2px solid #1f6feb;
+    border-bottom: 2px solid #0072B2;
     padding-bottom: 6mm;
     margin-bottom: 8mm;
   }
   .slide-header h1 { font-size: 28pt; font-weight: 800; color: #0d1117; }
   .slide-header .meta { font-size: 11pt; color: #6e7681; }
   .slide-header .badge {
-    background: #1f6feb; color: #fff; padding: 3px 12px;
+    background: #0072B2; color: #fff; padding: 3px 12px;
     border-radius: 12px; font-size: 11pt;
   }
 
   .slide-body { font-size: 15pt; }
-  .slide-body h2 { font-size: 19pt; margin-bottom: 4mm; color: #1f6feb; }
+  .slide-body h2 { font-size: 19pt; margin-bottom: 4mm; color: #0072B2; }
   .slide-body p { margin-bottom: 4mm; }
   .slide-body ul { margin-left: 8mm; margin-bottom: 4mm; }
   .slide-body li { margin-bottom: 2mm; }
@@ -79,7 +79,7 @@
   .slide-body th, .slide-body td {
     border: 1px solid #d0d7de; padding: 6px 10px; text-align: left;
   }
-  .slide-body th { background: #1f6feb; color: #fff; font-weight: 600; }
+  .slide-body th { background: #0072B2; color: #fff; font-weight: 600; }
   .slide-body tr:nth-child(even) td { background: #f6f8fa; }
 
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
@@ -87,9 +87,9 @@
 
   .card {
     background: #f6f8fa; padding: 6mm; border-radius: 6px;
-    border-left: 4px solid #1f6feb;
+    border-left: 4px solid #0072B2;
   }
-  .card h3 { font-size: 14pt; margin-bottom: 2mm; color: #1f6feb; }
+  .card h3 { font-size: 14pt; margin-bottom: 2mm; color: #0072B2; }
   .card p { font-size: 12pt; }
 
   .footer {
@@ -104,19 +104,19 @@
            align-items: center; text-align: center; height: 180mm; }
   .cover .logo { font-size: 72pt; margin-bottom: 8mm; }
   .cover h1 { font-size: 56pt; font-weight: 800; margin-bottom: 6mm; color: #0d1117; }
-  .cover .tagline { font-size: 22pt; color: #1f6feb; margin-bottom: 14mm; }
+  .cover .tagline { font-size: 22pt; color: #0072B2; margin-bottom: 14mm; }
   .cover .sub { font-size: 15pt; color: #6e7681; margin-bottom: 4mm; }
 
-  .highlight { color: #f85149; font-weight: 700; }
-  .num { color: #1f6feb; font-weight: 700; }
+  .highlight { color: #D55E00; font-weight: 700; }
+  .num { color: #0072B2; font-weight: 700; }
 
   .pillar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5mm; }
   .pillar {
     padding: 6mm; border-radius: 8px; text-align: center; color: #fff;
   }
-  .pillar.quality { background: #3fb950; }
-  .pillar.safety { background: #d29922; }
-  .pillar.equipment { background: #1f6feb; }
+  .pillar.quality { background: #009E73; }
+  .pillar.safety { background: #E69F00; }
+  .pillar.equipment { background: #0072B2; }
   .pillar.production { background: #8957e5; }
   .pillar h4 { font-size: 16pt; margin-bottom: 3mm; }
   .pillar p { font-size: 12pt; opacity: 0.95; }
@@ -124,20 +124,20 @@
   /* KPI 카드 (P-F.6 PR-24와 일치) — 발표 결과 시각화용 */
   .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6mm; margin: 4mm 0; }
   .kpi-card {
-    background: linear-gradient(135deg, #1f6feb15, #1f6feb05);
-    border-left: 5px solid #1f6feb;
+    background: linear-gradient(135deg, #0072B215, #0072B205);
+    border-left: 5px solid #0072B2;
     padding: 6mm; border-radius: 6px; text-align: center;
   }
   .kpi-card .label { font-size: 11pt; color: #6e7681; margin-bottom: 2mm; }
   .kpi-card .value { font-size: 26pt; font-weight: 800; color: #0d1117; }
-  .kpi-card .delta { font-size: 12pt; color: #3fb950; margin-top: 1mm; }
-  .kpi-card .delta.bad { color: #f85149; }
+  .kpi-card .delta { font-size: 12pt; color: #009E73; margin-top: 1mm; }
+  .kpi-card .delta.bad { color: #D55E00; }
 
   /* Verdict 박스 (PR-24 패턴) */
   .verdict { padding: 6mm 8mm; border-radius: 8px; margin: 4mm 0; font-size: 14pt; }
-  .verdict.win { background: #3fb95020; border-left: 5px solid #3fb950; }
-  .verdict.warn { background: #d2992220; border-left: 5px solid #d29922; }
-  .verdict.bad { background: #f8514920; border-left: 5px solid #f85149; }
+  .verdict.win { background: #009E7320; border-left: 5px solid #009E73; }
+  .verdict.warn { background: #E69F0020; border-left: 5px solid #E69F00; }
+  .verdict.bad { background: #D55E0020; border-left: 5px solid #D55E00; }
 </style>
 </head>
 <body>
@@ -163,7 +163,7 @@
 <section class="slide">
   <div class="slide-header">
     <h1>1. 문제 정의 — 중소 제조 현장의 페인포인트</h1>
-    <span class="badge">2/16</span>
+    <span class="badge">2/17</span>
   </div>
   <div class="slide-body">
     <div class="grid-2">
@@ -194,7 +194,7 @@
   </div>
   <div class="footer">
     <span>QualityLens — 2026 스마트 공장 MVP 해커톤</span>
-    <span>Slide 2/16</span>
+    <span>Slide 2/17</span>
   </div>
 </section>
 
@@ -204,7 +204,7 @@
 <section class="slide">
   <div class="slide-header">
     <h1>1. 문제 정의 — 시장 데이터 (벤치마킹)</h1>
-    <span class="badge">3/16</span>
+    <span class="badge">3/17</span>
   </div>
   <div class="slide-body">
     <table>
@@ -222,7 +222,7 @@
   </div>
   <div class="footer">
     <span>출처: machinemetrics, tulip, gooddata.ai 벤치마킹 (2026-05)</span>
-    <span>Slide 3/16</span>
+    <span>Slide 3/17</span>
   </div>
 </section>
 
@@ -232,7 +232,7 @@
 <section class="slide">
   <div class="slide-header">
     <h1>1. 문제 정의 — 3대 페르소나 (사용자 정의)</h1>
-    <span class="badge">4/16</span>
+    <span class="badge">4/17</span>
   </div>
   <div class="slide-body">
     <div class="grid-3">
@@ -261,7 +261,7 @@
   </div>
   <div class="footer">
     <span>페르소나 정의: 사용자 + 외부 검토자 피드백 통합</span>
-    <span>Slide 4/16</span>
+    <span>Slide 4/17</span>
   </div>
 </section>
 
@@ -271,7 +271,7 @@
 <section class="slide">
   <div class="slide-header">
     <h1>2. AI 활용 — 왜 XGBoost + SHAP?</h1>
-    <span class="badge">5/16</span>
+    <span class="badge">5/17</span>
   </div>
   <div class="slide-body">
     <div class="grid-2">
@@ -303,7 +303,7 @@
   </div>
   <div class="footer">
     <span>모델 카드: models/model_card_dummy.md</span>
-    <span>Slide 5/16</span>
+    <span>Slide 5/17</span>
   </div>
 </section>
 
@@ -313,7 +313,7 @@
 <section class="slide">
   <div class="slide-header">
     <h1>2. AI 활용 — Threshold Engine + Western Electric Rules</h1>
-    <span class="badge">6/16</span>
+    <span class="badge">6/17</span>
   </div>
   <div class="slide-body">
     <h2>🎚️ Threshold Engine</h2>
@@ -338,7 +338,7 @@
   </div>
   <div class="footer">
     <span>출처: lab-wizard SPC 가이드, jmp.com CUSUM 비교</span>
-    <span>Slide 6/16</span>
+    <span>Slide 6/17</span>
   </div>
 </section>
 
@@ -348,7 +348,7 @@
 <section class="slide">
   <div class="slide-header">
     <h1>2. AI 활용 — 모델 성능 + 검증</h1>
-    <span class="badge">7/16</span>
+    <span class="badge">7/17</span>
   </div>
   <div class="slide-body">
     <div class="grid-2">
@@ -382,7 +382,7 @@
   </div>
   <div class="footer">
     <span>MCC = Matthews Correlation Coefficient (불균형 강건)</span>
-    <span>Slide 7/16</span>
+    <span>Slide 7/17</span>
   </div>
 </section>
 
@@ -392,7 +392,7 @@
 <section class="slide">
   <div class="slide-header">
     <h1>3. 플랫폼 기획 — 4영역 통합 (대회 핵심)</h1>
-    <span class="badge">8/16</span>
+    <span class="badge">8/17</span>
   </div>
   <div class="slide-body">
     <div class="pillar-grid">
@@ -422,7 +422,7 @@
   </div>
   <div class="footer">
     <span>대회 핵심 방향: 품질/안전/설비/생산 통합 운영 MVP</span>
-    <span>Slide 8/16</span>
+    <span>Slide 8/17</span>
   </div>
 </section>
 
@@ -432,7 +432,7 @@
 <section class="slide">
   <div class="slide-header">
     <h1>3. 플랫폼 기획 — 5페이지 흐름</h1>
-    <span class="badge">9/16</span>
+    <span class="badge">9/17</span>
   </div>
   <div class="slide-body">
     <table>
@@ -453,7 +453,7 @@
   </div>
   <div class="footer">
     <span>총 7페이지 (데이터 업로드 + 메인 + 5 서브)</span>
-    <span>Slide 9/16</span>
+    <span>Slide 9/17</span>
   </div>
 </section>
 
@@ -463,7 +463,7 @@
 <section class="slide">
   <div class="slide-header">
     <h1>4. MVP 시연 — 5분 안에 정상→이상→조치→복귀</h1>
-    <span class="badge">10/16</span>
+    <span class="badge">10/17</span>
   </div>
   <div class="slide-body">
     <h2>🎬 시연 시나리오 (PT 4분)</h2>
@@ -481,7 +481,7 @@
   </div>
   <div class="footer">
     <span>배포 URL: Streamlit Cloud (자동 재배포 확인)</span>
-    <span>Slide 10/16</span>
+    <span>Slide 10/17</span>
   </div>
 </section>
 
@@ -491,7 +491,7 @@
 <section class="slide">
   <div class="slide-header">
     <h1>5. 차별화 + Q&A 핵심 답변</h1>
-    <span class="badge">11/16</span>
+    <span class="badge">11/17</span>
   </div>
   <div class="slide-body">
     <h2>🎯 차별화 3가지</h2>
@@ -521,7 +521,7 @@
   </div>
   <div class="footer">
     <span>전체 Q&A 스크립트: docs/pitch_30s.md</span>
-    <span>Slide 11/16</span>
+    <span>Slide 11/17</span>
   </div>
 </section>
 
@@ -531,7 +531,7 @@
 <section class="slide">
   <div class="slide-header">
     <h1>6. 마무리 — 향후 로드맵</h1>
-    <span class="badge">12/16</span>
+    <span class="badge">12/17</span>
   </div>
   <div class="slide-body">
     <h2>📅 본선 후 (P-D, P-E)</h2>
@@ -561,7 +561,7 @@
   </div>
   <div class="footer">
     <span>코드: github.com/mygithub05253/Dacon/smart-factory-hackathon</span>
-    <span>Slide 12/16</span>
+    <span>Slide 12/17</span>
   </div>
 </section>
 
@@ -571,7 +571,7 @@
 <section class="slide">
   <div class="slide-header">
     <h1>📊 종합 작업 대시보드 — 경영진·생산관리자 한눈에</h1>
-    <span class="badge">13/16</span>
+    <span class="badge">13/17</span>
   </div>
   <div class="slide-body">
     <h2>이번 달 누적 KPI (4영역 통합)</h2>
@@ -609,7 +609,7 @@
   </div>
   <div class="footer">
     <span>QualityLens — 종합 대시보드</span>
-    <span>Slide 13/16</span>
+    <span>Slide 13/17</span>
   </div>
 </section>
 
@@ -619,7 +619,7 @@
 <section class="slide">
   <div class="slide-header">
     <h1>💰 비즈니스 임팩트 정량화 — ROI</h1>
-    <span class="badge">14/16</span>
+    <span class="badge">14/17</span>
   </div>
   <div class="slide-body">
     <div class="grid-2">
@@ -658,7 +658,7 @@
   </div>
   <div class="footer">
     <span>QualityLens — 비즈니스 임팩트</span>
-    <span>Slide 14/16</span>
+    <span>Slide 14/17</span>
   </div>
 </section>
 
@@ -668,7 +668,7 @@
 <section class="slide">
   <div class="slide-header">
     <h1>🎬 MVP 시연 5단계 흐름</h1>
-    <span class="badge">15/16</span>
+    <span class="badge">15/17</span>
   </div>
   <div class="slide-body" style="font-size: 13pt;">
     <p style="text-align: center; font-size: 12pt; margin-bottom: 4mm;">
@@ -705,7 +705,7 @@
   </div>
   <div class="footer">
     <span>QualityLens — 시연 (docs/presentation/demo_video_guide.md)</span>
-    <span>Slide 15/16</span>
+    <span>Slide 15/17</span>
   </div>
 </section>
 
@@ -715,7 +715,7 @@
 <section class="slide">
   <div class="slide-header">
     <h1>🏆 평가 항목 매핑 — 100점 자가 점검</h1>
-    <span class="badge">16/16</span>
+    <span class="badge">16/17</span>
   </div>
   <div class="slide-body" style="font-size:12pt;">
     <table style="font-size:11pt;">
@@ -739,7 +739,88 @@
   </div>
   <div class="footer">
     <span>QualityLens — 본선 발표 (PT 15분 + Q&A 5분)</span>
-    <span>Slide 16/16</span>
+    <span>Slide 16/17</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     슬라이드 17 — 🌟 본선 직전 최종 강화 (PR-17/18/9F/28)
+============================================================ -->
+<section class="slide">
+  <div class="slide-header">
+    <h1>🌟 본선 직전 최종 강화 — 신뢰성 + 접근성</h1>
+    <span class="badge">17/17</span>
+  </div>
+  <div class="slide-body" style="font-size: 12pt;">
+    <div class="grid-2">
+      <div>
+        <h2 style="font-size:16pt;">📐 PR-17 · Cpk 공정 능력 지수</h2>
+        <p style="font-size:11pt;">AIAG 자동차 SPC 표준 — 통계 전문가 없어도 1개 숫자로 의사결정.</p>
+        <ul style="font-size:11pt;">
+          <li>🔴 Cpk &lt; 1.00 — 부적합</li>
+          <li>🟡 1.00~1.33 — 개선 필요</li>
+          <li>🟢 1.33~1.67 — <b>양호 (표준)</b></li>
+          <li>🌟 ≥ 1.67 — 우수 (Six Sigma)</li>
+        </ul>
+
+        <h2 style="font-size:16pt;margin-top:5mm;">🎨 PR-18 · Okabe-Ito 색맹 친화</h2>
+        <p style="font-size:11pt;">WCAG 1.4.1 준수 — 색맹 사용자도 ● ▲ ■ 형태로 구분.</p>
+        <ul style="font-size:11pt;">
+          <li>● 정상 #009E73 (Bluish Green)</li>
+          <li>▲ 경고 #E69F00 (Orange)</li>
+          <li>■ 위험 #D55E00 (Vermillion)</li>
+        </ul>
+      </div>
+      <div>
+        <h2 style="font-size:16pt;">🎭 PR-9F · 시연 시나리오 토글</h2>
+        <p style="font-size:11pt;">발표 시 페르소나 흐름 자동 강조 — 추천 샘플 ⭐ 마킹.</p>
+        <ul style="font-size:11pt;">
+          <li>🟢 NORMAL — 정상 운영 시뮬레이션</li>
+          <li>🟡 WARN — 경고 신호 단계</li>
+          <li>🔴 ANOMALY — 명백한 이상 (9/51 추천)</li>
+        </ul>
+
+        <h2 style="font-size:16pt;margin-top:5mm;">🔧 PR-28 · Mode 핫픽스 3중 방어선</h2>
+        <p style="font-size:11pt;">URL persistence + widget sync + JS click interceptor.</p>
+        <ul style="font-size:11pt;">
+          <li>L1: widget+persistent 양방향 sync</li>
+          <li>L2: ensure_demo_state URL 즉시 push</li>
+          <li>L3: nav 링크 href 자동 ?mode= inject</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 style="font-size:15pt;margin-top:4mm;">📊 누적 검증 결과</h2>
+    <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr); gap: 4mm;">
+      <div class="kpi-card" style="padding:4mm;">
+        <div class="label">단위 테스트</div>
+        <div class="value highlight">65/65</div>
+        <div class="delta">전 PR 회귀 PASS</div>
+      </div>
+      <div class="kpi-card" style="padding:4mm;">
+        <div class="label">머지 PR (P-F)</div>
+        <div class="value highlight">11건</div>
+        <div class="delta">#90~102</div>
+      </div>
+      <div class="kpi-card" style="padding:4mm;">
+        <div class="label">접근성 지표</div>
+        <div class="value highlight">WCAG AA</div>
+        <div class="delta">Okabe-Ito 통일</div>
+      </div>
+      <div class="kpi-card" style="padding:4mm;">
+        <div class="label">통계 표준</div>
+        <div class="value highlight">3종</div>
+        <div class="delta">SPC + Pareto + Cpk</div>
+      </div>
+    </div>
+
+    <div class="verdict win" style="margin-top:4mm;font-size:12pt;">
+      <b>✅ 본선 제출 준비 완료</b> — 신뢰성(테스트 65) + 접근성(색맹) + 통계 표준(Cpk) + UX(시나리오) 4축 강화.
+    </div>
+  </div>
+  <div class="footer">
+    <span>QualityLens — P-F 최종 강화 패키지</span>
+    <span>Slide 17/17</span>
   </div>
 </section>
 

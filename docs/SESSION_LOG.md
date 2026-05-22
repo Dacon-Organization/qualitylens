@@ -5,6 +5,23 @@
 
 ---
 
+## 2026-05-22 16:30 KST [Claude Opus 4.7] — PR-29 발표 자료 + 작업 대시보드 동기화 (#103)
+
+- **트리거**: 사용자 "발표 자료 + 작업 대시보드 업데이트 필요" — PR-17/18/9F/28 반영
+- **slides.html**: 12→16→**17장** 확장. 슬라이드 17 신규(본선 직전 강화 — Cpk/색맹/시나리오/Mode 핫픽스). footer "/16"→"/17" 일괄. 색상 Okabe-Ito 통일 (#009E73/#E69F00/#D55E00/#0072B2)
+- **freeform.html**: §8 의사결정 표에 4행 추가 (Cpk/Okabe-Ito/시나리오/Mode 3중방어). §10 로드맵에 PR-17/9F 완료 표시
+- **dashboard_summary.html**: 색상 19곳 Okabe-Ito 일괄 갱신 + §7 본선 직전 강화 표 + 누적 검증 카드
+- **P6 종합 대시보드**: §7 강화 패키지 요약 추가 (4 metric 카드 + verdict)
+- **HANDOVER 갱신**: §0 11건 머지, §2 PR-17~28+29 항목
+
+## 2026-05-22 16:00 KST [Claude Opus 4.7] — PR-17/18/9F/28 선택 패키지 4건 머지 (#99~102)
+
+- **PR-17 (#99)**: Cpk/Cp 공정 능력 게이지 — `app/lib/cpk.py` (numpy only) + `cpk_gauge()` + `cpk_card_html()` + P5 ④섹션. 17/17 tests
+- **PR-18 (#100)**: Okabe-Ito 색맹 친화 — RiskTier에 symbol/plotly_marker 추가, render_tier_badge 3중 중복 전달, viz.py/viz_advanced/dashboard_cards 팔레트 통일. 12/12 tests
+- **PR-9F (#101)**: 시나리오 토글 — SCENARIOS dict + `_render_scenario_toggle()` + `filter_samples_by_scenario()`. demo_sidebar bool 시그니처 유지 (Pitfall C-1). 12/12 tests
+- **PR-28 (#102)**: Mode persistence 3중 방어 핫픽스 — Playwright 검증 중 발견된 회귀 (?mode strip + widget reset). widget+persistent sync + URL push + JS interceptor. 14/14 tests
+- **누적 검증**: 65/65 단위 + Playwright Okabe-Ito 통일 + raw HTML 0건 + FileNotFoundError 0건
+
 ## 2026-05-22 15:05 KST [Claude Opus 4.7] — P-F 7건 모두 머지 완료 + 통합 검증
 
 - **P-F 본선 직전 필수 7건 완료** (사용자 4피드백 + 15단계 PM 처방 + 7~8시간 예산 내):

@@ -21,7 +21,7 @@
   header {
     text-align: center;
     padding: 24px 0 32px;
-    border-bottom: 2px solid #1f6feb;
+    border-bottom: 2px solid #0072B2;
     margin-bottom: 24px;
   }
   header h1 { font-size: 32px; color: #0d1117; }
@@ -29,7 +29,7 @@
 
   section { margin-bottom: 32px; }
   section h2 {
-    font-size: 22px; color: #1f6feb; margin-bottom: 14px;
+    font-size: 22px; color: #0072B2; margin-bottom: 14px;
     padding-bottom: 6px; border-bottom: 1px solid #d0d7de;
   }
 
@@ -46,24 +46,24 @@
     border-left: 5px solid;
     min-height: 130px;
   }
-  .kpi-card.win { background: linear-gradient(135deg, #3fb95018, #3fb95005); border-color: #3fb950; }
-  .kpi-card.info { background: linear-gradient(135deg, #1f6feb18, #1f6feb05); border-color: #1f6feb; }
+  .kpi-card.win { background: linear-gradient(135deg, #009E7318, #009E7305); border-color: #009E73; }
+  .kpi-card.info { background: linear-gradient(135deg, #0072B218, #0072B205); border-color: #0072B2; }
   .kpi-card.accent { background: linear-gradient(135deg, #8957e518, #8957e505); border-color: #8957e5; }
   .kpi-card .icon { font-size: 28px; }
   .kpi-card .label { font-size: 13px; color: #6e7681; margin: 6px 0; }
   .kpi-card .value { font-size: 32px; font-weight: 800; }
-  .kpi-card .delta { font-size: 13px; font-weight: 600; margin-top: 6px; color: #3fb950; }
-  .kpi-card .delta.bad { color: #f85149; }
+  .kpi-card .delta { font-size: 13px; font-weight: 600; margin-top: 6px; color: #009E73; }
+  .kpi-card .delta.bad { color: #D55E00; }
 
   /* Alert gradient card */
   .alert-card {
-    background: linear-gradient(135deg, #f8514928, #ffffff);
-    border-left: 5px solid #f85149;
+    background: linear-gradient(135deg, #D55E0028, #ffffff);
+    border-left: 5px solid #D55E00;
     padding: 18px 24px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
-  .alert-card .title { font-size: 16px; font-weight: 700; color: #f85149; margin-bottom: 6px; }
+  .alert-card .title { font-size: 16px; font-weight: 700; color: #D55E00; margin-bottom: 6px; }
   .alert-card .msg { font-size: 14px; }
 
   /* Comparison table */
@@ -73,12 +73,12 @@
   }
   th {
     padding: 12px 14px; text-align: left;
-    background: #1f6feb; color: #fff; font-weight: 600;
+    background: #0072B2; color: #fff; font-weight: 600;
   }
   td { padding: 10px 14px; border-bottom: 1px solid #d0d7de; }
-  td.delta-up { color: #3fb950; font-weight: 600; }
-  td.delta-down-good { color: #3fb950; font-weight: 600; }
-  td.delta-down-bad { color: #f85149; font-weight: 600; }
+  td.delta-up { color: #009E73; font-weight: 600; }
+  td.delta-down-good { color: #009E73; font-weight: 600; }
+  td.delta-down-bad { color: #D55E00; font-weight: 600; }
   tr:nth-child(even) td { background: #f6f8fa; }
 
   /* Numbered steps */
@@ -92,7 +92,7 @@
   ol.numbered .badge {
     display: inline-flex; align-items: center; justify-content: center;
     width: 32px; height: 32px; border-radius: 50%;
-    background: #1f6feb; color: #fff; font-weight: 700;
+    background: #0072B2; color: #fff; font-weight: 700;
     flex-shrink: 0;
   }
 
@@ -102,15 +102,15 @@
     border-left: 5px solid; margin: 8px 0;
     font-size: 15px;
   }
-  .verdict.win { background: #3fb95020; border-color: #3fb950; }
-  .verdict.warn { background: #d2992220; border-color: #d29922; }
-  .verdict.bad { background: #f8514920; border-color: #f85149; }
+  .verdict.win { background: #009E7320; border-color: #009E73; }
+  .verdict.warn { background: #E69F0020; border-color: #E69F00; }
+  .verdict.bad { background: #D55E0020; border-color: #D55E00; }
   .verdict .icon { font-size: 18px; margin-right: 8px; }
 
   /* Knowledge base note */
   .kb-note {
-    background: #1f6feb15;
-    border-left: 5px solid #1f6feb;
+    background: #0072B215;
+    border-left: 5px solid #0072B2;
     padding: 14px 20px;
     border-radius: 8px;
     font-size: 14px;
@@ -227,6 +227,45 @@
     <div class="kb-note">
       본 이력은 <b>신규 작업자 교육용 지식 베이스(Knowledge Base)</b>로 활용되며, <b>차기 AI 모델 재학습(Retraining)</b>의 핵심 데이터가 됩니다.
       → 누적될수록 모델 정확도 + 작업자 숙련도 향상.
+    </div>
+  </section>
+
+  <!-- 7. PR-17/18/9F/28 본선 직전 강화 -->
+  <section>
+    <h2>🌟 본선 직전 최종 강화 (PR-17/18/9F/28)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>강화 항목</th>
+          <th>도입 효과</th>
+          <th>관련 PR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>📐 Cpk 공정 능력 지수</b></td>
+          <td>AIAG 자동차 SPC 표준 · 1숫자로 의사결정 · 1.33 이상 = 표준 양호</td>
+          <td>PR-17 (#99)</td>
+        </tr>
+        <tr>
+          <td><b>🎨 Okabe-Ito 색맹 친화</b></td>
+          <td>WCAG 1.4.1 준수 · ● ▲ ■ 기하 기호 + 한글 라벨 3중 중복 전달</td>
+          <td>PR-18 (#100)</td>
+        </tr>
+        <tr>
+          <td><b>🎭 시연 시나리오 토글</b></td>
+          <td>NORMAL/WARN/ANOMALY · 추천 샘플 ⭐ 자동 마킹 · 페르소나 흐름</td>
+          <td>PR-9F (#101)</td>
+        </tr>
+        <tr>
+          <td><b>🔧 Mode 핫픽스 3중 방어</b></td>
+          <td>URL persistence · widget+persistent sync · JS click interceptor</td>
+          <td>PR-28 (#102)</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="kb-note" style="margin-top: 10px;">
+      <b>📊 누적 검증</b>: 단위 테스트 65/65 PASS · 색상 회귀 0건 · raw HTML 0건 · FileNotFoundError 0건
     </div>
   </section>
 
