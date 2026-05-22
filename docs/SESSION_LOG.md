@@ -5,6 +5,22 @@
 
 ---
 
+## 2026-05-22 15:05 KST [Claude Opus 4.7] — P-F 7건 모두 머지 완료 + 통합 검증
+
+- **P-F 본선 직전 필수 7건 완료** (사용자 4피드백 + 15단계 PM 처방 + 7~8시간 예산 내):
+  - PR-21 #90: Mode + 상태 전역화 (cache source 명시 + ensure_demo_state + user_data SSoT)
+  - PR-E1R #91: 발표 16:9 변환 (320×180mm + KPI/Verdict 스타일)
+  - PR-23 #92: Onboarding 4 → 7슬라이드 (SVG inline 3장)
+  - PR-22 #93: 시각화 풀 확장 (viz_advanced 9함수 + 4페이지 통합)
+  - PR-26 #94: 인앱 UX (sensor_dictionary 15 + action_rules 10 + CTA + popover)
+  - PR-24 #95: 작업 대시보드 A+B (P6 페이지 + dashboard_summary.html + dashboard_cards 6컴포넌트)
+  - PR-E5 #96: 슬라이드 12 → 16장 (대시보드/임팩트/시연/평가매핑)
+- **회귀 테스트**: 20/20 PASS (기존 5 + 데이터로더 5 + 리포트 3 + 비교 2 + PR-21 신규 10) — 모든 모듈 import 정상.
+- **demo_video_guide.md 갱신**: P-F 변경 반영 (PR-21/22/23/24/26 시연 시나리오 + P6 종합 대시보드 마무리).
+- **다음 (사용자 직접)**: ① Streamlit Cloud Reboot + 6 시나리오 검증 (모드 토글/페이지 이동/업로드 흐름) ② slides.html → 브라우저 Ctrl+P → 16:9 PDF 16장 출력 ③ demo_video_guide.md 따라 OBS 녹화 → YouTube Unlisted 업로드.
+
+---
+
 ## 2026-05-22 14:55 KST [Claude Opus 4.7] — PR-E5 발표 16:9 슬라이드 12 → 16장
 
 - **slides.html 4장 추가** (Step 12 비즈니스 임팩트 + 사용자 피드백 #4 결과 시각화 보강):
