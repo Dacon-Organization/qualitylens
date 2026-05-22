@@ -17,7 +17,7 @@ import pandas as pd  # noqa: E402
 import streamlit as st  # noqa: E402
 
 from lib.data_loader import sidebar_badge  # noqa: E402
-from lib.demo import demo_sidebar  # noqa: E402
+from lib.demo import demo_sidebar, get_source  # noqa: E402
 from lib.load import (  # noqa: E402
     load_demo_sample,
     load_shap_per_sample,
@@ -33,16 +33,19 @@ from lib.viz import (  # noqa: E402
 )
 
 st.set_page_config(page_title="P3 — 원인 분석", page_icon="🔍", layout="wide")
-sidebar_badge()
+# PR-21: demo_sidebar() 먼저 → session_state → get_source() → sidebar_badge에 명시
 demo_mode = demo_sidebar()
+source = get_source()
+sidebar_badge(source=source)
 
 st.title("🔍 P3 — 원인 분석")
 st.caption("어느 센서가 이상 판정에 가장 크게 기여했는지 SHAP으로 설명")
 
-top20 = load_shap_top20()
-demo_sample = load_demo_sample()
-shap_per_sample = load_shap_per_sample()
-waterfall_pkg = load_shap_waterfall_demo()
+# PR-21: 모든 cached 함수에 source 명시 — 캐시 키 분리
+top20 = load_shap_top20(source=source)
+demo_sample = load_demo_sample(source=source)
+shap_per_sample = load_shap_per_sample(source=source)
+waterfall_pkg = load_shap_waterfall_demo(source=source)
 
 # -----------------------------------------------------------------------------
 # (1) 전체 평균 — 글로벌 피처 중요도
@@ -134,8 +137,8 @@ st.caption(
     "예: 식각 온도가 180°C 이상에서 빨갛게(SHAP 양수) → 이상 확률 급등"
 )
 
-X_test, _ = load_test_set()
-shap_values_test = load_shap_values_test()
+X_test, _ = load_test_set(source=source)
+shap_values_test = load_shap_values_test(source=source)
 
 if shap_values_test is None:
     st.info(

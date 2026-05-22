@@ -5,6 +5,16 @@
 
 ---
 
+## 2026-05-22 12:40 KST [Claude Opus 4.7] — PR-21 Mode + 상태 전역화 (P-F 첫 PR)
+
+- **진짜 원인 발견**: PR-7 widget key는 radio만 보존, `@st.cache_data` 캐시 키에 source 미포함 → 페이지 이동 시 첫 호출의 자동 감지 source가 영구 캐싱됨. 사용자 검증 후 reboot에서도 재현 확인.
+- **Fix A** (~200줄, 10개 파일): app.py + pages/0~5 모든 cached 함수 호출부에 `source=source` 명시. data_loader `sidebar_badge(source)`, `status_banner(source)` 시그니처 확장.
+- **Fix B** (demo.py): `ensure_demo_state()` + `get_source()` 헬퍼 추가. session_state SSoT 4키 (`_demo_mode_radio`, `_demo_mode`, `_data_source`, `user_data`) 일관성 보장.
+- **Step 3 user_data SSoT** (사용자 PM 처방): P0 업로드 결과 → `st.session_state["user_data"]` 저장 → app.py 메인 카드가 우선 사용. 페이지 간 데이터 흐름 끊김 해결.
+- **회귀 테스트**: `tests/unit/test_mode_global_state.py` 10건 신규 (resolve_source 명시 우선/cached signature/ensure_demo_state/get_source/user_data SSoT). 전체 20/20 PASSED.
+
+---
+
 ## 2026-05-22 14:35 KST [Claude Opus 4.7] — P-E 발표 산출물 3종 (PR-E1+E2+E3 묶음)
 
 - **PR-E1 slides.html**: 가로 A4 12장 HTML/CSS @media print + Noto Sans KR. MVP 4단계 흐름 (표지→문제정의 3→AI 활용 3→플랫폼 2→시연→Q&A→로드맵). 사용자가 Ctrl+P → PDF 출력.

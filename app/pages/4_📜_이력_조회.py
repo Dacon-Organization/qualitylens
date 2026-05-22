@@ -12,7 +12,7 @@ import streamlit as st  # noqa: E402
 
 from lib import action_log  # noqa: E402
 from lib.data_loader import sidebar_badge  # noqa: E402
-from lib.demo import demo_sidebar  # noqa: E402
+from lib.demo import demo_sidebar, get_source  # noqa: E402
 from lib.load import (  # noqa: E402
     load_demo_result,
     load_model,
@@ -20,8 +20,10 @@ from lib.load import (  # noqa: E402
 )
 
 st.set_page_config(page_title="P5 — 이력 조회", page_icon="📜", layout="wide")
-sidebar_badge()
+# PR-21: demo_sidebar() 먼저 → session_state → get_source() → sidebar_badge에 명시
 demo_mode = demo_sidebar()
+source = get_source()
+sidebar_badge(source=source)
 action_log.init_log()
 
 st.title("📜 P5 — 이력 조회")
@@ -34,12 +36,12 @@ tab_pred, tab_action = st.tabs(["📊 예측 이력", "✅ 조치 이력"])
 # -----------------------------------------------------------------------------
 
 with tab_pred:
-    model = load_model()
+    model = load_model(source=source)
     if demo_mode or model is None:
-        df = load_demo_result()
+        df = load_demo_result(source=source)
         df = df.assign(label=df["pred_label"].map({0: "PASS", 1: "FAIL"}))
     else:
-        X_test, y_test = load_test_set()
+        X_test, y_test = load_test_set(source=source)
         proba = model.predict_proba(X_test)[:, 1]
         df = pd.DataFrame(
             {

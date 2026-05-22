@@ -12,7 +12,7 @@ from __future__ import annotations
 import streamlit as st
 
 from lib.data_loader import load_model, sidebar_badge
-from lib.demo import demo_sidebar
+from lib.demo import demo_sidebar, get_source
 from lib.onboarding import reopen_button_sidebar
 from lib.upload import (
     build_sample_template,
@@ -28,8 +28,10 @@ st.set_page_config(
     layout="wide",
 )
 
-sidebar_badge()
+# PR-21: demo_sidebar() 먼저 → session_state → get_source() → sidebar_badge에 명시
 demo_sidebar()
+source = get_source()
+sidebar_badge(source=source)
 reopen_button_sidebar()
 
 st.title("📤 데이터 업로드")
@@ -127,7 +129,7 @@ for w in report.warnings:
 # 4. 모델 추론
 # -----------------------------------------------------------------------------
 
-model = load_model()
+model = load_model(source=source)
 if model is None:
     st.error(
         "❌ 모델 산출물이 없습니다. "
@@ -140,6 +142,17 @@ st.subheader("🔬 추론 결과")
 
 with st.spinner("추론 중..."):
     result_df = predict_uploaded(X_aligned, sample_ids, model)
+
+# PR-21 Step 3: 업로드 결과를 session_state SSoT에 저장 → P1~P5 페이지에서 우선 사용
+st.session_state["user_data"] = result_df.copy()
+st.session_state["user_data_meta"] = {
+    "n_samples": int(len(result_df)),
+    "n_features": int(report.n_cols_present),
+    "n_filled": int(report.n_cols_filled),
+    "has_sample_id": bool(report.has_sample_id),
+    "defect_rate": float(result_df["pred_label"].mean()) if len(result_df) else 0.0,
+    "high_risk": int((result_df["risk_tier"] == "🔴 위험").sum()),
+}
 
 # KPI 요약
 total = len(result_df)

@@ -13,7 +13,7 @@ import pandas as pd
 import streamlit as st
 
 from lib.data_loader import load_shap_top20, sidebar_badge
-from lib.demo import demo_sidebar
+from lib.demo import demo_sidebar, get_source
 from lib.load import load_demo_result, load_test_set
 from lib.onboarding import reopen_button_sidebar
 from lib.spc import compute_limits, detect_western_electric, violation_summary
@@ -25,8 +25,10 @@ st.set_page_config(
     layout="wide",
 )
 
-sidebar_badge()
+# PR-21: demo_sidebar() 먼저 → session_state → get_source() → sidebar_badge에 명시
 demo_mode = demo_sidebar()
+source = get_source()
+sidebar_badge(source=source)
 reopen_button_sidebar()
 
 st.title("📊 SPC + Pareto — 제조 실무 표준 분석")
@@ -36,10 +38,10 @@ st.caption(
 )
 
 # -----------------------------------------------------------------------------
-# 데이터 로드
+# 데이터 로드 — PR-21: source 명시 (캐시 키 분리)
 # -----------------------------------------------------------------------------
-demo_df = load_demo_result()
-top20 = load_shap_top20()
+demo_df = load_demo_result(source=source)
+top20 = load_shap_top20(source=source)
 
 # 시계열 X축 (timestamp 있으면 사용, 없으면 행 번호)
 proba_series = demo_df["pred_proba"].copy()
@@ -148,7 +150,7 @@ selected_sensor = st.selectbox(
 )
 
 try:
-    X_test, _ = load_test_set()
+    X_test, _ = load_test_set(source=source)
     if selected_sensor in X_test.columns:
         sensor_values = X_test[selected_sensor]
         # 임계값 = 평균 ± 2σ (간략화)

@@ -19,7 +19,7 @@ import streamlit as st  # noqa: E402
 
 from lib import stream  # noqa: E402
 from lib.data_loader import sidebar_badge  # noqa: E402
-from lib.demo import demo_sidebar  # noqa: E402
+from lib.demo import demo_sidebar, get_source  # noqa: E402
 from lib.load import (  # noqa: E402
     load_demo_result,
     load_demo_sample,
@@ -35,14 +35,16 @@ from lib.viz import (  # noqa: E402
 )
 
 st.set_page_config(page_title="P2 — 실시간 예측", page_icon="📊", layout="wide")
-sidebar_badge()
+# PR-21: demo_sidebar() 먼저 호출 → session_state 갱신 → get_source() → sidebar_badge에 명시 전달
 demo_mode = demo_sidebar()
+source = get_source()
+sidebar_badge(source=source)
 stream.init_state()
 
 st.title("📊 P2 — 실시간 예측")
 st.caption("센서값 입력 → 이상 확률 즉시 판정 · 스트리밍 시뮬레이션 지원")
 
-model = load_model()
+model = load_model(source=source)
 
 
 # -----------------------------------------------------------------------------
@@ -63,8 +65,8 @@ mode = st.radio(
 if mode.startswith("📌"):
     if demo_mode or model is None:
         st.info("💡 데모 모드 — 사전 캐싱된 4건 중 선택해 결과를 확인합니다.")
-        demo_sample = load_demo_sample()
-        demo_result = load_demo_result()
+        demo_sample = load_demo_sample(source=source)
+        demo_result = load_demo_result(source=source)
 
         if "selected_demo_idx" not in st.session_state:
             st.session_state.selected_demo_idx = 0
@@ -80,7 +82,7 @@ if mode.startswith("📌"):
         scenario_label = "단일 샘플"
     else:
         st.info("💡 실데이터 모드 — test set 샘플 선택")
-        X_test, _ = load_test_set()
+        X_test, _ = load_test_set(source=source)
         idx = st.selectbox(
             "샘플 ID",
             options=X_test.index.tolist(),
@@ -102,8 +104,8 @@ else:
         )
         st.stop()
 
-    demo_sample = load_demo_sample()
-    demo_result = load_demo_result()
+    demo_sample = load_demo_sample(source=source)
+    demo_result = load_demo_result(source=source)
 
     # 시퀀스가 없으면 빌드
     if not st.session_state.get(stream.STATE_SEQUENCE):

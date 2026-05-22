@@ -10,7 +10,7 @@ from __future__ import annotations
 import streamlit as st
 
 from lib.data_loader import sidebar_badge
-from lib.demo import demo_sidebar
+from lib.demo import demo_sidebar, get_source, has_user_data, get_user_data
 from lib.load import (
     load_demo_result,
     load_model,
@@ -32,23 +32,26 @@ st.set_page_config(
 # 첫 접속 시 사용 안내 모달 (PR-20)
 maybe_show_onboarding()
 
-sidebar_badge()
+# PR-21: demo_sidebar() → session_state SSoT 갱신 → get_source()로 캐시 키 일치
 demo_mode = demo_sidebar()
+source = get_source()
+sidebar_badge(source=source)
 reopen_button_sidebar()
 
 st.title("🏭 QualityLens")
 st.caption("AI 기반 스마트 공장 운영 시스템 · Predict → Explain → Act")
 
-status_banner()
+status_banner(source=source)
 
 # -----------------------------------------------------------------------------
-# 데이터
+# 데이터 — PR-21: 모든 cached 함수에 source 명시 (캐시 키 분리)
+# Step 3 (사용자 PM 처방): user_data가 있으면 우선 사용 (페이지 간 데이터 흐름)
 # -----------------------------------------------------------------------------
 
-model = load_model()
-thresholds = load_thresholds()
-top20 = load_shap_top20()
-demo_result = load_demo_result()
+model = load_model(source=source)
+thresholds = load_thresholds(source=source)
+top20 = load_shap_top20(source=source)
+demo_result = load_demo_result(source=source)
 
 
 def _demo_metrics() -> tuple[int, int, float]:
@@ -58,14 +61,29 @@ def _demo_metrics() -> tuple[int, int, float]:
     return n, failed, rate
 
 
-if demo_mode or model is None:
+# Step 3: user_data 우선 흐름 (P0 업로드 → 메인 카드 갱신)
+if has_user_data():
+    user_df = get_user_data()
+    if "pred_proba" in user_df.columns and "pred_label" in user_df.columns:
+        sample_size = len(user_df)
+        fail_count = int(user_df["pred_label"].sum())
+        fail_rate = fail_count / sample_size * 100 if sample_size else 0.0
+        proba_series = user_df["pred_proba"]
+        st.info(
+            f"📤 **업로드 데이터 분석 중** — {sample_size:,}건 · 평균 이상 확률 "
+            f"{user_df['pred_proba'].mean():.3f}"
+        )
+    else:
+        sample_size, fail_count, fail_rate = _demo_metrics()
+        proba_series = demo_result["pred_proba"]
+elif demo_mode or model is None:
     # 데모 모드: 사전 결과만 표시 (모델·테스트셋 로드 X)
     sample_size, fail_count, fail_rate = _demo_metrics()
     proba_series = demo_result["pred_proba"]
 else:
     # 실데이터 모드 — test set 로드 실패 시 데모 결과로 자동 폴백 (graceful degradation)
     try:
-        X_test, y_test = load_test_set()
+        X_test, y_test = load_test_set(source=source)
         proba = model.predict_proba(X_test)[:, 1]
         sample_size = len(X_test)
         fail_count = int((proba >= 0.5).sum())

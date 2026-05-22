@@ -150,9 +150,14 @@ def load_shap_values_test(source: str | None = None):
     return joblib.load(path)
 
 
-def sidebar_badge() -> None:
-    """사이드바 우측에 현재 데이터 소스를 작은 배지로 표시."""
-    source = current_source()
+def sidebar_badge(source: str | None = None) -> None:
+    """사이드바 우측에 현재 데이터 소스를 작은 배지로 표시.
+
+    PR-21: source 인자 명시 지원 — demo_sidebar() 선택 결과를 정확히 반영.
+    None인 경우 session_state["_data_source"] → 자동 감지 순으로 폴백.
+    """
+    if source is None:
+        source = st.session_state.get("_data_source") or current_source()
     if source == "real":
         st.sidebar.markdown(
             "<div style='padding:6px 10px;border-radius:6px;background:#1e7c3a;"
@@ -167,10 +172,13 @@ def sidebar_badge() -> None:
         )
 
 
-def status_banner() -> None:
-    """상단 status 배너 — 산출물 부재 시 경고."""
+def status_banner(source: str | None = None) -> None:
+    """상단 status 배너 — 산출물 부재 시 경고.
+
+    PR-21: source 인자 받아 정확한 source의 모델 상태 확인.
+    """
     try:
-        model = load_model()
+        model = load_model(source=source)
     except Exception as exc:
         st.error(f"모델 로드 실패: {exc}")
         return

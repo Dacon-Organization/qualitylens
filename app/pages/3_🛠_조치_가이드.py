@@ -15,7 +15,7 @@ import streamlit as st  # noqa: E402
 
 from lib import action_log  # noqa: E402
 from lib.data_loader import sidebar_badge  # noqa: E402
-from lib.demo import demo_sidebar  # noqa: E402
+from lib.demo import demo_sidebar, get_source  # noqa: E402
 from lib.load import (  # noqa: E402
     load_demo_sample,
     load_test_set,
@@ -23,8 +23,10 @@ from lib.load import (  # noqa: E402
 )
 
 st.set_page_config(page_title="P4 — 조치 가이드", page_icon="🛠", layout="wide")
-sidebar_badge()
+# PR-21: demo_sidebar() 먼저 → session_state → get_source() → sidebar_badge에 명시
 demo_mode = demo_sidebar()
+source = get_source()
+sidebar_badge(source=source)
 
 action_log.init_log()
 
@@ -34,10 +36,10 @@ st.caption(
     "✅ 수용 버튼으로 조치 이력이 P5에 자동 기록"
 )
 
-thresholds = load_thresholds()
+thresholds = load_thresholds(source=source)
 
 if demo_mode:
-    samples = load_demo_sample()
+    samples = load_demo_sample(source=source)
     sample_choice = st.selectbox(
         "데모 샘플",
         options=range(len(samples)),
@@ -46,7 +48,7 @@ if demo_mode:
     sample = samples.iloc[sample_choice]
     sample_id = samples.index[sample_choice]
 else:
-    X_test, _ = load_test_set()
+    X_test, _ = load_test_set(source=source)
     idx = st.selectbox(
         "샘플 ID",
         options=X_test.index.tolist(),
