@@ -47,13 +47,33 @@ _SCENARIO_WIDGET_KEY = "_scenario_radio"
 
 
 def _sync_from_query_params() -> None:
-    """URL ?mode=real|dummy → session_state (페이지 진입/새로고침 시)."""
+    """URL ?mode=real|dummy → session_state (페이지 진입/새로고침 시).
+
+    PR-28 hotfix v3 — Streamlit 사이드바 nav 클릭 회귀 대응:
+
+    Streamlit 1.39+는 사이드바 nav 링크 클릭 시 query params를 strip하고
+    내부적으로 ?mode=dummy default로 재설정하는 회귀가 있다.
+
+    해결: 같은 session 내 persistent backup이 이미 _OPTIONS[1] (실데이터) 라면
+    URL의 dummy를 무시하고 persistent 우선. ensure_demo_state 끝의
+    _sync_to_query_params가 URL을 다시 real로 reset한다.
+    """
     try:
         mode = st.query_params.get("mode")
-        if mode == "real" and st.session_state.get(_PERSISTENT_KEY) != _OPTIONS[1]:
+        persistent = st.session_state.get(_PERSISTENT_KEY)
+
+        if mode == "real":
+            # URL이 real → widget/persistent 모두 real로 (외부 진입 + 새로고침)
             st.session_state[_PERSISTENT_KEY] = _OPTIONS[1]
-        elif mode == "dummy" and st.session_state.get(_PERSISTENT_KEY) != _OPTIONS[0]:
+            st.session_state[_WIDGET_KEY] = _OPTIONS[1]
+        elif mode == "dummy":
+            # URL이 dummy인데 persistent가 real이면 — Streamlit nav strip 의심.
+            # persistent 우선 → 무시. ensure_demo_state 끝에서 URL을 real로 복원.
+            if persistent == _OPTIONS[1]:
+                return  # persistent (real) 우선
             st.session_state[_PERSISTENT_KEY] = _OPTIONS[0]
+            st.session_state[_WIDGET_KEY] = _OPTIONS[0]
+        # mode 부재 → persistent_key 그대로 유지
     except Exception:  # noqa: BLE001 — query_params API는 Streamlit 버전마다 불안정
         pass
 
@@ -63,6 +83,82 @@ def _sync_to_query_params(source: str) -> None:
     try:
         if st.query_params.get("mode") != source:
             st.query_params["mode"] = source
+    except Exception:  # noqa: BLE001
+        pass
+
+
+def _inject_nav_link_patcher(source: str) -> None:
+    """PR-28 hotfix v3 — 사이드바 nav 링크 href + 클릭 이벤트 양방향 patch.
+
+    근본 원인: Streamlit 1.39+ multi-page nav 링크는 query params를 보존하지 않음.
+    → 사이드바 페이지 클릭 시 ?mode 사라짐 → 다음 페이지 진입 시 dummy로 reset.
+
+    해결 2중 안전망:
+    1. MutationObserver → 모든 sidebar nav 링크 href에 ?mode= 자동 추가
+    2. 클릭 이벤트 capture phase → Streamlit 내부 라우팅 우회 + 직접 navigation
+    """
+    try:
+        import streamlit.components.v1 as components
+
+        components.html(
+            f"""
+            <script>
+            (function() {{
+              const targetSource = "{source}";
+              const parentDoc = window.parent.document;
+              const parentLoc = window.parent.location;
+
+              function patchLinks() {{
+                try {{
+                  const navLinks = parentDoc.querySelectorAll(
+                    '[data-testid="stSidebarNav"] a, '
+                    + 'nav a[href^="http://"], '
+                    + 'nav a[href^="https://"], '
+                    + 'a[data-testid="stSidebarNavLink"]'
+                  );
+                  navLinks.forEach(a => {{
+                    try {{
+                      const u = new URL(a.href);
+                      if (u.origin !== parentLoc.origin) return;
+                      if (u.searchParams.get('mode') !== targetSource) {{
+                        u.searchParams.set('mode', targetSource);
+                        a.href = u.toString();
+                      }}
+                    }} catch (e) {{}}
+                  }});
+                }} catch (e) {{}}
+              }}
+
+              // 2중 안전망: 사이드바 링크 클릭 시 Streamlit 라우팅 우회 + 직접 navigate
+              function interceptClick(e) {{
+                try {{
+                  const a = e.target.closest('a');
+                  if (!a || !a.href) return;
+                  // 사이드바 nav 내부 링크만 가로채기
+                  const isSidebarNav = a.closest('[data-testid="stSidebarNav"]');
+                  if (!isSidebarNav) return;
+                  const u = new URL(a.href);
+                  if (u.origin !== parentLoc.origin) return;
+                  if (u.searchParams.get('mode') === targetSource) return;
+                  // mode 파라미터 강제 추가 후 직접 navigate
+                  u.searchParams.set('mode', targetSource);
+                  e.preventDefault();
+                  e.stopPropagation();
+                  parentLoc.href = u.toString();
+                }} catch (e) {{}}
+              }}
+
+              patchLinks();
+              try {{
+                const obs = new MutationObserver(() => patchLinks());
+                obs.observe(parentDoc.body, {{childList: true, subtree: true}});
+                parentDoc.addEventListener('click', interceptClick, true);
+              }} catch (e) {{}}
+            }})();
+            </script>
+            """,
+            height=0,
+        )
     except Exception:  # noqa: BLE001
         pass
 
@@ -92,6 +188,12 @@ def ensure_demo_state() -> tuple[bool, str]:
 
     st.session_state["_demo_mode"] = is_demo
     st.session_state["_data_source"] = source
+
+    # 🆕 PR-28 hotfix: ensure_demo_state에서도 URL을 즉시 sync.
+    # 직접 URL navigate 시 ?mode 파라미터가 부재 → demo_sidebar가 호출되기 전이라도
+    # persistent backup 값이 URL에 즉시 반영되어 다음 진입 시 모드 보존.
+    _sync_to_query_params(source)
+
     return is_demo, source
 
 
@@ -139,6 +241,10 @@ def demo_sidebar() -> bool:
     st.session_state["_data_source"] = source
 
     st.sidebar.caption("발표용 시연은 항상 데모 모드를 권장.")
+
+    # PR-28 hotfix v2 — 사이드바 nav 링크 href에 ?mode 자동 inject
+    # (Streamlit 1.39+ multi-page nav가 query params를 보존하지 않는 회귀 대응)
+    _inject_nav_link_patcher(source)
 
     # PR-9F — 시나리오 토글 (옵셔널: 호출처 무변경, session_state로만 노출)
     _render_scenario_toggle()

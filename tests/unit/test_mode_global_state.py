@@ -41,13 +41,24 @@ class FakeSessionState(dict):
         self[key] = value
 
 
+class FakeQueryParams(dict):
+    """st.query_params 모킹 — dict 기반."""
+
+    def get(self, key, default=None):
+        return super().get(key, default)
+
+
 @pytest.fixture
 def mock_streamlit(monkeypatch):
-    """streamlit.session_state를 dict로 모킹 + sidebar/markdown no-op."""
+    """streamlit.session_state + query_params를 dict로 모킹 + sidebar/markdown no-op."""
     import streamlit as st
 
     fake_state = FakeSessionState()
     monkeypatch.setattr(st, "session_state", fake_state)
+
+    # PR-28: query_params도 mock 필요 (ensure_demo_state에서 _sync_to_query_params 호출)
+    fake_qp = FakeQueryParams()
+    monkeypatch.setattr(st, "query_params", fake_qp)
 
     # sidebar/title/markdown/divider/caption/radio no-op (테스트에서 렌더 불필요)
     fake_sidebar = MagicMock()
@@ -56,6 +67,9 @@ def mock_streamlit(monkeypatch):
     fake_sidebar.caption = MagicMock()
     fake_sidebar.markdown = MagicMock()
     monkeypatch.setattr(st, "sidebar", fake_sidebar)
+
+    # query_params도 dict로 접근 가능하도록 fake_state에 노출
+    fake_state["_test_query_params"] = fake_qp
     return fake_state
 
 
@@ -209,3 +223,93 @@ def test_get_user_data_meta_default_empty(mock_streamlit):
     from app.lib.demo import get_user_data_meta
 
     assert get_user_data_meta() == {}
+
+
+# -----------------------------------------------------------------------------
+# 테스트 6: PR-28 hotfix — URL query param 양방향 강제 sync
+# -----------------------------------------------------------------------------
+
+
+def test_url_query_param_real_syncs_widget_and_persistent(mock_streamlit):
+    """?mode=real → widget_key + persistent_key 모두 _OPTIONS[1]로 sync (PR-28).
+
+    이전 회귀: persistent_key만 변경되고 widget이 새 페이지에서 default index=0 (데모)로 reset.
+    """
+    from app.lib.demo import ensure_demo_state
+
+    qp = mock_streamlit["_test_query_params"]
+    qp["mode"] = "real"
+
+    is_demo, source = ensure_demo_state()
+
+    assert source == "real"
+    assert is_demo is False
+    assert mock_streamlit["_demo_mode_radio"] == "실데이터 (UCI SECOM)"
+    assert mock_streamlit["_demo_mode_persistent"] == "실데이터 (UCI SECOM)"
+
+
+def test_url_query_param_dummy_syncs_widget_and_persistent(mock_streamlit):
+    """?mode=dummy → widget_key + persistent_key 모두 _OPTIONS[0]로 sync."""
+    from app.lib.demo import ensure_demo_state
+
+    qp = mock_streamlit["_test_query_params"]
+    qp["mode"] = "dummy"
+
+    is_demo, source = ensure_demo_state()
+
+    assert source == "dummy"
+    assert is_demo is True
+    assert mock_streamlit["_demo_mode_radio"] == "데모 (결정론)"
+    assert mock_streamlit["_demo_mode_persistent"] == "데모 (결정론)"
+
+
+def test_url_sync_to_query_params_after_ensure(mock_streamlit):
+    """ensure_demo_state 호출 후 URL query_params에 source 자동 반영 (PR-28).
+
+    직접 URL navigate 시 ?mode 부재 → persistent backup 값이 URL로 push되어
+    다음 페이지 진입 시 mode 유지.
+    """
+    from app.lib.demo import ensure_demo_state
+
+    # 사용자가 이전에 실데이터 선택 → persistent backup만 있고 URL은 비어있는 상태
+    mock_streamlit["_demo_mode_persistent"] = "실데이터 (UCI SECOM)"
+    mock_streamlit["_demo_mode_radio"] = "실데이터 (UCI SECOM)"
+
+    qp = mock_streamlit["_test_query_params"]
+    assert "mode" not in qp  # 진입 시 URL에 mode 없음
+
+    is_demo, source = ensure_demo_state()
+
+    # URL에 mode가 즉시 sync됨 (PR-28 핵심)
+    assert qp.get("mode") == "real"
+    assert source == "real"
+    assert is_demo is False
+
+
+def test_streamlit_nav_dummy_strip_persistent_priority(mock_streamlit):
+    """PR-28 v3 — Streamlit sidebar nav 클릭 시 URL ?mode=dummy strip 회귀 가드.
+
+    시나리오:
+    1. 사용자가 실데이터 선택 → persistent + widget = _OPTIONS[1]
+    2. 사이드바 nav 클릭 → Streamlit 내부에서 URL이 ?mode=dummy로 strip됨
+    3. 다음 페이지 진입 → ensure_demo_state():
+       - URL이 dummy인데 persistent가 real이면 persistent 우선
+       - 종료 후 URL을 real로 복원
+    """
+    from app.lib.demo import ensure_demo_state
+
+    # 사용자가 이전에 실데이터 선택 + Streamlit이 URL을 dummy로 strip
+    mock_streamlit["_demo_mode_persistent"] = "실데이터 (UCI SECOM)"
+    mock_streamlit["_demo_mode_radio"] = "실데이터 (UCI SECOM)"
+
+    qp = mock_streamlit["_test_query_params"]
+    qp["mode"] = "dummy"  # Streamlit nav가 strip한 결과
+
+    is_demo, source = ensure_demo_state()
+
+    # persistent 우선 — real 유지
+    assert source == "real"
+    assert is_demo is False
+    assert mock_streamlit["_demo_mode_persistent"] == "실데이터 (UCI SECOM)"
+    # URL도 real로 복원됨
+    assert qp.get("mode") == "real"
