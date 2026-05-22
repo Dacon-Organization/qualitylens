@@ -19,6 +19,7 @@ from lib.load import (
     load_thresholds,
     status_banner,
 )
+from lib.onboarding import maybe_show_onboarding, reopen_button_sidebar
 from lib.viz import proba_timeline, render_tier_badge, risk_tier
 
 st.set_page_config(
@@ -28,8 +29,12 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# 첫 접속 시 사용 안내 모달 (PR-20)
+maybe_show_onboarding()
+
 sidebar_badge()
 demo_mode = demo_sidebar()
+reopen_button_sidebar()
 
 st.title("🏭 QualityLens")
 st.caption("AI 기반 스마트 공장 운영 시스템 · Predict → Explain → Act")

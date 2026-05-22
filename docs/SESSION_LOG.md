@@ -5,13 +5,21 @@
 
 ---
 
-## 2026-05-22 11:50 KST [Claude Opus 4.7] — P-B 확장 PR-7 mode 버그 fix
+## 2026-05-22 12:30 KST [Claude Opus 4.7] — P-B 확장 PR-19+20 묶음 (MVP 핵심)
+
+- **PR-19 (CSV 업로드)**: `app/pages/0_📤_데이터_업로드.py` + `app/lib/upload.py` 신규. 591 sensor_NNN 컬럼 검증·정렬·예측. 누락 자동 0 채움. utf-8/utf-8-sig/cp949 자동 감지. 결과 CSV 다운로드.
+- **PR-20 (onboarding 모달)**: `app/lib/onboarding.py` 신규. `st.dialog` 4슬라이드 워크스루(정체성 → 업로드 가이드 → 4영역 흐름 → Predict→Explain→Act). 사이드바 재오픈 버튼.
+- **app.py 통합**: `maybe_show_onboarding()` 진입 호출, `reopen_button_sidebar()` 추가.
+- **단위 검증 PASS**: 591 컬럼 + 99/591 입력 → 492 자동 채움 + 경고 메시지 + 템플릿 (3×592).
+- **다음**: commit + PR + merge → PR-8 UI 디테일 (45분)
+
+## 2026-05-22 11:50 KST [Claude Opus 4.7] — P-B 확장 PR-7 mode 버그 fix 머지 (#84)
 
 - **문제**: `app/lib/demo.py:11-31`의 `st.sidebar.radio(..., index=0)` 하드코딩 + session_state 미사용 → 페이지 이동 시 라디오 강제 reset
 - **수정**: widget `key="_demo_mode_radio"` 도입으로 Streamlit 자동 보존 + 외부 읽기용 `_demo_mode` 별도 미러
 - **호출처 영향**: 0 (반환 시그니처 동일, app.py + pages/1~4 무변경)
 - **검증**: ast.parse OK, import OK, lines 52
-- **다음**: commit + PR + merge → PR-19 (CSV 업로드, MVP 핵심)
+- **다음**: PR-19+20 묶음 → PR-8 → ...
 
 ## 2026-05-22 11:32 KST [Claude Opus 4.7] — P-B 확장 plan 최종 확정 (필수 11개)
 
