@@ -1,4 +1,6 @@
-"""데모 ↔ 실데이터 토글 + session_state SSoT (PR-21 + PR-27 persistent key).
+"""데모 ↔ 실데이터 토글 + 시나리오 토글 + session_state SSoT.
+
+(PR-21 + PR-27 persistent key + PR-9F 시나리오 토글)
 
 사이드바 라디오로 모드 전환. 데모 모드는 사전 캐싱된 결과만 사용.
 
@@ -7,11 +9,17 @@
     st.session_state["_demo_mode_persistent"]: str  (PR-27 backup — widget destroy 무관 보존)
     st.session_state["_demo_mode"]           : bool (외부 코드 읽기용 bool 미러)
     st.session_state["_data_source"]         : str  ("dummy"|"real" — 캐시 키 source)
+    st.session_state["_scenario"]            : str  (PR-9F: "NORMAL"|"WARN"|"ANOMALY" — 옵셔널)
 
 PR-27 추가:
   - Streamlit 멀티페이지에서 widget이 destroy 되면 session_state[widget_key]가 사라지는 동작 회피
   - persistent backup key (_demo_mode_persistent)에 즉시 backup → 다음 페이지에서 widget을 올바른 값으로 재초기화
   - URL query param "mode" 양방향 동기화 (새로고침/직접 진입 시에도 모드 보존)
+
+PR-9F 추가:
+  - 시나리오 토글 세션 키 (_scenario) — 페이지에서 옵셔널 읽기
+  - 사이드바 라디오 (NORMAL/WARN/ANOMALY) — 데모 시연 시 자동 샘플 선택 가이드
+  - 호출처 변경 0건 (demo_sidebar() bool 반환 유지)
 """
 
 from __future__ import annotations
@@ -21,6 +29,21 @@ import streamlit as st
 _OPTIONS = ["데모 (결정론)", "실데이터 (UCI SECOM)"]
 _WIDGET_KEY = "_demo_mode_radio"
 _PERSISTENT_KEY = "_demo_mode_persistent"
+
+# PR-9F — 시나리오 토글
+SCENARIOS = ["NORMAL", "WARN", "ANOMALY"]
+SCENARIO_LABELS = {
+    "NORMAL": "🟢 정상 시퀀스",
+    "WARN": "🟡 경고 발생",
+    "ANOMALY": "🔴 이상 명백",
+}
+SCENARIO_DESCRIPTIONS = {
+    "NORMAL": "정상 운영 시뮬레이션 — proba < 0.30 샘플 우선",
+    "WARN": "경고 신호 단계 — 0.30 ≤ proba < 0.50 샘플 우선",
+    "ANOMALY": "명백한 이상 — proba ≥ 0.50 샘플 우선",
+}
+_SCENARIO_KEY = "_scenario"
+_SCENARIO_WIDGET_KEY = "_scenario_radio"
 
 
 def _sync_from_query_params() -> None:
@@ -116,6 +139,10 @@ def demo_sidebar() -> bool:
     st.session_state["_data_source"] = source
 
     st.sidebar.caption("발표용 시연은 항상 데모 모드를 권장.")
+
+    # PR-9F — 시나리오 토글 (옵셔널: 호출처 무변경, session_state로만 노출)
+    _render_scenario_toggle()
+
     st.sidebar.divider()
     st.sidebar.markdown(
         """
@@ -128,6 +155,80 @@ def demo_sidebar() -> bool:
         """
     )
     return is_demo
+
+
+def _render_scenario_toggle() -> None:
+    """PR-9F — 사이드바에 시나리오 토글 라디오 추가 (옵셔널).
+
+    페이지 코드는 옵셔널 읽기: `get_scenario()` → "NORMAL" 폴백.
+    호출처 5곳 (app/pages/1~5) 시그니처 무변경.
+    """
+    if _SCENARIO_WIDGET_KEY not in st.session_state:
+        st.session_state[_SCENARIO_WIDGET_KEY] = SCENARIOS[0]
+
+    st.sidebar.divider()
+    st.sidebar.markdown("**🎭 시연 시나리오** *(데모 모드)*")
+    selected = st.sidebar.radio(
+        "발표 시 강조할 상황",
+        options=SCENARIOS,
+        key=_SCENARIO_WIDGET_KEY,
+        format_func=lambda s: SCENARIO_LABELS[s],
+        help=(
+            "데모 시연 시 자동 추천 샘플을 시나리오에 맞게 필터링합니다.\n\n"
+            + "\n".join(f"• {SCENARIO_LABELS[s]}: {SCENARIO_DESCRIPTIONS[s]}" for s in SCENARIOS)
+        ),
+    )
+    st.session_state[_SCENARIO_KEY] = selected
+    st.sidebar.caption(SCENARIO_DESCRIPTIONS[selected])
+
+
+def get_scenario() -> str:
+    """현재 시나리오 반환 ("NORMAL" | "WARN" | "ANOMALY"). 미설정 시 "NORMAL"."""
+    return st.session_state.get(_SCENARIO_KEY, "NORMAL")
+
+
+def set_scenario(scenario: str) -> None:
+    """프로그래밍 방식 시나리오 설정 (테스트용 또는 외부 트리거)."""
+    if scenario not in SCENARIOS:
+        raise ValueError(f"Invalid scenario: {scenario}. Must be one of {SCENARIOS}")
+    st.session_state[_SCENARIO_KEY] = scenario
+
+
+def filter_samples_by_scenario(
+    demo_result,
+    scenario: str | None = None,
+    warn_threshold: float = 0.30,
+    danger_threshold: float = 0.50,
+):
+    """시나리오에 맞는 샘플 인덱스 필터링.
+
+    Parameters
+    ----------
+    demo_result : pd.DataFrame  (pred_proba 컬럼 필수)
+    scenario : str | None — None이면 get_scenario() 호출
+    warn_threshold / danger_threshold : 임계값
+
+    Returns
+    -------
+    list[int] — 시나리오에 해당하는 demo_result 행 인덱스. 빈 리스트면 전체 폴백.
+    """
+    if scenario is None:
+        scenario = get_scenario()
+    if "pred_proba" not in demo_result.columns:
+        return list(range(len(demo_result)))
+
+    proba = demo_result["pred_proba"]
+    if scenario == "NORMAL":
+        mask = proba < warn_threshold
+    elif scenario == "WARN":
+        mask = (proba >= warn_threshold) & (proba < danger_threshold)
+    elif scenario == "ANOMALY":
+        mask = proba >= danger_threshold
+    else:
+        return list(range(len(demo_result)))
+
+    indices = [i for i, v in enumerate(mask.values) if v]
+    return indices if indices else list(range(len(demo_result)))
 
 
 def has_user_data() -> bool:

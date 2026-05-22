@@ -19,7 +19,14 @@ import streamlit as st  # noqa: E402
 
 from lib import stream  # noqa: E402
 from lib.data_loader import sidebar_badge  # noqa: E402
-from lib.demo import demo_sidebar, get_source  # noqa: E402
+from lib.demo import (  # noqa: E402
+    SCENARIO_DESCRIPTIONS,
+    SCENARIO_LABELS,
+    demo_sidebar,
+    filter_samples_by_scenario,
+    get_scenario,
+    get_source,
+)
 from lib.load import (  # noqa: E402
     load_demo_result,
     load_demo_sample,
@@ -64,22 +71,40 @@ mode = st.radio(
 
 if mode.startswith("📌"):
     if demo_mode or model is None:
-        st.info("💡 데모 모드 — 사전 캐싱된 4건 중 선택해 결과를 확인합니다.")
+        # PR-9F — 시나리오 토글 가이드
+        current_scenario = get_scenario()
+        st.info(
+            f"💡 데모 모드 — 사전 캐싱된 4건 중 선택해 결과를 확인합니다. "
+            f"현재 시나리오: **{SCENARIO_LABELS[current_scenario]}** — "
+            f"{SCENARIO_DESCRIPTIONS[current_scenario]}"
+        )
+
         demo_sample = load_demo_sample(source=source)
         demo_result = load_demo_result(source=source)
 
+        # PR-9F — 시나리오에 맞는 추천 인덱스 (없으면 전체 폴백)
+        recommended_idx = filter_samples_by_scenario(demo_result, current_scenario)
+        if len(recommended_idx) < len(demo_result):
+            st.caption(
+                f"🎭 시나리오 '{current_scenario}' 기준 추천 샘플: "
+                f"{len(recommended_idx)}건 / 전체 {len(demo_result)}건"
+            )
+
         if "selected_demo_idx" not in st.session_state:
-            st.session_state.selected_demo_idx = 0
+            st.session_state.selected_demo_idx = recommended_idx[0] if recommended_idx else 0
 
         sel = st.selectbox(
             "데모 샘플 선택",
             options=range(len(demo_sample)),
-            format_func=lambda i: f"샘플 #{demo_sample.index[i]}",
+            format_func=lambda i: (
+                f"샘플 #{demo_sample.index[i]}"
+                + (" ⭐" if i in recommended_idx else "")
+            ),
             key="selected_demo_idx",
         )
         proba = float(demo_result.iloc[sel]["pred_proba"])
         sample_id = str(demo_sample.index[sel])
-        scenario_label = "단일 샘플"
+        scenario_label = f"단일 샘플 · {current_scenario}"
     else:
         # PR-27: 실데이터 산출물 부재 시 데모로 graceful fallback
         try:
