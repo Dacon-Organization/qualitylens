@@ -5,6 +5,15 @@
 
 ---
 
+## 2026-05-22 13:55 KST [Claude Opus 4.7] — P-B 확장 PR-8+11 묶음 (UI 디테일 + 브랜딩)
+
+- **PR-8 KPI delta**: `app/app.py:94-102` col2 이상 판정 → `delta=+/-Xp.p (평소 6.6% 대비)` `delta_color="inverse"`
+- **PR-8 SHAP brief**: `pages/2_🔍_원인_분석.py` waterfall 직전 `st.error()` 자동 텍스트 — top SHAP 변수 + 영향도 %
+- **PR-8 toast/balloons**: `pages/3_🛠_조치_가이드.py:143` 수용 버튼 → `st.toast()` + `st.balloons()` 추가
+- **PR-11 pitch_30s.md 신규**: 30초 낭송 스크립트(균형 톤) + 핵심 카피 5종 + Q&A 5종 답변 템플릿
+- **PR-11 README 보강**: 차별화 3개 + 3대 페르소나 매트릭스 + 4영역 통합(품질/안전/설비/생산) + MVP 사용 흐름 3단계
+- **다음**: commit + PR + merge → PR-E1 발표 PDF HTML (120분)
+
 ## 2026-05-22 13:15 KST [Claude Opus 4.7] — P-B 확장 PR-14+15 묶음 (SPC + Pareto)
 
 - **PR-14 (SPC)**: `app/lib/spc.py` 신규. Western Electric Rules 4종(3σ/2σ/1σ/연속 8점) 자동 검출. `compute_limits`/`detect_western_electric`/`violation_summary`.

@@ -6,7 +6,7 @@
 ---
 
 ## 0. 한 줄 현황
-P-B 확장 진행 중 — PR-1/3/2/7/19+20/10 ✅ (6/11), **PR-14+15(SPC+Pareto) commit 대기** → PR-8 → PR-11 → PR-E1/E2/E3.
+P-B 확장 진행 중 — PR-1/3/2/7/19+20/10/14+15 ✅ (8/11), **PR-8+11(UI 디테일 + 브랜딩) commit 대기** → PR-E1/E2/E3.
 
 ## 1. 환경
 - 워크트리: `C:\Users\kik32\workspace\Dacon\.claude\worktrees\confident-allen-747529\smart-factory-hackathon`
@@ -21,9 +21,9 @@ P-B 확장 진행 중 — PR-1/3/2/7/19+20/10 ✅ (6/11), **PR-14+15(SPC+Pareto)
 - 2026-05-22 11:18: 평가 배점 — PT 15분+Q&A 5분, 5항목 100점 (AI 25, MVP 25 최대)
 
 ## 3. 다음 액션 (TOP 3, 우선순위 순)
-1. **PR-14+15 마무리** — commit + push + PR + squash merge
-2. **PR-8 착수** — `app/app.py:94-102` KPI delta + `pages/2:65` SHAP brief + `pages/3:142` toast/balloons (45분)
-3. **PR-11 + PR-E1 묶음** — 브랜딩 30초 + 발표 PDF용 HTML 슬라이드 (150분)
+1. **PR-8+11 마무리** — commit + push + PR + squash merge
+2. **PR-E1 착수** — `docs/presentation/slides.html` 가로 PDF용 12~15장 HTML/CSS (@media print) (120분)
+3. **PR-E2+E3 묶음** — 자유 양식 HTML + 시연 가이드 (105분)
 
 ## 4. 차단 요소 / 사용자 확인 대기
 - 없음. Auto mode 진행 자율 위임.
@@ -35,10 +35,8 @@ P-B 확장 진행 중 — PR-1/3/2/7/19+20/10 ✅ (6/11), **PR-14+15(SPC+Pareto)
 ## 6. 진행 중 sub-PR 상태판 (필수 11개)
 | PR | 제목 | 상태 |
 |---|---|---|
-| PR-1/3/2/7/19+20/10 | hotfix·메모리·캡처·mode·CSV+모달·데이터 | ✅ #81/82/83/84/85/86 |
-| **PR-14+15** | SPC + Pareto + 히스토그램 | 🚧 commit 대기 |
-| PR-8 | UI 디테일 (delta + SHAP brief + toast) | ⏳ |
-| PR-11 | 브랜딩 30초 + MVP 4단계 메시지 | ⏳ |
+| PR-1/3/2/7/19+20/10/14+15 | hotfix·메모리·캡처·mode·CSV+모달·데이터·SPC+Pareto | ✅ #81~87 |
+| **PR-8+11** | UI 디테일 + 브랜딩 + README | 🚧 commit 대기 |
 | PR-E1/E2/E3 | 발표 PDF + 자유양식 + 시연 가이드 | ⏳ 대회 제출 필수 |
 
 ---

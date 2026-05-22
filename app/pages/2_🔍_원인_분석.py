@@ -76,6 +76,21 @@ elif demo_mode:
         format_func=lambda i: f"샘플 #{i}",
     )
     pkg = waterfall_pkg["samples"][selected_id]
+
+    # PR-8: SHAP brief — 비전문가용 AI 요약 텍스트 (차트 위에 먼저 표시)
+    shap_vals = pkg["shap"]
+    feats = pkg["features"]
+    top_idx = max(range(len(shap_vals)), key=lambda i: abs(shap_vals[i]))
+    top_sensor = feats[top_idx]
+    top_value = shap_vals[top_idx]
+    total_abs = sum(abs(v) for v in shap_vals) or 1.0
+    top_ratio = abs(top_value) / total_abs * 100
+    direction = "이상 확률을 높이는" if top_value > 0 else "정상으로 끌어내리는"
+    st.error(
+        f"🚨 **AI 원인 분석 결과**: 현재 샘플의 예측에서 **'{top_sensor}'** 가 "
+        f"가장 큰 {direction} 요인입니다 — **전체 SHAP 영향도의 {top_ratio:.0f}%** 차지."
+    )
+
     fig = shap_waterfall(
         features=pkg["features"],
         shap_values=pkg["shap"],

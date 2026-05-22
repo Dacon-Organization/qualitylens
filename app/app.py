@@ -96,9 +96,20 @@ st.markdown(
 # KPI 카드
 # -----------------------------------------------------------------------------
 
+# PR-8: KPI delta — 평소 대비 증감을 색상으로 즉시 인지 (delta_color inverse: 위 = 빨강)
+# baseline은 SECOM 원본의 ~6.6% 불량률 (model_card 참조). 시연 임팩트 위해 명시.
+BASELINE_FAIL_RATE = 6.6  # %
+delta_pct = fail_rate - BASELINE_FAIL_RATE
+
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("총 샘플", f"{sample_size:,}")
-col2.metric("이상 판정", f"{fail_count:,}", f"{fail_rate:.1f}%")
+col2.metric(
+    "이상 판정",
+    f"{fail_count:,}",
+    f"{delta_pct:+.1f}%p (평소 6.6% 대비)",
+    delta_color="inverse",  # 상승 = 빨강 (위험), 하락 = 초록 (개선)
+    help="평소(SECOM 원본 6.64%) 대비 이상 비율 증감",
+)
 col3.metric(
     "운영 threshold",
     "0.50" if model is None else "사전 산출",

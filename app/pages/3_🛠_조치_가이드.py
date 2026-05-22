@@ -140,6 +140,9 @@ else:
                                 recommendation=recommendation,
                             )
                         )
+                        # PR-8: 극적 피드백 — 발표 시연 임팩트
+                        st.toast(f"✅ '{sensor}' 조치가 설비팀에 전달됐습니다!", icon="🚀")
+                        st.balloons()
                         st.rerun()
             with status_col:
                 if not already_logged:
