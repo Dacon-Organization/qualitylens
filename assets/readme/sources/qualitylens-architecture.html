@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1600, initial-scale=1">
+  <title>QualityLens System Architecture</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 1600px; height: 900px; overflow: hidden; }
+    body {
+      font-family: "Noto Sans KR", "Pretendard", "Malgun Gothic", sans-serif;
+      color: #10233f;
+      background: #f8fcff url("../qualitylens-architecture-background.png") center / cover no-repeat;
+    }
+    .canvas {
+      position: relative;
+      width: 1600px;
+      height: 900px;
+      padding: 50px 60px 46px;
+      background: rgba(250, 253, 255, .60);
+    }
+    header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 34px;
+      padding: 0 4px 22px;
+      border-bottom: 2px solid rgba(43, 111, 179, .18);
+    }
+    .kicker {
+      margin: 0 0 8px;
+      color: #1888b5;
+      font-size: 16px;
+      font-weight: 850;
+      letter-spacing: .16em;
+    }
+    h1 {
+      margin: 0;
+      font-size: 43px;
+      line-height: 1.1;
+      letter-spacing: -.045em;
+      color: #0b2850;
+    }
+    .principle {
+      padding: 11px 17px;
+      border: 1px solid rgba(26, 142, 177, .25);
+      border-radius: 999px;
+      background: rgba(234, 250, 253, .85);
+      color: #12657e;
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .stages {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      position: relative;
+    }
+    .stage {
+      position: relative;
+      min-height: 555px;
+      padding: 26px 22px 22px;
+      border: 1px solid rgba(46, 111, 168, .22);
+      border-top: 6px solid var(--accent);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, .91);
+      box-shadow: 0 16px 38px rgba(26, 71, 112, .11);
+    }
+    .stage:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -22px;
+      top: 252px;
+      z-index: 3;
+      width: 24px;
+      color: #3d8fbd;
+      font-size: 27px;
+      line-height: 1;
+      text-align: center;
+      font-weight: 900;
+      text-shadow: 0 0 8px #fff;
+    }
+    .stage.data { --accent: #00a7b7; --soft: #e7fbfc; }
+    .stage.pipeline { --accent: #1976d2; --soft: #edf5ff; }
+    .stage.artifacts { --accent: #7657d5; --soft: #f2efff; }
+    .stage.app { --accent: #e87828; --soft: #fff3e8; }
+    .stage.users { --accent: #15905d; --soft: #eaf9f1; }
+    .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      margin-bottom: 18px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 20px;
+      font-weight: 900;
+      box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 27%, transparent);
+    }
+    .stage h2 {
+      min-height: 54px;
+      margin: 0 0 13px;
+      color: #143257;
+      font-size: 21px;
+      line-height: 1.22;
+      letter-spacing: -.02em;
+    }
+    .desc {
+      min-height: 47px;
+      margin: 0 0 18px;
+      color: #5e7088;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .items { display: grid; gap: 10px; }
+    .item {
+      padding: 10px 11px;
+      border: 1px solid color-mix(in srgb, var(--accent) 19%, #dce6ef);
+      border-radius: 10px;
+      background: var(--soft);
+      color: #1d3859;
+      font-size: 14px;
+      line-height: 1.42;
+      font-weight: 700;
+    }
+    .item small {
+      display: block;
+      margin-top: 3px;
+      color: #687a90;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .app .items { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .app .item { padding: 9px 8px; font-size: 12px; text-align: center; }
+    .app .item:first-child { grid-column: 1 / -1; }
+    .flow {
+      position: absolute;
+      left: 60px;
+      right: 60px;
+      bottom: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 70px;
+      border: 1px solid rgba(17, 116, 160, .27);
+      border-radius: 18px;
+      background: linear-gradient(90deg, rgba(9, 55, 105, .96), rgba(8, 129, 150, .93));
+      box-shadow: 0 18px 36px rgba(14, 68, 108, .18);
+      color: #fff;
+      font-size: 24px;
+      font-weight: 850;
+      letter-spacing: -.015em;
+    }
+    .flow span { color: #93fff0; padding: 0 9px; }
+  </style>
+</head>
+<body>
+  <main class="canvas">
+    <header>
+      <div>
+        <p class="kicker">IMPLEMENTED SYSTEM ARCHITECTURE</p>
+        <h1>QualityLens 시스템 구성도</h1>
+      </div>
+      <div class="principle">실제 코드 · 실제 아티팩트 · 실제 배포 흐름</div>
+    </header>
+
+    <section class="stages" aria-label="QualityLens 시스템 흐름">
+      <article class="stage data">
+        <div class="num">1</div>
+        <h2>DATA SOURCES</h2>
+        <p class="desc">공장 센서 데이터와 안전한 시연 입력</p>
+        <div class="items">
+          <div class="item">UCI SECOM<small>1,567 rows · 590 features</small></div>
+          <div class="item">사용자 CSV<small>P0 업로드 및 검증</small></div>
+          <div class="item">결정론 데모<small>발표용 재현 가능 시나리오</small></div>
+        </div>
+      </article>
+
+      <article class="stage pipeline">
+        <div class="num">2</div>
+        <h2>OFFLINE ML<br>PIPELINE</h2>
+        <p class="desc">재현 가능한 사전 계산 파이프라인</p>
+        <div class="items">
+          <div class="item">01_preprocess.py<small>결측치 · 스케일링 · 분할</small></div>
+          <div class="item">02_train.py<small>XGBoost K-Fold 학습</small></div>
+          <div class="item">03_shap.py<small>SHAP 사전 계산</small></div>
+          <div class="item">Threshold Engine<small>경고 · 위험 임계값 산출</small></div>
+        </div>
+      </article>
+
+      <article class="stage artifacts">
+        <div class="num">3</div>
+        <h2>MODEL &amp;<br>ARTIFACTS</h2>
+        <p class="desc">앱이 즉시 읽는 검증된 산출물</p>
+        <div class="items">
+          <div class="item">전처리 데이터</div>
+          <div class="item">XGBoost 모델</div>
+          <div class="item">Thresholds</div>
+          <div class="item">SHAP 결과</div>
+          <div class="item">Demo Result · Action Log</div>
+        </div>
+      </article>
+
+      <article class="stage app">
+        <div class="num">4</div>
+        <h2>STREAMLIT<br>APPLICATION</h2>
+        <p class="desc">Home + P0~P6 운영 화면</p>
+        <div class="items">
+          <div class="item">Home</div>
+          <div class="item">P0 업로드</div>
+          <div class="item">P1 실시간 예측</div>
+          <div class="item">P2 원인 분석</div>
+          <div class="item">P3 조치 가이드</div>
+          <div class="item">P4 이력 조회</div>
+          <div class="item">P5 SPC/Pareto</div>
+          <div class="item">P6 종합 대시보드</div>
+        </div>
+      </article>
+
+      <article class="stage users">
+        <div class="num">5</div>
+        <h2>USERS &amp;<br>DEPLOYMENT</h2>
+        <p class="desc">현장부터 경영진까지 같은 근거를 공유</p>
+        <div class="items">
+          <div class="item">현장 작업자</div>
+          <div class="item">공정팀 / QC</div>
+          <div class="item">생산관리자 · 경영진</div>
+          <div class="item">Streamlit Community Cloud<small>저비용 MVP 배포</small></div>
+        </div>
+      </article>
+    </section>
+
+    <div class="flow">CSV 업로드 <span>→</span> Predict <span>→</span> Explain <span>→</span> Act <span>→</span> 이력 · SPC 개선</div>
+  </main>
+</body>
+</html>

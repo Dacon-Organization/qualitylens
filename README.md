@@ -1,5 +1,19 @@
 # 2026 스마트 공장 운영 시스템 MVP 개발 해커톤
 
+![QualityLens - AI 기반 스마트 공장 운영 시스템](assets/readme/qualitylens-hero.png)
+
+<p align="center">
+  <a href="https://qualitylens-smart-factory.streamlit.app/"><strong>라이브 앱</strong></a>
+  ·
+  <a href="docs/presentation/final/qualitylens-finals-presentation.pdf"><strong>본선 최종 발표 자료</strong></a>
+  ·
+  <a href="docs/presentation/slides.html"><strong>발표 자료 HTML</strong></a>
+</p>
+
+> **대회 결과:** 예선을 통과해 2026년 5월 22일 본선에 참가했으며, 최종 수상에는 이르지 못했습니다.
+
+`XGBoost` · `SHAP` · `Threshold Engine` · `SPC/Pareto` · `Streamlit`
+
 ## 프로젝트 개요
 
 | 항목 | 내용 |
@@ -7,8 +21,10 @@
 | 주제 | AI 기반 스마트 공장 운영 시스템 MVP 개발 |
 | 프로젝트명 | QualityLens |
 | 핵심 방향 | 공정 이상 예측, 원인 분석, 조치 가이드를 하나의 플랫폼으로 연결 |
-| 제출 기한 | 예선 ~ 2026.05.13(월) 10:00 |
+| 제출 기한 | 예선 ~ 2026.05.13(수) 10:00 |
 | 본선 | 2026.05.22(금) 오프라인 구현 및 발표 |
+| 결과 | 예선 통과 · 본선 참가 · 미수상 |
+| 배포 | [QualityLens Streamlit 앱](https://qualitylens-smart-factory.streamlit.app/) |
 
 ## 한 줄 소개
 
@@ -28,9 +44,29 @@ QualityLens는 `Predict → Explain → Act` 구조로 동작합니다.
 - `Explain`: SHAP으로 어떤 센서와 공정 변수가 이상에 영향을 주었는지 설명합니다.
 - `Act`: Threshold Engine과 조치 가이드를 결합해 현장 작업자가 바로 실행할 수 있는 권고안을 제시합니다.
 
+## 시스템 구성
+
+![QualityLens 시스템 구성도](assets/readme/qualitylens-architecture.png)
+
+UCI SECOM 또는 사용자 CSV를 오프라인 파이프라인에서 전처리·학습·설명한 뒤,
+사전 계산한 모델과 아티팩트를 Streamlit 앱이 읽습니다. 사용자는
+`CSV 업로드 → Predict → Explain → Act → 이력 · SPC 개선` 흐름으로 공정 상태를
+확인하고 조치를 기록합니다.
+
+## 실제 화면 미리보기
+
+아래 이미지는 생성형 UI가 아니라 [배포 앱](https://qualitylens-smart-factory.streamlit.app/)의
+데모 모드를 1600×900으로 직접 캡처한 화면입니다.
+
+| 메인 대시보드 | 원인 분석 |
+|:---:|:---:|
+| ![QualityLens 메인 대시보드](assets/readme/screens/main-dashboard.png) | ![QualityLens 원인 분석](assets/readme/screens/root-cause-analysis.png) |
+| 조치 가이드 | SPC/Pareto |
+| ![QualityLens 조치 가이드](assets/readme/screens/action-guide.png) | ![QualityLens SPC Pareto](assets/readme/screens/spc-pareto.png) |
+
 ## 차별화 어필 3가지
 
-1. **1/100 가격** — 마키나락스/DELMIA는 수억~수십억 엔터프라이즈, QualityLens는 Streamlit Cloud 1-Click 무료 배포
+1. **저비용 MVP 배포** — 엔터프라이즈 솔루션 대비 가볍게 시작할 수 있는 Streamlit Community Cloud 배포 구조
 2. **설명력 × 제조 표준 시각화** — SHAP × SPC (Western Electric Rules) × Pareto × Cpk 통합 (Tableau/PowerBI는 BI만)
 3. **첫날부터 사용** — 📤 데이터 업로드 페이지에서 자기 공장 CSV 한 번 업로드 → 30초 안에 첫 인사이트
 
@@ -53,7 +89,7 @@ QualityLens는 `Predict → Explain → Act` 구조로 동작합니다.
 
 1. **📤 데이터 업로드** (자기 공장 CSV) **또는** 🎬 데모 모드
 2. **메인** — KPI 4종 + 시계열 + Top 5 센서
-3. **P1~P5** 순회 — Predict → Explain → Act → 이력 → SPC/Pareto
+3. **P1~P6** 순회 — Predict → Explain → Act → 이력 → SPC/Pareto → 종합 대시보드
 
 ## 평가 기준 대응
 
@@ -62,25 +98,31 @@ QualityLens는 `Predict → Explain → Act` 구조로 동작합니다.
 | 문제 정의 | 이상 발견 지연과 원인 파악 지연으로 생기는 현장 손실을 구체적으로 정의 |
 | AI 활용 | XGBoost, SHAP, Threshold Engine을 결합해 AI가 실제 의사결정에 기여하도록 설계 |
 | 플랫폼 기획 | 예측, 설명, 조치가 이어지는 사용자 흐름과 데이터 흐름을 함께 구성 |
-| MVP 구현 완성도 | Streamlit 기반 5개 화면으로 실제 시연 가능한 범위를 정의 |
+| MVP 구현 완성도 | Streamlit 기반 Home + P0~P6 화면으로 실제 시연 가능한 운영 흐름 구현 |
 | 발표/전달력 | 5분 내 설명 가능한 흐름과 데모 시나리오를 사전 설계 |
 
 ## MVP 구성
 
 | 페이지 | 역할 | 상태 |
 |------|------|------|
-| P1 | 통합 대시보드 | 핵심 |
-| P2 | 실시간 예측 | 핵심 |
-| P3 | 원인 분석 | 핵심 |
-| P4 | 조치 가이드 | 핵심 |
-| P5 | 이력 조회 | 선택 |
+| Home | 메인 대시보드 · KPI · 이상 확률 추이 | 핵심 |
+| P0 | 사용자 CSV 업로드 · 데이터 검증 | 핵심 |
+| P1 | 실시간 예측 · 스트리밍 시뮬레이션 | 핵심 |
+| P2 | SHAP 원인 분석 · 센서 기여도 | 핵심 |
+| P3 | 현장 조치 가이드 · 조치 수용 | 핵심 |
+| P4 | 예측/조치 이력 조회 | 운영 |
+| P5 | SPC 관리도 · Pareto · Cpk | 분석 |
+| P6 | 품질·안전·설비·생산 종합 대시보드 | 운영 |
 
 ## 관련 문서
 
-- [프로젝트 Summary 초안](docs/project_summary.md)
-- [PPT 시각화 가이드](docs/ppt_visual_guide.md)
-- [본선 준비 Spec](docs/spec_finals_prep.md) ⭐ 본선 D-3 작성
-- [본선 준비 로드맵 HTML](docs/roadmap.html) ⭐ 진행 추적용
+- [본선 최종 발표 자료](docs/presentation/final/qualitylens-finals-presentation.pdf) - 실제 발표 PDF 17장
+- [본선 발표 자료 HTML](docs/presentation/slides.html) - 최종 발표 원본
+- [본선 데모 영상 가이드](docs/presentation/demo_video_guide.md)
+- [30초 피치](docs/pitch_30s.md)
+- [본선 준비 Spec](docs/spec_finals_prep.md) - 본선 D-3 작성
+- [본선 준비 로드맵 HTML](docs/roadmap.html) - 진행 추적용
+- [본선 참가 증빙](docs/certificates/2026-smart-factory-finals-participation.pdf) - 인증서 원본 PDF
 
 ### 스킬 카테고리
 
@@ -99,8 +141,10 @@ QualityLens는 `Predict → Explain → Act` 구조로 동작합니다.
 
 - `QualityLens_기획서.pptx`: 예선 제출용 발표 자료
 - `QualityLens_기획서.pdf`: 제출용 PDF
-- `build_pptx_v4.py`: PPT 자동 생성 스크립트
-- `diagrams/`: 아키텍처 및 흐름도 이미지
+- `docs/presentation/final/qualitylens-finals-presentation.pdf`: 본선 최종 발표 자료
+- `docs/presentation/slides.html`: 본선 최종 발표 HTML 원본
+- `build_pptx.py`, `build_pptx_v2.py`: 예선 PPT 자동 생성 스크립트
+- `assets/readme/`: README 썸네일, 시스템 구성도, 실제 앱 캡처
 
 ## 실행 방법 (본선 사전 작업)
 
@@ -122,7 +166,7 @@ python scripts/02_train.py
 # T3 — SHAP 사전 계산
 python scripts/03_shap.py
 
-# T4 — Streamlit 5페이지 (브라우저 자동 열림)
+# T4 — Streamlit Home + P0~P6 (브라우저 자동 열림)
 streamlit run app/app.py
 ```
 
@@ -152,9 +196,9 @@ python scripts/04_compare_real_vs_dummy.py
 $env:DEMO_MODE = "real"; streamlit run app/app.py
 ```
 
-## 권장 진행 순서 (예선용 PPT)
+## 예선 제출물 제작 기록
 
-1. `docs/project_summary.md`를 먼저 확정
-2. `docs/ppt_visual_guide.md` 기준으로 슬라이드 메시지 정리
+1. 프로젝트 핵심 메시지와 평가 기준 대응을 먼저 확정
+2. `build_pptx.py`, `build_pptx_v2.py`로 예선 슬라이드 구성
 3. PPTX에 필요한 시각화만 추가
-4. PDF로 변환 후 제출
+4. `QualityLens_기획서.pdf`로 변환 후 제출

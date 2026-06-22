@@ -19,6 +19,7 @@
 - AI가 다시 그린 UI 대신 실제 배포 앱 캡처를 사용한다.
 - 본선 참가와 미수상 사실을 과장 없이 기록한다.
 - 본선 참가 인증서 원본을 별도 폴더에 보관한다.
+- 본선에서 실제 사용한 최종 발표 PDF를 원본 그대로 보관하고 README에 연결한다.
 
 ## 비목표
 
@@ -120,8 +121,10 @@ smart-factory-hackathon/
 │   └── sources/
 │       ├── qualitylens-hero.html
 │       └── qualitylens-architecture.html
-└── docs/certificates/
-    └── 2026-smart-factory-finals-participation.pdf
+├── docs/certificates/
+│   └── 2026-smart-factory-finals-participation.pdf
+└── docs/presentation/final/
+    └── qualitylens-finals-presentation.pdf
 ```
 
 ## 생성 및 합성 규칙
@@ -143,6 +146,7 @@ smart-factory-hackathon/
 - README의 모든 상대 링크와 이미지 경로가 존재하는지 확인한다.
 - Markdown 렌더링을 확인해 이미지 비율, 표, 코드 블록이 깨지지 않는지 검사한다.
 - 인증서 PDF의 체크섬을 복사 전후로 비교한다.
+- 최종 발표 PDF의 17개 페이지를 렌더링하고 복사 전후 체크섬을 비교한다.
 - `git diff --check`로 공백 오류를 확인하고 변경 파일만 선별해 스테이징한다.
 
 ## 오류 처리

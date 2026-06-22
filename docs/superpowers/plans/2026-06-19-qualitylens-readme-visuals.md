@@ -23,6 +23,7 @@
 - Create: `smart-factory-hackathon/assets/readme/sources/qualitylens-hero.html` - 썸네일 합성 원본
 - Create: `smart-factory-hackathon/assets/readme/sources/qualitylens-architecture.html` - 구성도 합성 원본
 - Create: `smart-factory-hackathon/docs/certificates/2026-smart-factory-finals-participation.pdf` - 본선 참가 인증서 원본
+- Create: `smart-factory-hackathon/docs/presentation/final/qualitylens-finals-presentation.pdf` - 본선 최종 발표 PDF 원본
 - Modify: `smart-factory-hackathon/README.md` - 이미지, 대회 결과, 실제 페이지 구조 반영
 
 ### Task 1: Capture the deployed application
@@ -165,10 +166,11 @@ Serve `smart-factory-hackathon/assets/readme/` on localhost, set the in-app Brow
 
 Open the final PNGs with `view_image` and compare the embedded main dashboard against `screens/main-dashboard.png`. Expected: no altered menu labels, values, or chart text; all architecture labels listed in Step 2 are legible.
 
-### Task 4: Store the participation certificate
+### Task 4: Store the participation certificate and final presentation
 
 **Files:**
 - Create: `smart-factory-hackathon/docs/certificates/2026-smart-factory-finals-participation.pdf`
+- Create: `smart-factory-hackathon/docs/presentation/final/qualitylens-finals-presentation.pdf`
 
 - [ ] **Step 1: Record the source checksum and copy the PDF**
 
@@ -182,6 +184,12 @@ if ($sourceHash -ne $targetHash) { throw 'Certificate checksum mismatch' }
 ```
 
 Expected: hashes match exactly.
+
+- [ ] **Step 2: Copy and verify the final presentation PDF**
+
+Copy `QualityLens — 2026 스마트 공장 운영 시스템 MVP 해커톤 본선 발표.pdf` from
+Downloads to `docs/presentation/final/qualitylens-finals-presentation.pdf`, compare SHA256
+checksums, and render all 17 pages for a visual integrity check.
 
 ### Task 5: Update the README
 
@@ -220,6 +228,10 @@ diagrams/ → assets/readme/
 ```markdown
 - [본선 참가 증빙](docs/certificates/2026-smart-factory-finals-participation.pdf) - 인증서 원본 PDF
 ```
+
+- [ ] **Step 5: Link the final presentation artifacts**
+
+Add links to the copied final PDF and the existing `docs/presentation/slides.html` source.
 
 ### Task 6: Verify and commit the implementation
 
