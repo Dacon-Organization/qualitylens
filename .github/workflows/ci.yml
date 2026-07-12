@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.repository }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: Python
+    uses: Dacon-Organization/.github/.github/workflows/reusable-python-ci.yml@d94297dd6fc4710ea8299e8042bae48bca72c5a5 # central v1
+    permissions:
+      contents: read
+    with:
+      python-versions: '["3.11"]'
+      requirements-file: requirements-ci.txt
+      test-command: python -m pytest -q
+      run-ruff: false
+      run-ruff-format: false
+
+  docs:
+    name: Docs
+    uses: Dacon-Organization/.github/.github/workflows/reusable-docs-ci.yml@d94297dd6fc4710ea8299e8042bae48bca72c5a5 # central v1
+    permissions:
+      contents: read
+    with:
+      check-links: false
+
+  policy:
+    name: PR Policy
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: Dacon-Organization/.github/.github/workflows/reusable-pr-policy.yml@d94297dd6fc4710ea8299e8042bae48bca72c5a5 # central v1
+    permissions: {}
+
+  dependency-review:
+    name: Dependency Review
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: Dacon-Organization/.github/.github/workflows/reusable-dependency-review.yml@d94297dd6fc4710ea8299e8042bae48bca72c5a5 # central v1
+    permissions:
+      contents: read
+    with:
+      bootstrap-mode: ${{ github.event.pull_request.base.sha == '8ab4feb329c885442473d764f69a9cd9a88c985e' }}
+
+  ci-gate:
+    name: CI / gate
+    if: ${{ always() }}
+    needs: [python, docs]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    permissions: {}
+    steps:
+      - name: Aggregate results
+        shell: bash
+        env:
+          PYTHON_RESULT: ${{ needs.python.result }}
+          DOCS_RESULT: ${{ needs.docs.result }}
+        run: |
+          test "$PYTHON_RESULT" = "success"
+          test "$DOCS_RESULT" = "success"
+
+  policy-gate:
+    name: PR Policy / gate
+    if: ${{ always() && github.event_name == 'pull_request' }}
+    needs: [policy]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    permissions: {}
+    steps:
+      - env:
+          POLICY_RESULT: ${{ needs.policy.result }}
+        run: test "$POLICY_RESULT" = "success"
+
+  dependency-review-gate:
+    name: Dependency Review / gate
+    if: ${{ always() && github.event_name == 'pull_request' }}
+    needs: [dependency-review]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    permissions: {}
+    steps:
+      - env:
+          DEPENDENCY_RESULT: ${{ needs.dependency-review.result }}
+        run: test "$DEPENDENCY_RESULT" = "success"
