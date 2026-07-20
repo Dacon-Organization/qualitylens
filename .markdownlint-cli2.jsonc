@@ -1,0 +1,23 @@
+{
+  // 분리 이관 시점의 기존 문서 형식을 baseline으로 인정한다.
+  // 신규 CI 도입만으로 과거 문서 70개를 대량 재작성하지 않도록 제한한다.
+  "config": {
+    "MD001": false,
+    "MD007": false,
+    "MD012": false,
+    "MD013": false,
+    "MD022": false,
+    "MD024": false,
+    "MD027": false,
+    "MD031": false,
+    "MD032": false,
+    "MD033": false,
+    "MD034": false,
+    "MD036": false,
+    "MD040": false,
+    "MD041": false,
+    "MD056": false,
+    "MD058": false,
+    "MD060": false
+  }
+}

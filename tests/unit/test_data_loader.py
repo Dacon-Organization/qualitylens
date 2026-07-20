@@ -11,9 +11,18 @@ sys.path.insert(0, str(ROOT))
 
 def test_explicit_real(monkeypatch):
     monkeypatch.delenv("DEMO_MODE", raising=False)
-    from app.lib.data_loader import resolve_source
+    from app.lib import data_loader
 
-    assert resolve_source("real") == "real"
+    monkeypatch.setattr(data_loader, "_real_artifacts_complete", lambda: True)
+    assert data_loader.resolve_source("real") == "real"
+
+
+def test_explicit_real_falls_back_when_artifacts_missing(monkeypatch):
+    monkeypatch.delenv("DEMO_MODE", raising=False)
+    from app.lib import data_loader
+
+    monkeypatch.setattr(data_loader, "_real_artifacts_complete", lambda: False)
+    assert data_loader.resolve_source("real") == "dummy"
 
 
 def test_explicit_dummy(monkeypatch):
@@ -25,9 +34,10 @@ def test_explicit_dummy(monkeypatch):
 
 def test_env_var_real(monkeypatch):
     monkeypatch.setenv("DEMO_MODE", "real")
-    from app.lib.data_loader import resolve_source
+    from app.lib import data_loader
 
-    assert resolve_source() == "real"
+    monkeypatch.setattr(data_loader, "_real_artifacts_complete", lambda: True)
+    assert data_loader.resolve_source() == "real"
 
 
 def test_env_var_dummy(monkeypatch):
