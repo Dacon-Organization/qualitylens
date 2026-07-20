@@ -81,12 +81,14 @@ def mock_streamlit(monkeypatch):
 def test_resolve_source_explicit_priority(monkeypatch):
     """명시 인자가 환경변수 + 자동 감지보다 우선."""
     monkeypatch.setenv("DEMO_MODE", "real")
-    from app.lib.data_loader import resolve_source
+    from app.lib import data_loader
+
+    monkeypatch.setattr(data_loader, "_real_artifacts_complete", lambda: True)
 
     # 명시 dummy 인자가 env real을 무시
-    assert resolve_source("dummy") == "dummy"
+    assert data_loader.resolve_source("dummy") == "dummy"
     # None이면 env 사용
-    assert resolve_source(None) == "real"
+    assert data_loader.resolve_source(None) == "real"
 
 
 # -----------------------------------------------------------------------------
