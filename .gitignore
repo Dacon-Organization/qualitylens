@@ -5,6 +5,9 @@ data/raw/*
 !data/raw/LICENSE.md
 !data/raw/secom.data
 !data/raw/secom_labels.data
+# 원본 UCI SECOM 배포 아카이브 (공개 데이터셋 — 재배포 제약 없음)
+!data/raw/secom.names
+!data/raw/secom.zip
 data/processed/*
 !data/processed/.gitkeep
 !data/processed/demo_sample_real.pkl
@@ -16,6 +19,13 @@ data/processed/*
 # P-B/PR-1 hotfix — Streamlit Cloud 배포에서 폴백 보장 (dummy runtime test set)
 !data/processed/secom_X_test_dummy.pkl
 !data/processed/secom_y_test_dummy.pkl
+# 학습·평가 전처리 산출물 (LFS 보관 — 재현성 확보용 유일본)
+!data/processed/secom_X_train_real.pkl
+!data/processed/secom_X_train_dummy.pkl
+!data/processed/secom_X_test_real.pkl
+!data/processed/secom_y_train_real.pkl
+!data/processed/secom_y_train_dummy.pkl
+!data/processed/secom_y_test_real.pkl
 
 # Models — 직렬화 모델은 별도 관리
 models/*.joblib
@@ -36,6 +46,12 @@ models/*.pkl
 !models/shap_values_test_dummy.pkl
 !models/shap_per_sample_dummy.pkl
 !models/shap_waterfall_demo_dummy.pkl
+# 실제(real) 학습 모델·SHAP 산출물 (LFS 보관 — 재현성 확보용 유일본)
+!models/xgb_secom_real.joblib
+!models/shap_explainer_real.pkl
+!models/shap_values_test_real.pkl
+!models/shap_per_sample_real.pkl
+!models/shap_waterfall_demo_real.pkl
 
 # Python
 __pycache__/
